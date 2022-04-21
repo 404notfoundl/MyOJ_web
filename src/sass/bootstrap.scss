@@ -1,0 +1,21 @@
+// Custom Bootstrap variable overrides go first
+$grid-breakpoints: (
+  xs: 0,
+  sm: 480px,
+  md: 640px,
+  lg: 992px,
+  xl: 1300px,
+);
+$enable-rounded: true;
+$spacer: 1.5rem;
+
+.sticky-top {
+  z-index: 1060 !important;
+}
+
+// 取消按钮的外边框
+.btn {
+  box-shadow: none !important;
+}
+
+$z-index: 1070;

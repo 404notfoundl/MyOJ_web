@@ -1,0 +1,27 @@
+@font-face {
+  font-family: "KaiTi";
+  src: url("JiZiJingDianKaiTiJianFan.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "FangZheng";
+  src: url("FZZJ-ZYGDKJW.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "FangSong";
+  src: url("ZiTiGuanJiaFangSong.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "FangSong2";
+  src: url("JiZiJingDianFangSongJianFan.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
