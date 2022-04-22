@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-16 21:14:15
+ * @LastEditTime: 2022-04-22 13:40:17
  * @Description: 请填写简介
 -->
 <template lang="html">
@@ -17,12 +17,16 @@
           <b-navbar-nav>
             <b-nav-item @click="goToPage('main', {})"><b>首页</b></b-nav-item>
             <b-nav-item @click="goToPage('probLib', {})"><b>题库</b></b-nav-item>
+            <b-nav-item @click="goToPage('competitionList', {})">
+              <b>比赛</b>
+            </b-nav-item>
             <b-nav-item
               @click="
                 goToPage('codeEditor', { isEditMode: true, showIOArea: true, avalHeightRate: 1 })
               "
               ><b>在线编辑器</b>
             </b-nav-item>
+            
           </b-navbar-nav>
 
           <!-- Right aligned nav items -->
@@ -108,5 +112,4 @@ export default {
   beforeDestroy() {},
 }
 </script>
-<style scoped>
-</style>
+<style scoped></style>

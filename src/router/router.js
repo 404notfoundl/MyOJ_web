@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-14 15:03:08
+ * @LastEditTime: 2022-04-22 13:46:11
  * @Description: 请填写简介
  */
 //注意参数next需要调用，否则出现意外
@@ -38,6 +38,8 @@ const problemObj = () => import(/* webpackChunkName: 'prob_lib' */ "@/components
 const problemModifyer = () => import("@/components/modifyProblem")
 const solution = () => import("@/components/solutionPage")
 const checkSolution = () => import("@/components/checkSolution")
+const competitionList = () => import(/* webpackChunkName: 'comp_list' */ "@/components/competitionList")
+const competitionPage = () => import(/* webpackChunkName: 'comp_list' */ "@/components/competitionPage")
 //默认提交表单
 axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded"
 axios.defaults.headers.get["Content-Type"] = "application/x-www-form-urlencoded"
@@ -67,15 +69,18 @@ const routes = [
   { name: "modifyProblem", path: "/modify_problem/:pid", component: problemModifyer, props: true }, //修改题目
   { name: "login", path: "/login", component: loginPage, props: true }, //登录
   { name: "newSolutions", path: "/news", component: solution }, //最新题解
-  { name: "problemObj", path: "/problem_lib/:pid", component: problemObj}, //题目
+  { name: "problemObj", path: "/problem_lib/:pid", component: problemObj }, //题目
   { name: "probLib", path: "/problem_lib", component: problemLib }, //题目列表
   {
     name: "solution",
     path: "/solution/:pid",
     component: solution,
-    props: { showMode: "solution" }, 
+    props: { showMode: "solution" },
   }, // 题解
-  { name: "usrInfo", path: "/usr_info/:uid", component: personalDetails },// 个人信息
+  { name: "competitionList", path: "/competitions", component: competitionList }, // 比赛列表
+  { name: "competitionPage", path: "/competitions/:cid", component: competitionPage }, // 比赛列表
+
+  { name: "usrInfo", path: "/usr_info/:uid", component: personalDetails }, // 个人信息
 
   //404页面需要放在最后
   { name: "404", path: "/404", component: notFound },
