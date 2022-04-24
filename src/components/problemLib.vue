@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-15 09:11:14
+ * @LastEditTime: 2022-04-23 12:32:11
  * @Description: 请填写简介
 -->
 <template lang="">
@@ -17,26 +17,37 @@
           <b-card-body>
             <b-row>
               <b-col>
-                <b-table striped hover :items='getProbList' :fields="listName" small primary-key='pid' outlined
-                  id='probList' :per-page="pageCols" :current-page="currentPage">
+                <b-table                 
+                  striped 
+                  hover 
+                  :items='getProbList' 
+                  :fields="listName" 
+                  small 
+                  primary-key='pid' 
+                  outlined
+                  selectable
+                  select-mode="single"
+                  @row-selected="rowSelected"
+                  id='probList' 
+                  :per-page="pageCols" 
+                  :current-page="currentPage">
                   <template #table-busy>
                     <div class="text-center text-danger my-2">
                       <b-spinner class="align-middle"></b-spinner>
                       <strong>加载中...</strong>
                     </div>
                   </template>
-                  <!--  :href="(currentPage-1)*pageCols+data.index-1" -->
-                  <template v-slot:cell(pid)="data">
-                    <a :href="data.value" @click="jumpToProb({'pid':data.value})">
+                  <!--  @click="jumpToProb({'pid':data.value})" -->
+                  <!-- <template v-slot:cell(pid)="data">
+                    <a>
                       <h6 class="my-0">{{data.value}}</h6>
                     </a>
                   </template>
-                  <template v-slot:cell(title)="data">
-                    <a @click="jumpToProb({'pid':data.item.pid})">
+                  <template :slot="`cell(title)`" slot-scope="data">
+                    <a>
                       <h6 class="my-0">{{data.value}}</h6>
-                      <!-- <p>{{data}}</p> -->
                     </a>
-                  </template>
+                  </template> -->
                 </b-table>
               </b-col>
             </b-row>
@@ -139,7 +150,7 @@ export default {
       }).then((response) => {
         this.problemList = response.data
         this.rows = this.problemList[0].total
-        delete this.problemList[0]
+        this.problemList.splice(0,1)
         callback(this.problemList)
       })
         .catch(function (error) {
@@ -155,6 +166,9 @@ export default {
       if (!this.pidIsInt)
         return
       this.jumpToProb(this.searchKey)
+    },
+    rowSelected (item) {
+      this.jumpToProb({ 'pid': item[0].pid })
     }
   },
 }

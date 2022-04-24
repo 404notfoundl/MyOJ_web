@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-11 08:45:56
+ * @LastEditTime: 2022-04-22 15:08:39
  * @Description: 请填写简介
  */
 // app.js
@@ -30,7 +30,11 @@ import mixin from "./global"
 //axios
 import axios from "axios"
 import qs from "qs"
+
+import vueAwesomeCountdown from 'vue-awesome-countdown'
+
 // Optionally install the BootstrapVue icon components plugin
+Vue.use(vueAwesomeCountdown, 'countdown') // Component name, `countdown` and `vac` by default
 Vue.use(PortalVue)
 Vue.use(IconsPlugin)
 Vue.use(BootstrapVue) //BootstrapVue
