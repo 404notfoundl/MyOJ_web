@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-23 12:32:11
+ * @LastEditTime: 2022-04-29 09:47:03
  * @Description: 请填写简介
 -->
 <template lang="">
@@ -11,9 +11,6 @@
       <div class="col-lg-6 position-relative">
         <!-- 题库栏 -->
         <b-card no-body class="z-t">
-          <!-- <template v-slot:header>
-            <h6 class="mb-0">Header Slot</h6>
-          </template> -->
           <b-card-body>
             <b-row>
               <b-col>
@@ -155,7 +152,7 @@ export default {
       })
         .catch(function (error) {
           console.log(error)
-          callback([])
+          callback([{pid:0,title:'可能是网络出现了问题，稍后刷新一下试试?'}])
         })
 
     },

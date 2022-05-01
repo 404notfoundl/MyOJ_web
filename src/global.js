@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-15 13:56:35
+ * @LastEditTime: 2022-04-27 10:52:51
  * @Description: 请填写简介
  */
 export default {
@@ -66,15 +66,15 @@ export default {
   },
   computed: {
     isAdmin: function () {
-      let userinfo = this.$store.state.userInfo
-      if (userinfo === null) {
-        userinfo = this.getUserInfo()
-      }
+      let userinfo = this.userInfo
+      // if (userinfo === null) {
+      //   userinfo = this.getUserInfo()
+      // }
       return userinfo !== null && userinfo.isAdmin
     },
     isAuthed: function () {
-      let res = this.$store.state.userInfo
-      if (!res) res = this.getUserInfo()
+      let res = this.userInfo
+      // if (!res) res = this.getUserInfo()
       return Boolean(res)
     },
     userInfo() {
@@ -84,6 +84,9 @@ export default {
     },
     avalHeight: function () {
       return this.$store.state.avaliableHeight
+    },
+    route: function () {
+      return this.$route
     },
   },
 }

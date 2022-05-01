@@ -1,3 +1,10 @@
+<!--
+ * @Author: 
+ * @Date: 2022-04-24 20:42:24
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-05-01 08:50:30
+ * @Description: 暂不修改，待后端完成后调用url
+-->
 <template>
   <div class="row justify-content-center py-3">
     <div class="col-lg-7">
@@ -218,41 +225,27 @@
                     >
                       <!-- 预览部分 -->
                       <span v-b-toggle="`accordion-${index}`" class="d-block">
-                        <b-row>
-                          <!-- 提交日期 -->
-                          <b-col class="float-left pl-3">
-                            <div class="float-right">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="16"
-                                height="16"
-                                fill="currentColor"
-                                class="bi bi-chevron-down"
-                                viewBox="0 0 16 16"
-                              >
-                                <path
-                                  fill-rule="evenodd"
-                                  d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
-                                />
-                              </svg>
-                              <p class="mb-0 d-inline-block">{{ task.submitDate }}</p>
-                            </div>
-                          </b-col>
-                          <!-- 提交状态 -->
-                          <b-col class="float-right">
-                            <p
-                              :class="`float-left mb-0 d-inline-block text-${
-                                task.status === 'AC' ? 'success' : 'danger'
-                              }`"
-                            >
-                              {{ task.preview }}
-                            </p>
-                          </b-col>
-                          <!-- 提交语言 -->
-                          <b-col cols="3" class="float-right">
-                            <p class="mb-0 d-inline-block float-left">语言：{{ task.lang }}</p>
-                          </b-col>
-                        </b-row>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="currentColor"
+                          class="bi bi-chevron-down"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            fill-rule="evenodd"
+                            d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+                          />
+                        </svg>
+                        <p class="mb-0 d-inline-block">{{ task.submitDate }}</p>
+                        <p
+                          :class="`mb-0 d-inline-block text-${
+                            task.status === 'AC' ? 'success' : 'danger'
+                          }`"
+                        >
+                          {{ task.preview }}
+                        </p>
                       </span>
                       <hr />
                       <!-- 主体部分 -->
@@ -374,23 +367,17 @@ export default {
     "code-editor": codeEditor,
   },
   computed: {
-    // avalHeight: {
-    //   get: function () {
-    //     return this.$store.state.avaliableHeight
-    //   },
-    // },
     cols() {
       return Math.floor(this.$store.state.avaliableHeight / 50)
     },
     isBottom() {
       return this.$store.state.isBottom
     },
-    isCompetition() {
-      return !(isNaN(this.$route.params.cid) || isNaN(this.$route.params.pid))
-    },
   },
   created: function () {
     this.getProbDetails()
+    // this.getSubmitedSolution()
+    // this.getTasks()
   },
   data() {
     this.statusMap = {
@@ -464,49 +451,32 @@ export default {
     },
     getProbDetails: async function () {
       let url = `${this.$store.state.webUrl.problems}${this.$route.params.pid}/`
-      let params = undefined
-      if (this.isCompetition) {
-        url = `${this.$store.state.webUrl.competition.problem}${this.$route.params.cid}_${this.$route.params.pid}/`
-        params = {
-          competition_id: this.$route.params.cid,
-          pid: this.$route.params.pid,
-        }
-      }
       // debugger
       await this.$axios({
         url,
         method: "GET",
-        params,
       })
         .then((response) => {
           this.problemObj = this.serializer(response.data)
         })
         .catch((err) => {
-          this.toast(err.response.data.result)
-          if (err.response.status != 403) this.$router.push({ name: "404" })
-          else
-            setTimeout(() => {
-              this.$router.go(-1)
-            }, 3000)
+          console.log(err)
+          this.$router.push({ name: "404" })
           return {}
         })
     },
     getTasks() {
       this.loading = true
       let info = this.userInfo
-      // TODO 比赛的提交记录
+      // TODO pid待修改
       let params = {
-        uid: info.uid,
+        uid: info.uid, //有待获取uid
         pid: this.problemObj.pid === undefined ? -1 : Number.parseInt(this.problemObj.pid), //-1表示是在线编辑器
         cols: this.cols,
       }
       //编辑器的输入数据
       let url =
         this.nextTaskPage === "" ? `${this.$store.state.webUrl.task.preview}` : this.nextTaskPage
-      if (this.isCompetition) {
-        this.loading = false
-        return
-      }
       if (url === null) return
       let method = "GET"
       //之后是提交此记录
@@ -529,9 +499,8 @@ export default {
             }
             tasks[a].acNum = acNum
             tasks[a].details = tasks[a].details.split("#")
-            tasks[a].accepted = acNum == tasks[a].status.length && tasks[a].status.length != 0
+            tasks[a].accepted = acNum == tasks[a].status.length
             tasks[a].preview = tasks[a].accepted ? "AC" : "WA"
-            if (tasks[a].status.length == 0) tasks[a].preview = "评测中"
             tasks[a].submitDate = new Date(tasks[a].submitDate).format("yyyy-MM-dd HH:mm:SS")
           }
           // debugger
@@ -541,9 +510,8 @@ export default {
         })
         .catch((err) => {
           this.loading = false
-          this.toast(err.data)
           // debugger
-          // console.log(err)
+          console.log(err)
         })
     },
     getSubmitedSolution() {

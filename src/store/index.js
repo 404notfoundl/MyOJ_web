@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-10 20:51:43
+ * @LastEditTime: 2022-05-01 08:48:14
  * @Description: 请填写简介
  */
 import Vue from "vue"
@@ -27,6 +27,7 @@ const store = new Vuex.Store({
     //   uid: 1,
     //   isAdmin: true,
     //   username: "admin",
+    //   avatarUrl:""
     // },
     isTop: true, //是否在顶部
     isBottom: false, //是否在底部
@@ -57,27 +58,7 @@ const store = new Vuex.Store({
       // get register() {
       //   return `${this.root}/user/register/`
       // },
-      user: {
-        self: `${root}/user`,
-        get login() {
-          return `${this.self}/login/`
-        },
-        get refresh() {
-          return `${this.self}/refresh/`
-        },
-        get verify() {
-          return `${this.self}/verify/`
-        },
-        get register() {
-          return `${this.self}/register/`
-        },
-        get info() {
-          return `${this.self}/info/` // info/xxx/
-        },
-        get details(){
-          return `${this.self}/details/` // details/xxx/
-        }
-      },
+
       // get check() {
       //   return `${this.root}/solution/check/`
       // },
@@ -87,6 +68,12 @@ const store = new Vuex.Store({
       // get submit() {
       //   return `${this.root}/solution/submit/`
       // },
+      competition: {
+        self: `${root}/api/competition`,
+        get problem() {
+          return `${this.self}_problems/`
+        },
+      },
       solution: {
         self: `${root}/solution`,
         get check() {
@@ -106,6 +93,27 @@ const store = new Vuex.Store({
         },
         get preview() {
           return `${this.self}/preview/`
+        },
+      },
+      user: {
+        self: `${root}/user`,
+        get login() {
+          return `${this.self}/login/`
+        },
+        get refresh() {
+          return `${this.self}/refresh/`
+        },
+        get verify() {
+          return `${this.self}/verify/`
+        },
+        get register() {
+          return `${this.self}/register/`
+        },
+        get info() {
+          return `${this.self}/info/` // info/xxx/
+        },
+        get details() {
+          return `${this.self}/details/` // details/xxx/
         },
       },
     },

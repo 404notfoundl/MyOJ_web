@@ -89,11 +89,11 @@
             </b-tab>
             <b-tab title="通过题目">
               <b-row>
-                <b-col cols="2" v-for="(item, index) in userAcs" :key="index">
+                <div class="float-left mx-3 my-1" cols="2" v-for="(item, index) in userAcs" :key="index">
                   <b-link :to="{ name: 'problemObj', params: { pid: item.name } }">{{
                     item.name
                   }}</b-link>
-                </b-col>
+                </div>
               </b-row>
             </b-tab>
             <b-tab title="修改个人信息" v-if="isSelf">

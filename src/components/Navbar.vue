@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-22 13:40:17
+ * @LastEditTime: 2022-05-01 21:04:45
  * @Description: 请填写简介
 -->
 <template lang="html">
@@ -26,7 +26,6 @@
               "
               ><b>在线编辑器</b>
             </b-nav-item>
-            
           </b-navbar-nav>
 
           <!-- Right aligned nav items -->
@@ -58,12 +57,17 @@
                 >个人信息</b-dropdown-item
               >
               <!-- 此处待修改，检测用户合法性 -->
-              <b-dropdown-item href="#" @click="goToPage('appendProblem')" v-if="isAdmin"
-                >添加题目</b-dropdown-item
-              >
-              <b-dropdown-item href="#" @click="goToPage('checkSolution')" v-if="isAdmin"
-                >审核题解</b-dropdown-item
-              >
+              <div v-if="isAdmin">
+                <b-dropdown-item href="#" @click="goToPage('appendProblem')">
+                  添加题目
+                </b-dropdown-item>
+                <b-dropdown-item href="#" @click="goToPage('checkSolution')">
+                  审核题解
+                </b-dropdown-item>
+                <b-dropdown-item href="#" @click="goToPage('addCompetition')">
+                  添加比赛
+                </b-dropdown-item>
+              </div>
               <b-dropdown-item href="#" @click="logout">登出</b-dropdown-item>
             </b-nav-item-dropdown>
           </b-navbar-nav>
@@ -100,6 +104,7 @@ export default {
       this.$emit("go-to", pagePath, params)
     },
     logout() {
+      // debugger
       this.deleteLocal("user")
       this.$store.commit("setUserInfo", null)
       this.$router.replace({ name: "login" })

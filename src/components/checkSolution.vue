@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-03-07 08:38:44
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-20 11:24:36
+ * @LastEditTime: 2022-05-01 08:49:59
  * @Description: 请填写简介
 -->
 <template>
@@ -164,7 +164,7 @@ export default {
     },
   },
   created: function () {
-    let info = this.getUserInfo()
+    let info = this.userInfo
     if (info) {
       if (!info.isAdmin) {
         this.$router.replace({ name: "newSolutions" })
@@ -185,7 +185,7 @@ export default {
   },
   methods: {
     getSolutionList: /*async*/ function (page = 1) {
-      let info = this.getUserInfo()
+      let info = this.userInfo
       /*await*/ this.$axios({
         url: this.$store.state.webUrl.solution.check,
         params: {

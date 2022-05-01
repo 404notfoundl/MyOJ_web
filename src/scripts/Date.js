@@ -1,3 +1,10 @@
+/*
+ * @Author: 
+ * @Date: 2022-01-24 19:31:21
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-04-28 08:49:34
+ * @Description: 请填写简介
+ */
 Date.prototype.format = function (fmt) {
   let ret;
   const opt = {

@@ -70,9 +70,6 @@ export default {
         this.$store.commit("setTopState", true)
       }
     },
-    // checkUsrVaild() {
-    //   return true
-    // },
     goToPage(name, params) {
       this.$store.commit("setTopState", true)
       this.$store.commit("setBottomState", false)

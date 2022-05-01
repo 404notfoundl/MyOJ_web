@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-04-22 09:18:22
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-22 13:47:19
+ * @LastEditTime: 2022-04-29 15:02:44
  * @Description: 请填写简介
 -->
 <template>
@@ -12,8 +12,8 @@
         <b-card-body>
           <b-row class="px-2">
             <b-col>
-              <!-- 表头 -->
-              <b-row>
+              <!-- 表 -->
+              <!-- <b-row>
                 <b-col
                   :class="getTableUnitStyle(index, listName.length, true)"
                   v-for="(item, index) in listName"
@@ -22,7 +22,6 @@
                   ><b>{{ item.label }}</b></b-col
                 >
               </b-row>
-              <!-- 表身 -->
               <b-row
                 v-for="(items, cnt) in getCompetitionList()"
                 :key="items.id"
@@ -37,7 +36,41 @@
                 >
                   {{ value }}
                 </b-col>
-              </b-row>
+              </b-row> -->
+              <b-table
+                id="competitionList"
+                @row-selected="rowSelected"
+                selectable
+                select-mode="single"
+                small
+                :fields="listName"
+                :items="getCompetitionList"
+                striped
+                hover
+                responsive
+                fixed
+              >
+                <template #table-busy>
+                  <div class="text-center text-danger my-2">
+                    <b-spinner class="align-middle"></b-spinner>
+                    <strong>加载中...</strong>
+                  </div>
+                </template>
+              </b-table>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col>
+              <b-pagination
+                v-model="currentPage"
+                :total-rows="rows"
+                :per-page="pageCols"
+                aria-controls="competitionList"
+                first-number
+                last-number
+                align="center"
+              >
+              </b-pagination>
             </b-col>
           </b-row>
         </b-card-body>
@@ -48,49 +81,48 @@
 
 <script>
 export default {
-  name:"competitionList",
+  name: "competitionList",
+  computed: {
+    pageCols: function () {
+      return Math.floor(this.avalHeight / 40)
+    },
+  },
   data() {
     return {
       // col总计为12
       listName: [
         { key: "id", label: "#", col: 2 },
         { key: "title", label: "名称", col: 6 },
-        { key: "startDate", label: "开始日期", col: 2 },
-        { key: "endDate", label: "结束日期", col: 2 },
+        { key: "startDate", label: "开始日期", col: 2, formatter: "dateFormat" },
+        { key: "endDate", label: "结束日期", col: 2, formatter: "dateFormat" },
         // { key: "accepted", label: " " },
       ],
       competitionList: {},
+      currentPage: 1,
+      rows: 0,
     }
   },
   methods: {
     getCompetitionList: function (ctx, callback) {
-      this.competitionList = [
-        {
-          id: 1,
-          title: "测试比赛1",
-          startDate: new Date().format("MM-dd HH:mm"),
-          endDate: new Date().format("MM-dd HH:mm"),
+      this.$axios({
+        url: `${this.$store.state.webUrl.competition.self}/`,
+        params: {
+          page: this.currentPage,
+          cols: this.pageCols,
         },
-        {
-          id: 2,
-          title: "测试比赛2",
-          startDate: new Date().format("MM-dd HH:mm"),
-          endDate: new Date().format("MM-dd HH:mm"),
-        },
-        {
-          id: 3,
-          title: "测试比赛3",
-          startDate: new Date().format("MM-dd HH:mm"),
-          endDate: new Date().format("MM-dd HH:mm"),
-        },
-        {
-          id: 4,
-          title: "测试比赛4",
-          startDate: new Date().format("MM-dd HH:mm"),
-          endDate: new Date().format("MM-dd HH:mm"),
-        },
-      ]
-      return this.competitionList
+      })
+        .then((response) => {
+          // debugger
+          this.rows = response.data[0].total
+          response.data.splice(0, 1)
+          this.competitionList = response.data
+          callback(this.competitionList)
+        })
+        .catch((error) => {
+          // debugger
+          console.log(error)
+          callback([])
+        })
     },
     getTableUnitStyle(index, length, isTitle, cnt) {
       return `${isTitle ? "border-top" : ""} border-bottom py-1 ${
@@ -100,6 +132,17 @@ export default {
       border-color`
     },
     jumpToPage(params) {
+      this.$emit("go-to", "competitionPage", params)
+    },
+    dateFormat(val) {
+      let date = new Date(val).format("yy-MM-dd HH:mm:SS")
+      return date
+    },
+    rowSelected(item) {
+      // console.log(item)
+      let params = {
+        cid: item[0].id,
+      }
       this.$emit("go-to", "competitionPage", params)
     },
   },

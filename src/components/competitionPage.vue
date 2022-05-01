@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-04-22 13:36:29
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-24 08:40:23
+ * @LastEditTime: 2022-04-29 15:15:31
  * @Description: 请填写简介
 -->
 <template>
@@ -24,7 +24,13 @@
             <!-- 计时 -->
             <b-col class="position-relative">
               <div class="bottom">
-                <countdown :end-time="startTime" class="d-inline-block">
+                <!-- 不知为何不起作用，手动 -->
+                <countdown
+                  :end-time="competitionDetail.startDate"
+                  class="d-inline-block"
+                  v-if="today < competitionDetail.startDate"
+                  @finish="startCountDown"
+                >
                   <template v-slot:process="time">
                     <p class="h5">
                       {{
@@ -33,7 +39,13 @@
                     </p>
                   </template>
                 </countdown>
-                <countdown :start-time="startTime" :end-time="endTime" class="d-inline-block">
+                <countdown
+                  v-else
+                  ref="countDown"
+                  :startTime="competitionDetail.startDate"
+                  :endTime="competitionDetail.endDate"
+                  class="d-inline-block"
+                >
                   <template v-slot:process="time">
                     <p class="h5">
                       {{ `距离结束还剩：${time.timeObj.h}:${time.timeObj.m}:${time.timeObj.s}` }}
@@ -133,18 +145,20 @@ export default {
   components: {
     markdown,
   },
+  created: async function () {
+    await this.getCompetitionInfo()
+  },
   data() {
     return {
+      today: new Date().getTime(),
       currentTabIndex: 0,
-      startTime: "2022-4-24 16:00:00",
-      endTime: "2022-4-24 19:00:00",
       competitionDetail: {
         title: "测试比赛",
         description: "# 测试描述",
         submitter: "admin",
         submitter_id: 1,
-        startDate: new Date().format("MM-dd HH:mm"),
-        endDate: new Date().format("MM-dd HH:mm"),
+        startDate: null,
+        endDate: null,
       },
       problemCount: 1,
       problemsLabel: [
@@ -163,12 +177,12 @@ export default {
       rankLabel: [
         {
           key: "submitter",
-          label: "提交人",
+          label: "",
           isRowHeader: true,
           stickyColumn: true,
           variant: "primary",
         },
-        { key: "totalTime", label: "罚时" },
+        { key: "totalTime", label: "" },
       ],
       rankList: [
         {
@@ -217,11 +231,49 @@ export default {
     }
   },
   methods: {
-    getCompetitionInfo() {},
+    getCompetitionInfo: async function () {
+      await this.$axios({
+        url: `${this.$store.state.webUrl.competition.self}/${this.$route.params.cid}/`,
+        // params: {
+        //   page: this.currentPage,
+        //   cols: this.pageCols
+        // }
+      })
+        .then((response) => {
+          this.competitionDetail = response.data
+          this.competitionDetail.startDate = new Date(response.data.startDate).getTime()
+          this.competitionDetail.endDate = new Date(response.data.endDate).getTime()
+          // this.competitionDetail.startDate = "2022-04-28 11:30:00"
+          // this.competitionDetail.endDate = "2022-04-28 11:50:00"
+          // this.$nextTick(() => {
+          //   this.$refs.countDown.startCountdown(true)
+          // })
+        })
+        .catch((error) => {
+          // debugger
+          console.log(error)
+        })
+    },
     getProblemList(ctx, callback) {
-      callback(this.problemsList)
+      // let pk = `${this.$route.params.cid}_${this.route.params.pid}`
+      this.$axios({
+        url: `${this.$store.state.webUrl.competition.problem}`,
+        method: "GET",
+        params: {
+          competition_id: this.$route.params.cid,
+        },
+      })
+        .then((response) => {
+          this.problemsList = response.data
+          callback(this.problemsList)
+        })
+        .catch((error) => {
+          callback([])
+        })
+      // callback(this.problemsList)
     },
     getRankList(ctx, callback) {
+      // TODO 待完善
       let list = this.rankList
       if (typeof list[0].acTimeList != "object")
         for (let cnt in list) {
@@ -239,7 +291,14 @@ export default {
       callback(list)
     },
     rowSelected(item) {
-      console.log(item)
+      let params = {
+        cid: this.$route.params.cid,
+        pid: item[0].pid,
+      }
+      this.$emit("go-to", "competitionProblem", params)
+    },
+    startCountDown() {
+      this.today = new Date().getTime()
     },
   },
 }

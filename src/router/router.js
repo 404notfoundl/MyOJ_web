@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-22 13:46:11
+ * @LastEditTime: 2022-04-28 08:54:38
  * @Description: 请填写简介
  */
 //注意参数next需要调用，否则出现意外
@@ -38,8 +38,16 @@ const problemObj = () => import(/* webpackChunkName: 'prob_lib' */ "@/components
 const problemModifyer = () => import("@/components/modifyProblem")
 const solution = () => import("@/components/solutionPage")
 const checkSolution = () => import("@/components/checkSolution")
-const competitionList = () => import(/* webpackChunkName: 'comp_list' */ "@/components/competitionList")
-const competitionPage = () => import(/* webpackChunkName: 'comp_list' */ "@/components/competitionPage")
+const competitionList = () =>
+  import(/* webpackChunkName: 'comp_list' */ "@/components/competitionList")
+const competitionPage = () =>
+  import(/* webpackChunkName: 'comp_list' */ "@/components/competitionPage")
+// const competitionProblem = () =>
+//   import(/* webpackChunkName: 'comp_list' */ "@/components/competitionProblem") // 原题目页太多了，有待更改
+const appendCompetition = () =>
+  import(/* webpackChunkName: 'comp_list' */ "@/components/addCompetitionPage")
+// 测试页
+const testPage = () => import("@/components/editProblemPage")
 //默认提交表单
 axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded"
 axios.defaults.headers.get["Content-Type"] = "application/x-www-form-urlencoded"
@@ -77,10 +85,14 @@ const routes = [
     component: solution,
     props: { showMode: "solution" },
   }, // 题解
-  { name: "competitionList", path: "/competitions", component: competitionList }, // 比赛列表
-  { name: "competitionPage", path: "/competitions/:cid", component: competitionPage }, // 比赛列表
+  { name: "addCompetition", path: "/appendCompetition", component: appendCompetition }, // 添加比赛页
+  { name: "competitionList", path: "/competition", component: competitionList }, // 比赛列表
+  { name: "competitionPage", path: "/competition/:cid", component: competitionPage }, // 比赛详情页
+  { name: "competitionProblem", path: "/competition/:cid/:pid", component: problemObj }, // 比赛题目详情页
 
   { name: "usrInfo", path: "/usr_info/:uid", component: personalDetails }, // 个人信息
+  // 测试新页面
+  { name: "testPage", path: "/test_page", component: testPage }, // 个人信息
 
   //404页面需要放在最后
   { name: "404", path: "/404", component: notFound },
