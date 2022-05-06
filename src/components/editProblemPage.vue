@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-04-26 13:06:45
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-27 11:19:38
+ * @LastEditTime: 2022-05-05 10:16:12
  * @Description: 编辑题目的组件
 -->
 <template>
@@ -301,7 +301,7 @@ export default {
       default: () => {
         return {
           info: {
-            limits: [{ timeLimit: "", memoryLimit: "" }],
+            limits: [{ timeLimit: 1000, memoryLimit: 128 }],
           },
           title: "",
           label: "",

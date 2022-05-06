@@ -73,6 +73,9 @@ const store = new Vuex.Store({
         get problem() {
           return `${this.self}_problems/`
         },
+        get rank(){
+          return `${this.self}_rank/`
+        }
       },
       solution: {
         self: `${root}/solution`,
@@ -94,6 +97,9 @@ const store = new Vuex.Store({
         get preview() {
           return `${this.self}/preview/`
         },
+        get competition(){
+          return `${this.self}/competition/`
+        }
       },
       user: {
         self: `${root}/user`,

@@ -2,39 +2,61 @@
  * @Author:
  * @Date: 2022-04-09 09:58:42
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-09 10:07:21
+ * @LastEditTime: 2022-05-06 15:13:42
  * @Description: 请填写简介
  */
-// TODO 暂未完成 axios部分
-import axios from "axios"
-axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded;charset=utf-8"
-axios.defaults.headers.get["Content-Type"] = "application/x-www-form-urlencoded;charset=utf-8"
-axios.defaults.headers.delete["Content-Type"] = "application/x-www-form-urlencoded;charset=utf-8"
+import axios, { AxiosInstance, AxiosRequestConfig } from "axios"
+// import { Message } from "element-ui"
+// import { jumpLogin } from "@/utils"
 
-function axio(url, method, data, params, success, fail) {
-  axios({
-    url,
-    method,
-    data,
-    params,
+export const createAxiosByinterceptors = (config?: AxiosRequestConfig): AxiosInstance => {
+  const instance = axios.create({
+    timeout: 1000, //超时配置
+    withCredentials: true, //跨域携带cookie
+    ...config, // 自定义配置覆盖基本配置
   })
-    .then((response) => {
-      success(response)
-    })
-    .catch((err) => {
-      fail(err)
-    })
-}
 
-function get(url, params, data, success, fail) {
-  axio(url, "GET", data, params, success, fail)
-}
+  // 添加请求拦截器
+  instance.interceptors.request.use(
+    function (config: any) {
+      // 在发送请求之前做些什么
+      console.log("config:", config)
+      // config.headers.Authorization = vm.$Cookies.get("vue_admin_token");
+      return config
+    },
+    function (error) {
+      // 对请求错误做些什么
+      return Promise.reject(error)
+    }
+  )
 
-function post(url, param, data, success, fail) {
-  axio(url, "POST", data, param, success, fail)
-}
-
-export default {
-  get,
-  post,
+  // 添加响应拦截器
+  instance.interceptors.response.use(
+    function (response) {
+      // 对响应数据做点什么
+      console.log("response:", response)
+      const { code, data, message } = response.data
+      if (code === 200) return data
+      else if (code === 401) {
+        // jumpLogin()
+      } else {
+        // Message.error(message)
+        return Promise.reject(response.data)
+      }
+    },
+    function (error) {
+      // 对响应错误做点什么
+      console.log("error-response:", error.response)
+      console.log("error-config:", error.config)
+      console.log("error-request:", error.request)
+      if (error.response) {
+        if (error.response.status === 401) {
+          // jumpLogin()
+        }
+      }
+      // Message.error(error?.response?.data?.message || "服务端异常")
+      return Promise.reject(error)
+    }
+  )
+  return instance
 }

@@ -211,7 +211,7 @@
                     </b-col>
                     <b-col
                       cols="12"
-                      class="mb-2 mt-2 justify-content-start"
+                      class="my-1 justify-content-start"
                       v-for="(task, index) in tasksInfo"
                       :key="index"
                       v-else
@@ -221,7 +221,7 @@
                         <b-row>
                           <!-- 提交日期 -->
                           <b-col class="float-left pl-3">
-                            <div class="float-right">
+                            <div class="float-left">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="16"
@@ -241,7 +241,7 @@
                           <!-- 提交状态 -->
                           <b-col class="float-right">
                             <p
-                              :class="`float-left mb-0 d-inline-block text-${
+                              :class="`float-right mb-0 d-inline-block text-${
                                 task.status === 'AC' ? 'success' : 'danger'
                               }`"
                             >
@@ -249,7 +249,7 @@
                             </p>
                           </b-col>
                           <!-- 提交语言 -->
-                          <b-col cols="3" class="float-right">
+                          <b-col cols="2" class="float-right">
                             <p class="mb-0 d-inline-block float-left">语言：{{ task.lang }}</p>
                           </b-col>
                         </b-row>
@@ -320,7 +320,7 @@
                 </b-col>
               </b-row>
             </b-tab>
-            <b-tab title="提交题解">
+            <b-tab title="提交题解" v-if="!isCompetition">
               <b-row class="justify-content-center fill">
                 <markdown
                   :mdPageHeight="avalHeight"
@@ -504,8 +504,10 @@ export default {
       let url =
         this.nextTaskPage === "" ? `${this.$store.state.webUrl.task.preview}` : this.nextTaskPage
       if (this.isCompetition) {
-        this.loading = false
-        return
+        url = `${this.$store.state.webUrl.task.competition}`
+        params.cid = this.$route.params.cid
+        // this.loading = false
+        // return
       }
       if (url === null) return
       let method = "GET"
@@ -614,6 +616,10 @@ export default {
       data.uid = uid
       data.pid = pid
       let url = `${this.$store.state.webUrl.task.submit}`
+      if (this.isCompetition) {
+        url = `${this.$store.state.webUrl.task.competition}`
+        data.cid = this.$route.params.cid
+      }
       let method = "POST"
       //之后是提交此记录
       this.$axios({

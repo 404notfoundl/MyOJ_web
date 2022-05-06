@@ -75,7 +75,13 @@ export default {
       this.$store.commit("setBottomState", false)
       // if (name === "codeEditor") this.editorPage = false
       // debugger
-      this.$router.push({ name, params })
+      if (params.newPage === true) {
+        let routeUrl = this.$router.resolve({
+          name,
+          params,
+        })
+        window.open(routeUrl.href, "_blank")
+      } else this.$router.push({ name, params })
     },
     windowResizeListener() {
       // debugger

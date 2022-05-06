@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-04-22 13:36:29
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-29 15:15:31
+ * @LastEditTime: 2022-05-06 16:12:31
  * @Description: 请填写简介
 -->
 <template>
@@ -23,39 +23,42 @@
             </b-col>
             <!-- 计时 -->
             <b-col class="position-relative">
-              <div class="bottom">
-                <!-- 不知为何不起作用，手动 -->
+              <!-- 不知为何不起作用，手动 -->
+              <div v-if="today < competitionDetail.startDate">
+                <b-button variant="outline-primary" class="float-right" @click="registerCompetition"
+                  >报名</b-button
+                >
                 <countdown
                   :end-time="competitionDetail.startDate"
-                  class="d-inline-block"
-                  v-if="today < competitionDetail.startDate"
                   @finish="startCountDown"
+                  class="float-right mr-2"
                 >
                   <template v-slot:process="time">
                     <p class="h5">
+                      距开始还剩:
                       {{
-                        `距离开始还剩：${time.timeObj.d}天 ${time.timeObj.h}:${time.timeObj.m}:${time.timeObj.s}`
+                        `${time.timeObj.d}天 ${time.timeObj.h}:${time.timeObj.m}:${time.timeObj.s}`
                       }}
                     </p>
                   </template>
                 </countdown>
-                <countdown
-                  v-else
-                  ref="countDown"
-                  :startTime="competitionDetail.startDate"
-                  :endTime="competitionDetail.endDate"
-                  class="d-inline-block"
-                >
-                  <template v-slot:process="time">
-                    <p class="h5">
-                      {{ `距离结束还剩：${time.timeObj.h}:${time.timeObj.m}:${time.timeObj.s}` }}
-                    </p>
-                  </template>
-                  <template v-slot:finish>
-                    <p class="h5">已结束!</p>
-                  </template>
-                </countdown>
               </div>
+              <countdown
+                v-else
+                ref="countDown"
+                :startTime="competitionDetail.startDate"
+                :endTime="competitionDetail.endDate"
+                class="d-inline-block"
+              >
+                <template v-slot:process="time">
+                  <p class="h5">
+                    {{ `距离结束还剩：${time.timeObj.h}:${time.timeObj.m}:${time.timeObj.s}` }}
+                  </p>
+                </template>
+                <template v-slot:finish>
+                  <p class="h5">已结束!</p>
+                </template>
+              </countdown>
             </b-col>
           </b-row>
           <!-- 内容 -->
@@ -91,22 +94,18 @@
                   ></b-table>
                 </b-tab>
                 <b-tab title="排行">
-                  <b-table
-                    small
-                    :fields="rankLabel"
-                    :items="getRankList"
-                    striped
-                    hover
-                    responsive
-                    fixed
-                  >
+                  <b-table small :fields="rankLabel" :items="getRankList" striped hover responsive>
                     <template #thead-top="data">
                       <b-tr>
                         <!-- <b-th colspan="2"><span class="sr-only">Name and ID</span></b-th> -->
+                        <b-th>#</b-th>
                         <b-th variant="primary">提交人</b-th>
                         <b-th variant="secondary" :colspan="problemCount">题目</b-th>
-                        <b-th variant="danger">总罚时</b-th>
+                        <b-th variant="">总罚时</b-th>
                       </b-tr>
+                    </template>
+                    <template :slot="`cell(rank)`" slot-scope="data">
+                      <p class="h6">{{ data.index + 1 }}</p>
                     </template>
                     <template
                       v-for="cnt in problemCount"
@@ -176,6 +175,10 @@ export default {
       ],
       rankLabel: [
         {
+          key: "rank",
+          label: "",
+        },
+        {
           key: "submitter",
           label: "",
           isRowHeader: true,
@@ -188,49 +191,56 @@ export default {
         {
           submitter_id: 0,
           submitter: "0",
-          acTimeList: "1,2,3,4,5,6",
-          timeDeltaList: "0,1,1,2,2,0",
+          acTimeList: "1#2#3#4#5#6",
+          timeDeltaList: "0#1#1#2#2#0",
           totalTime: "5",
         },
         {
           submitter_id: 1,
           submitter: "1",
-          acTimeList: "a,,,,,",
-          timeDeltaList: "0,1,1,2,2,0",
+          acTimeList: "a#####",
+          timeDeltaList: "0#1#1#2#2#0",
           totalTime: "5",
         },
         {
           submitter_id: 2,
           submitter: "2",
-          acTimeList: "b,,,,,",
-          timeDeltaList: "0,1,1,2,2,0",
+          acTimeList: "b#####",
+          timeDeltaList: "0#1#1#2#2#0",
           totalTime: "5",
         },
         {
           submitter_id: 3,
           submitter: "3",
-          acTimeList: "c,,,,,",
-          timeDeltaList: "0,1,1,2,2,0",
+          acTimeList: "c#####",
+          timeDeltaList: "0#1#1#2#2#0",
           totalTime: "5",
         },
         {
           submitter_id: 4,
           submitter: "4",
-          acTimeList: "d,,,,,",
-          timeDeltaList: "0,1,1,2,2,0",
+          acTimeList: "d#####",
+          timeDeltaList: "0#1#1#2#2#0",
           totalTime: "5",
         },
         {
           submitter_id: 5,
           submitter: "5",
-          acTimeList: "e,,,,,",
-          timeDeltaList: "0,1,1,2,2,0",
+          acTimeList: "e#####",
+          timeDeltaList: "0#1#1#2#2#0",
           totalTime: "5",
         },
       ],
     }
   },
   methods: {
+    time_format(time) {
+      let hours = Math.floor(time / 3600)
+      time = time % 3600
+      let minutes = Math.floor(time / 60)
+      let seconds = time % 60
+      return `${hours}:${minutes}:${seconds}`
+    },
     getCompetitionInfo: async function () {
       await this.$axios({
         url: `${this.$store.state.webUrl.competition.self}/${this.$route.params.cid}/`,
@@ -274,31 +284,63 @@ export default {
     },
     getRankList(ctx, callback) {
       // TODO 待完善
-      let list = this.rankList
-      if (typeof list[0].acTimeList != "object")
-        for (let cnt in list) {
-          list[cnt].acTimeList = list[cnt].acTimeList.split(",")
-          list[cnt].timeDeltaList = list[cnt].timeDeltaList.split(",")
-        }
-      this.problemCount = list[0].acTimeList.length
-      let dcnt = 1
-      for (let cnt = 0; cnt < this.problemCount; cnt++) {
-        this.rankLabel.splice(dcnt + cnt, 0, {
-          key: String.fromCharCode(65 + cnt),
-          label: String.fromCharCode(65 + cnt),
+      this.$axios({
+        url: `${this.$store.state.webUrl.competition.rank}`,
+        method: "GET",
+        params: {
+          cid: this.$route.params.cid,
+        },
+      })
+        .then((response) => {
+          this.rankList = response.data
+          let list = this.rankList
+          if (typeof list[0].acTimeList != "object")
+            for (let cnt in list) {
+              list[cnt].acTimeList = list[cnt].acTimeList.split("#")
+              list[cnt].timeDeltaList = list[cnt].timeDeltaList.split("#")
+              list[cnt].totalTime = this.time_format(parseInt(list[cnt].totalTime))
+            }
+          this.problemCount = list[0].acTimeList.length
+          // 偏移量，题目偏移的位数
+          let dcnt = 2
+          for (let cnt = 0; cnt < this.problemCount; cnt++) {
+            this.rankLabel.splice(dcnt + cnt, 0, {
+              key: String.fromCharCode(65 + cnt),
+              label: String.fromCharCode(65 + cnt),
+            })
+          }
+          callback(list)
         })
-      }
-      callback(list)
+        .catch((error) => {
+          callback([])
+        })
     },
     rowSelected(item) {
       let params = {
         cid: this.$route.params.cid,
         pid: item[0].pid,
+        newPage: true,
       }
       this.$emit("go-to", "competitionProblem", params)
     },
     startCountDown() {
       this.today = new Date().getTime()
+    },
+    registerCompetition() {
+      this.$axios({
+        url: `${this.$store.state.webUrl.competition.rank}`,
+        method: "POST",
+        data: {
+          competition_id: this.$route.params.cid,
+        },
+        headers: {
+          authorization: `Bearer ${this.userInfo.token}`,
+        },
+      })
+        .then((response) => {
+          this.toast(response.data.result)
+        })
+        .catch((error) => {})
     },
   },
 }
