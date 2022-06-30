@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-28 08:54:38
+ * @LastEditTime: 2022-06-30 09:18:50
  * @Description: 请填写简介
  */
 //注意参数next需要调用，否则出现意外
@@ -15,17 +15,19 @@ import store from "@/store/index"
 //axios
 import axios from "axios"
 //第三方库需要use一下才能用
+// 防止重复路由报错
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+const originalReplace = VueRouter.prototype.replace
+VueRouter.prototype.replace = function replace(location) {
+  return originalReplace.call(this, location).catch(err => err)
+}
+
+
+
 Vue.use(VueRouter)
-// //引用页面
-// import loginPage from '@/components/login'
-// import codeEditor from '@/components/CodeEditor'
-// import markDown from '@/components/MdDemo'
-// import personalDetails from '@/components/personalDetails'
-// import notFound from '@/components/404Page'
-// import problemLib from '@/components/problemLib'
-// import problem from '@/components/problem'
-// import problemModifyer from '@/components/modifyProblem'
-// import problemObj from "@/components/problem"
 //路由懒加载
 const codeEditor = () => import("@/components/CodeEditor")
 const loginPage = () => import("@/components/login")
@@ -46,8 +48,13 @@ const competitionPage = () =>
 //   import(/* webpackChunkName: 'comp_list' */ "@/components/competitionProblem") // 原题目页太多了，有待更改
 const appendCompetition = () =>
   import(/* webpackChunkName: 'comp_list' */ "@/components/addCompetitionPage")
+const provincialCompetitionList = () => // 省赛列表页面
+  import("@/components/provincialCompetitionList")
+const provincialCompetitionPage = () => // 省赛题目页面
+  import("@/components/provincialCompetitionPage")
+
 // 测试页
-const testPage = () => import("@/components/editProblemPage")
+const testPage = () => import("@/components/provincialCompetitionList")
 //默认提交表单
 axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded"
 axios.defaults.headers.get["Content-Type"] = "application/x-www-form-urlencoded"
@@ -89,10 +96,12 @@ const routes = [
   { name: "competitionList", path: "/competition", component: competitionList }, // 比赛列表
   { name: "competitionPage", path: "/competition/:cid", component: competitionPage }, // 比赛详情页
   { name: "competitionProblem", path: "/competition/:cid/:pid", component: problemObj }, // 比赛题目详情页
+  { name: "provincialCompetition", path: "/provincial_competition/:prov/:year?", component: provincialCompetitionList }, // 省赛题目
+  { name: "provincialCompetitionPage", path: "/provincial_competition/:prov/:year/:pid", component: provincialCompetitionPage }, // 省赛题目页面
 
   { name: "usrInfo", path: "/usr_info/:uid", component: personalDetails }, // 个人信息
   // 测试新页面
-  { name: "testPage", path: "/test_page", component: testPage }, // 个人信息
+  { name: "testPage", path: "/test_page", component: testPage }, 
 
   //404页面需要放在最后
   { name: "404", path: "/404", component: notFound },
@@ -120,7 +129,7 @@ router.beforeEach(async (to, from, next) => {
   // console.log(to.name)
   if (authPage[to.name] === to.name) {
     let info = GlobalMethod.methods.getLocalJson("user")
-    console.log(this)
+    // console.log(this)
     if (!info) pass = false
     else {
       await axios({

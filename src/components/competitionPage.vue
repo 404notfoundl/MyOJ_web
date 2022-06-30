@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-04-22 13:36:29
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-06 16:12:31
+ * @LastEditTime: 2022-06-29 17:03:39
  * @Description: 请填写简介
 -->
 <template>
@@ -124,9 +124,6 @@
                       </span>
                     </template>
                   </b-table>
-                  <!-- <div v-for="(item, index) in rankLabel" :key="index">
-                    {{ item }}
-                  </div> -->
                 </b-tab>
               </b-tabs>
             </b-col>
@@ -166,13 +163,7 @@ export default {
         { key: "acceptNum", label: "通过数" },
         { key: "submitNum", label: "提交数" },
       ],
-      problemsList: [
-        { pid: 0, acceptNum: 0, submitNum: 0, title: "1" },
-        { pid: 1, acceptNum: 0, submitNum: 0, title: "2" },
-        { pid: 2, acceptNum: 0, submitNum: 0, title: "3" },
-        { pid: 3, acceptNum: 0, submitNum: 0, title: "4" },
-        { pid: 4, acceptNum: 0, submitNum: 0, title: "5" },
-      ],
+      problemsList: [{ id: 1, title: "暂无", startDate: "", endDate: "" }],
       rankLabel: [
         {
           key: "rank",
@@ -260,8 +251,7 @@ export default {
           // })
         })
         .catch((error) => {
-          // debugger
-          console.log(error)
+          if (error.response.status == 404) this.$router.push({ name: "404" })
         })
     },
     getProblemList(ctx, callback) {
@@ -278,7 +268,7 @@ export default {
           callback(this.problemsList)
         })
         .catch((error) => {
-          callback([])
+          callback([this.problemsList])
         })
       // callback(this.problemsList)
     },

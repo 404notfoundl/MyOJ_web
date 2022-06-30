@@ -6,7 +6,7 @@
           <!-- 头部 -->
           <template v-slot:tabs-start>
             <!-- 返回上一页 -->
-            <b-nav-item @click.prevent="back"
+            <b-nav-item @click.prevent="back" v-if="!isCompetition"
               ><svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -29,7 +29,7 @@
               <b-nav-item
                 title="修改此题"
                 @click="gotoModify({ pid: problemObj.pid })"
-                v-if="isAdmin"
+                v-if="isAdmin && !isCompetition"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -374,11 +374,6 @@ export default {
     "code-editor": codeEditor,
   },
   computed: {
-    // avalHeight: {
-    //   get: function () {
-    //     return this.$store.state.avaliableHeight
-    //   },
-    // },
     cols() {
       return Math.floor(this.$store.state.avaliableHeight / 50)
     },
@@ -486,7 +481,9 @@ export default {
           if (err.response.status != 403) this.$router.push({ name: "404" })
           else
             setTimeout(() => {
-              this.$router.go(-1)
+              // this.$router.go(-1)
+              window.opener = null
+              window.open("about:blank", "_top").close()
             }, 3000)
           return {}
         })
@@ -532,7 +529,7 @@ export default {
             tasks[a].acNum = acNum
             tasks[a].details = tasks[a].details.split("#")
             tasks[a].accepted = acNum == tasks[a].status.length && tasks[a].status.length != 0
-            tasks[a].preview = tasks[a].accepted ? "AC" : "WA"
+            tasks[a].preview = tasks[a].accepted ? "AC" : "UNACCEPT"
             if (tasks[a].status.length == 0) tasks[a].preview = "评测中"
             tasks[a].submitDate = new Date(tasks[a].submitDate).format("yyyy-MM-dd HH:mm:SS")
           }
@@ -671,8 +668,8 @@ $status_colors: (
   t: #2e4e7e,
   //绀青
   m: #003371,
-  //丹
-  r: #ff4e20,
+  //
+  r: #0000ff,
   //漆黑
   u: #161823
 );

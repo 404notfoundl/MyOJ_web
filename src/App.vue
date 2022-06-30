@@ -74,8 +74,7 @@ export default {
       this.$store.commit("setTopState", true)
       this.$store.commit("setBottomState", false)
       // if (name === "codeEditor") this.editorPage = false
-      // debugger
-      if (params.newPage === true) {
+      if (params !== undefined && params.newPage === true) {
         let routeUrl = this.$router.resolve({
           name,
           params,

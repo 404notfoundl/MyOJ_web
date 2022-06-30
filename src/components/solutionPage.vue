@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-01-31 09:48:46
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-20 10:23:26
+ * @LastEditTime: 2022-06-29 20:12:48
  * @Description: 请填写简介
 -->
 <template>
@@ -17,7 +17,7 @@
         </b-card>
       </b-col>
     </b-row>
-    <b-card class="mt-2 border" v-for="(solution, index) in solutions" :key="index">
+    <b-card class="mt-2 border" v-for="(solution, index) in solutions" :key="solution.pid">
       <b-row>
         <b-col cols="2">
           <div class="d-inline-block">
@@ -49,29 +49,36 @@ export default {
     isSolutionMode() {
       return this.showMode === "solution"
     },
+    pageName(){
+      return this.$route.name
+    }
   },
   created() {
-    switch (this.$route.name) {
-      case "solution":
-        this.getSolutions()
-        break
-      case "newSolutions":
-        this.getNews()
-        break
-    }
+    this.getInfo()
   },
   data: function () {
     return {
       solutions: [
         {
-          uid: 0,
-          username: "",
-          value: "",
+          pid: 0,
+          uid: -1,
+          username: "null",
+          value: "# 暂无题解",
         },
       ],
     }
   },
   methods: {
+    getInfo() {
+      switch (this.pageName) {
+        case "solution":
+          this.getSolutions()
+          break
+        case "newSolutions":
+          this.getNews()
+          break
+      }
+    },
     getSolutions() {
       let params = {
         pid: this.$route.params.pid,
@@ -82,32 +89,34 @@ export default {
         params,
       })
         .then((response) => {
-          console.log("success")
-          this.solutions = response.data
+          // console.log("success")
+          if (response.data.length > 0) this.solutions = response.data
         })
         .catch((err) => {
-          console.log("failed")
-          let data = [
-            {
-              uid: null,
-              value: "# 现无题解",
-              username: "",
-            },
-          ]
-          this.solutions = data
+          // console.log("failed")
+          // let data = [
+          //   {
+          //     uid: null,
+          //     value: "# 现无题解",
+          //     username: "",
+          //   },
+          // ]
+          // this.solutions = data
         })
     },
     getNews() {
       this.solutions = [
         {
-          uid: 0,
-          username: "abc",
-          value: "# 首页的测试1",
+          pid: -1,
+          uid: 1,
+          username: "root",
+          value: "# 首页的测试1 \n 现在未想好仅作占位用",
         },
         {
+          pid: -2,
           uid: 1,
-          username: "123",
-          value: "# 首页的测试2",
+          username: "root",
+          value: "# 首页的测试2 \n 现在未想好仅作占位用",
         },
       ]
     },
@@ -118,6 +127,11 @@ export default {
       default: "main",
     },
   },
+  watch:{
+    pageName(){
+      this.getInfo();
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>

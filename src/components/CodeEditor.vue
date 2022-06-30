@@ -35,6 +35,7 @@
                 :disabled="submitting"
                 >提交</b-button
               >
+              <!-- submitting -->
             </div>
           </div>
           <!-- 官方文档中使用 id，这里禁止使用，在后期打包后容易出现问题，使用 ref 或者 DOM 就行 -->
@@ -52,14 +53,14 @@
         <div class="col-6 px-0 h-100 border-right">
           <textarea
             class="h-100 w-100 px-2 pt-1 border-0"
-            placeholder="输入数据"
+            placeholder="输入数据，此部分还在开发中"
             v-model.lazy="ioArea.input"
           ></textarea>
         </div>
         <div class="col-6 px-0 h-100">
           <textarea
             class="h-100 w-100 px-2 pt-1 border-0"
-            placeholder="输出数据"
+            placeholder="输出数据，此部分还在开发中"
             v-model="ioArea.output"
             readonly
           ></textarea>

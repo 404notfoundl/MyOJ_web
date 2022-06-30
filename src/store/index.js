@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-01 08:48:14
+ * @LastEditTime: 2022-06-30 09:10:17
  * @Description: 请填写简介
  */
 import Vue from "vue"
@@ -14,6 +14,8 @@ Vue.use(Vuex)
 //这是全局变量所用
 //创建VueX对象
 let root = "http://127.0.0.1:8000"
+let site_root = "http://121.41.31.72:8008"
+root = site_root
 const store = new Vuex.Store({
   strict: true,
   state: {
@@ -73,9 +75,9 @@ const store = new Vuex.Store({
         get problem() {
           return `${this.self}_problems/`
         },
-        get rank(){
+        get rank() {
           return `${this.self}_rank/`
-        }
+        },
       },
       solution: {
         self: `${root}/solution`,
@@ -97,9 +99,9 @@ const store = new Vuex.Store({
         get preview() {
           return `${this.self}/preview/`
         },
-        get competition(){
+        get competition() {
           return `${this.self}/competition/`
-        }
+        },
       },
       user: {
         self: `${root}/user`,
@@ -121,6 +123,9 @@ const store = new Vuex.Store({
         get details() {
           return `${this.self}/details/` // details/xxx/
         },
+      },
+      provincial_competition: {
+        self: `${root}/api/provincial_competition`,
       },
     },
   },

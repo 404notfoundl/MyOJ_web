@@ -52,24 +52,16 @@ export default {
   },
   methods: {
     submitProblem(data) {
-      // if (this.checkLabelsValid()) {
-      //   if (!this.checkFilesValid()) return
-      // } else return
-
-      // if (this.newProblem.value === "") {
-      //   this.$refs.mdPopover.$emit("open")
-      //   setTimeout(() => {
-      //     this.$refs.mdPopover.$emit("close")
-      //   }, 5000)
-      //   return
-      // }
-      // // if (!this.validate) return
       let method = "POST"
       let url = `${this.$store.state.webUrl.save}`
       if (this.$route.params.pid !== undefined) {
         method = "PUT"
         url += `${this.$route.params.pid}/`
       }
+      if (data.get("prov_comp_flag")[0]==="t") {
+        url = `${this.$store.state.webUrl.provincial_competition.self}/`
+      }
+      // debugger
       // let data = this.serializer()
       let info = this.userInfo
       this.$axios({
@@ -92,8 +84,8 @@ export default {
           this.$router.replace({ name: "probLib" })
         })
         .catch((err) => {
-          // debugger
-          this.toast(err.data.result)
+          debugger
+          this.toast(err.response.data.result)
         })
     },
   },
@@ -103,12 +95,18 @@ export default {
       default: () => {
         return {
           info: {
-            limits: [{ timeLimit: "", memoryLimit: "" }],
+            limits: [{ timeLimit: 1000, memoryLimit: 128 }],
           },
+          province: "",
+          year: null,
+          pid: null,
           title: "",
           label: "",
           difficulty: "",
           value: "",
+          inputFiles: null,
+          outputFiles: null,
+          prov_comp_flag: false,
         }
       },
     },

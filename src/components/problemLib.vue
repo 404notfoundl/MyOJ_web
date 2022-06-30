@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-29 09:47:03
+ * @LastEditTime: 2022-06-29 17:10:11
  * @Description: 请填写简介
 -->
 <template lang="">
@@ -34,17 +34,6 @@
                       <strong>加载中...</strong>
                     </div>
                   </template>
-                  <!--  @click="jumpToProb({'pid':data.value})" -->
-                  <!-- <template v-slot:cell(pid)="data">
-                    <a>
-                      <h6 class="my-0">{{data.value}}</h6>
-                    </a>
-                  </template>
-                  <template :slot="`cell(title)`" slot-scope="data">
-                    <a>
-                      <h6 class="my-0">{{data.value}}</h6>
-                    </a>
-                  </template> -->
                 </b-table>
               </b-col>
             </b-row>
@@ -147,12 +136,12 @@ export default {
       }).then((response) => {
         this.problemList = response.data
         this.rows = this.problemList[0].total
-        this.problemList.splice(0,1)
+        this.problemList.splice(0, 1)
         callback(this.problemList)
       })
         .catch(function (error) {
           console.log(error)
-          callback([{pid:0,title:'可能是网络出现了问题，稍后刷新一下试试?'}])
+          callback([{ pid: 0, title: '可能是网络出现了问题，稍后刷新一下试试?' }])
         })
 
     },
@@ -171,10 +160,10 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-$right-start: 0;
+$right-start: -(100vw * 0.01);
 $top-pos: 10px;
 
-$right-end: -28%;
+$right-end: -(100vw * 0.14);
 
 @keyframes search-panel {
   from {

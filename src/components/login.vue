@@ -161,7 +161,7 @@
                   </b-popover>
                 </div>
                 <!-- 切换注册登录页面 -->
-                <b-row class="justify-content-end">
+                <b-row class="justify-content-end" v-if="false">
                   <b-col md="2">
                     <a
                       href="#"
@@ -254,7 +254,7 @@ export default {
     registAccount() {
       let newUser = this.usrAccount
       this.$axios({
-        url: this.$store.state.webUrl.register,
+        url: this.$store.state.webUrl.user.register,
         method: "POST",
         data: {
           username: newUser.name,
@@ -262,12 +262,12 @@ export default {
           password: newUser.passWord,
         },
       })
-        .then(() => {
+        .then((response) => {
           this.toRegister()
         })
         .catch((err) => {
           this.responseInfo = err.response.data.result
-          this.$bvModal.show("login-info")
+          this.toast(JSON.stringify(err.response.data.result))
         })
     },
     loginAccount: function () {
@@ -290,6 +290,8 @@ export default {
         })
         .catch((err) => {
           console.log(err)
+          debugger
+          this.toast(err.response.data.result)
         })
     },
     hidePopover(b) {
@@ -552,7 +554,7 @@ export default {
       this.setLocalJson("ojWordCloud", wordCloudObj)
     } else {
       if (new Date().format("yyyy-MM-dd") !== wordCloudObj["date"]) {
-        console.log("update words")
+        // console.log("update words")
         wordCloudObj["words"] = await this.getRows()
         wordCloudObj["date"] = new Date().format("yyyy-MM-dd")
         this.setLocalJson("ojWordCloud", wordCloudObj)
@@ -563,6 +565,7 @@ export default {
     // debugger
     this.wordCloudChartData.rows = wordCloudObj.words
     this.wordCloudChartData.rows.push({ word: "OJ", count: this.wordCloudChartData.rows.length })
+    console.log("实现邮箱验证中，暂不开放注册")
   },
   mounted() {},
   updated() {},

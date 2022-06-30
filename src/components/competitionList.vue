@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-04-22 09:18:22
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-29 15:02:44
+ * @LastEditTime: 2022-06-29 20:32:44
  * @Description: 请填写简介
 -->
 <template>
@@ -97,7 +97,9 @@ export default {
         { key: "endDate", label: "结束日期", col: 2, formatter: "dateFormat" },
         // { key: "accepted", label: " " },
       ],
-      competitionList: {},
+      competitionList: [
+        { id: 1, title: "暂无", startDate: new Date(), endDate: new Date(), existed: false },
+      ],
       currentPage: 1,
       rows: 0,
     }
@@ -115,11 +117,10 @@ export default {
           // debugger
           this.rows = response.data[0].total
           response.data.splice(0, 1)
-          this.competitionList = response.data
+          if (response.data.length > 0) this.competitionList = response.data
           callback(this.competitionList)
         })
         .catch((error) => {
-          // debugger
           console.log(error)
           callback([])
         })
@@ -140,10 +141,12 @@ export default {
     },
     rowSelected(item) {
       // console.log(item)
-      let params = {
-        cid: item[0].id,
+      if (item[0] != undefined && item[0].existed === undefined) {
+        let params = {
+          cid: item[0].id,
+        }
+        this.$emit("go-to", "competitionPage", params)
       }
-      this.$emit("go-to", "competitionPage", params)
     },
   },
 }

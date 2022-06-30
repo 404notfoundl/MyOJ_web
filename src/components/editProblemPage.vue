@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-04-26 13:06:45
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-05 10:16:12
+ * @LastEditTime: 2022-06-12 17:24:23
  * @Description: 编辑题目的组件
 -->
 <template>
@@ -50,7 +50,59 @@
       <hr class="mb-0" />
       <b-row class="justify-content-left fill-x fill-b flex-row-reverse">
         <b-col>
-          <b-form-group>
+          <b-form-group v-show="newProblem.prov_comp_flag">
+            <div class="pt-2">
+              <b-row>
+                <b-col cols="4" class="pr-0 h-auto pt-1">
+                  <p class="mb-0">省份:</p>
+                </b-col>
+                <b-col cols="8" class="pl-0 h-auto">
+                  <b-form-input
+                    id="proc"
+                    v-model="newProblem.province"
+                    placeholder="输入首字母缩写"
+                    :state="provLenCheck"
+                    :required="newProblem.prov_comp_flag"
+                  >
+                  </b-form-input>
+                  <b-form-invalid-feedback id="prov"> 不超过5个字符 </b-form-invalid-feedback>
+                </b-col>
+              </b-row>
+              <b-row>
+                <b-col cols="4" class="pr-0 h-auto pt-1">
+                  <p class="mb-0">年份:</p>
+                </b-col>
+                <b-col cols="8" class="pl-0 h-auto">
+                  <b-form-input
+                    id="year"
+                    v-model="newProblem.year"
+                    placeholder="输入数字"
+                    type="number"
+                    :required="newProblem.prov_comp_flag"
+                  >
+                  </b-form-input>
+                </b-col>
+              </b-row>
+              <b-row>
+                <b-col cols="4" class="pr-0 h-auto pt-1">
+                  <p class="mb-0">题目序号:</p>
+                </b-col>
+                <b-col cols="8" class="pl-0 h-auto">
+                  <b-form-input
+                    id="pid"
+                    v-model="newProblem.pid"
+                    placeholder="输入数字"
+                    type="number"
+                    :required="newProblem.prov_comp_flag"
+                  >
+                  </b-form-input>
+                </b-col>
+              </b-row>
+            </div>
+            <hr class="mb-0" />
+          </b-form-group>
+          <!-- 时空限制 -->
+          <b-form-group v-if="!newProblem.prov_comp_flag">
             <div class="pt-2">
               <b-row>
                 <b-col cols="4" class="pr-0 h-auto pt-1">
@@ -62,7 +114,7 @@
                     v-model="newProblem.info.limits[0].timeLimit"
                     placeholder="输入数字"
                     type="number"
-                    required
+                    :required="!newProblem.prov_comp_flag"
                   >
                   </b-form-input>
                 </b-col>
@@ -77,13 +129,13 @@
                     v-model="newProblem.info.limits[0].memoryLimit"
                     placeholder="输入数字"
                     type="number"
-                    required
+                    :required="!newProblem.prov_comp_flag"
                   >
                   </b-form-input>
                 </b-col>
               </b-row>
             </div>
-            <hr />
+            <hr class="mb-0" />
           </b-form-group>
           <!-- 题目详情的折叠区域 -->
           <!-- 标签 -->
@@ -134,7 +186,7 @@
           </b-row>
           <hr />
           <!-- 输入输出数据 -->
-          <div>
+          <div v-show="!newProblem.prov_comp_flag">
             <p class="h6 text-info">
               <b>{{ warn }}</b>
             </p>
@@ -148,7 +200,7 @@
                 drop-placeholder=".in文件放入此处"
                 size="sm"
                 accept=".in"
-                :required="!new_file_flag"
+                :required="!new_file_flag && !newProblem.prov_comp_flag"
                 :disabled="new_file_flag"
               ></b-form-file>
               <b-form-file
@@ -161,13 +213,21 @@
                 class="mt-2"
                 accept=".out"
                 :disabled="new_file_flag"
-                :required="!new_file_flag"
+                :required="!new_file_flag && !newProblem.prov_comp_flag"
               ></b-form-file>
             </div>
             <b-form-checkbox v-model="new_file_flag" v-show="!label_display_none[route.name]"
               ><h6>不添加新文件</h6></b-form-checkbox
             >
           </div>
+          <b-row v-if="label_display_none[route.name]">
+            <b-col>
+              <b-form-radio-group
+                v-model="newProblem.prov_comp_flag"
+                :options="type_options"
+              ></b-form-radio-group>
+            </b-col>
+          </b-row>
         </b-col>
         <!-- markdown -->
         <b-col class="px-0 border-right" lg="9">
@@ -197,8 +257,15 @@ export default {
   components: {
     markdown,
   },
-  computed: {},
-  created() {},
+  computed: {
+    provLenCheck() {
+      if (this.newProblem.province === undefined) return false
+      return this.newProblem.province.length < 6 ? true : false
+    },
+  },
+  created() {
+    this.newProblem.prov_comp_flag = false
+  },
   data() {
     return {
       newProblem: this.oldProblem, // 为了省事直接用了，待修改
@@ -211,6 +278,10 @@ export default {
         appendProblem: true,
       },
       new_file_flag: false,
+      type_options: [
+        { text: "主题库", value: false },
+        { text: "省赛(仅题面)", value: true },
+      ],
     }
   },
   methods: {
@@ -278,7 +349,8 @@ export default {
     },
     submitProblem() {
       if (this.checkLabelsValid()) {
-        if (!this.new_file_flag) if (!this.checkFilesValid()) return
+        if (!this.newProblem.prov_comp_flag)
+          if (!this.new_file_flag) if (!this.checkFilesValid()) return
       } else return
 
       if (this.newProblem.value === "") {
@@ -303,12 +375,16 @@ export default {
           info: {
             limits: [{ timeLimit: 1000, memoryLimit: 128 }],
           },
+          province: "",
+          year: null,
+          pid: null,
           title: "",
           label: "",
           difficulty: "",
           value: "",
           inputFiles: null,
           outputFiles: null,
+          prov_comp_flag: false,
         }
       },
     },

@@ -73,8 +73,8 @@
           >
             <!-- 基本信息 -->
             <b-tab active title="基本信息">
-              <div class="row h-100">
-                <div class="col-6">
+              <div class="row justify-content-center h-100">
+                <div class="col-6" v-if="false">
                   <achistogram></achistogram>
                 </div>
                 <div class="col-6">
@@ -89,7 +89,12 @@
             </b-tab>
             <b-tab title="通过题目">
               <b-row>
-                <div class="float-left mx-3 my-1" cols="2" v-for="(item, index) in userAcs" :key="index">
+                <div
+                  class="float-left mx-3 my-1"
+                  cols="2"
+                  v-for="(item, index) in userAcs"
+                  :key="index"
+                >
                   <b-link :to="{ name: 'problemObj', params: { pid: item.name } }">{{
                     item.name
                   }}</b-link>
@@ -153,7 +158,7 @@
               </b-form>
             </b-tab>
             <!-- 通过的题目数 -->
-            <b-tab title="禁用" disabled><p>I'm a disabled tab!</p></b-tab>
+            <b-tab title="禁用" v-if="false"><p>I'm a disabled tab!</p></b-tab>
           </b-tabs>
         </b-card>
       </div>
@@ -192,12 +197,12 @@ export default {
       this.setLocalJson("usrWordCloud", wordCloudObj)
     } else {
       if (new Date().format("yyyy-MM-dd") !== wordCloudObj["date"]) {
-        console.log("update words")
+        // console.log("update words")
         wordCloudObj["words"] = this.getRows()
         wordCloudObj["date"] = new Date().format("yyyy-MM-dd")
         this.setLocalJson("usrWordCloud", wordCloudObj)
       } else {
-        console.log("use local words")
+        // console.log("use local words")
       }
     }
     this.wordCloudChartData.rows = wordCloudObj.words
@@ -420,7 +425,15 @@ export default {
           else this.userDetail.avatarUrl = require("../assets/Akkarin.png")
         })
         .catch((err) => {
-          console.log(err)
+          this.toast(err.response.data.result)
+          if (err.response.status == 404) this.$router.push({ name: "404" })
+          else
+            setTimeout(() => {
+              // this.$router.go(-1)
+              window.opener = null
+              window.open("about:blank", "_top").close()
+            }, 3000)
+          return {}
         })
     },
     getUserDetails() {
