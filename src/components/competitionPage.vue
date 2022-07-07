@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-04-22 13:36:29
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-06-29 17:03:39
+ * @LastEditTime: 2022-07-01 09:28:29
  * @Description: 请填写简介
 -->
 <template>
@@ -73,12 +73,21 @@
                 v-model="currentTabIndex"
               >
                 <b-tab active title="详情">
-                  <markdown
-                    :mdPageHeight="avalHeight * 0.8"
-                    :Value="competitionDetail.description"
-                    showMode="preview"
-                    :showToolBar="false"
-                  ></markdown>
+                  <b-skeleton-wrapper :loading="loading">
+                    <template #loading>
+                      <b-skeleton
+                        v-for="(item, index) in Math.ceil(Math.random() * 30)"
+                        :width="Math.ceil(Math.random() * 70) + '%'"
+                        :key="index"
+                      ></b-skeleton>
+                    </template>
+                    <markdown
+                      :mdPageHeight="avalHeight * 0.8"
+                      :Value="competitionDetail.description"
+                      showMode="preview"
+                      :showToolBar="false"
+                    ></markdown>
+                  </b-skeleton-wrapper>
                 </b-tab>
                 <b-tab title="题目">
                   <b-table
@@ -142,7 +151,7 @@ export default {
     markdown,
   },
   created: async function () {
-    await this.getCompetitionInfo()
+    this.getCompetitionInfo()
   },
   data() {
     return {
@@ -222,6 +231,7 @@ export default {
           totalTime: "5",
         },
       ],
+      loading: false,
     }
   },
   methods: {
@@ -232,8 +242,9 @@ export default {
       let seconds = time % 60
       return `${hours}:${minutes}:${seconds}`
     },
-    getCompetitionInfo: async function () {
-      await this.$axios({
+    getCompetitionInfo: function () {
+      this.loading = true
+      this.$axios({
         url: `${this.$store.state.webUrl.competition.self}/${this.$route.params.cid}/`,
         // params: {
         //   page: this.currentPage,
@@ -244,14 +255,12 @@ export default {
           this.competitionDetail = response.data
           this.competitionDetail.startDate = new Date(response.data.startDate).getTime()
           this.competitionDetail.endDate = new Date(response.data.endDate).getTime()
-          // this.competitionDetail.startDate = "2022-04-28 11:30:00"
-          // this.competitionDetail.endDate = "2022-04-28 11:50:00"
-          // this.$nextTick(() => {
-          //   this.$refs.countDown.startCountdown(true)
-          // })
         })
         .catch((error) => {
           if (error.response.status == 404) this.$router.push({ name: "404" })
+        })
+        .finally(() => {
+          this.loading = false
         })
     },
     getProblemList(ctx, callback) {

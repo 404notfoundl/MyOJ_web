@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-06-30 09:10:17
+ * @LastEditTime: 2022-07-07 21:07:28
  * @Description: 请填写简介
  */
 import Vue from "vue"
@@ -15,7 +15,7 @@ Vue.use(Vuex)
 //创建VueX对象
 let root = "http://127.0.0.1:8000"
 let site_root = "http://121.41.31.72:8008"
-root = site_root
+// root = site_root
 const store = new Vuex.Store({
   strict: true,
   state: {
@@ -48,28 +48,6 @@ const store = new Vuex.Store({
       get label() {
         return `${this.root}/api/labels/`
       },
-      // get login() {
-      //   return `${this.root}/user/login/`
-      // },
-      // get refresh() {
-      //   return `${this.root}/user/refresh/`
-      // },
-      // get verify() {
-      //   return `${this.root}/user/verify/`
-      // },
-      // get register() {
-      //   return `${this.root}/user/register/`
-      // },
-
-      // get check() {
-      //   return `${this.root}/solution/check/`
-      // },
-      // get preview() {
-      //   return `${this.root}/solution/preview/`
-      // },
-      // get submit() {
-      //   return `${this.root}/solution/submit/`
-      // },
       competition: {
         self: `${root}/api/competition`,
         get problem() {

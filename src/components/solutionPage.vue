@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-01-31 09:48:46
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-06-29 20:12:48
+ * @LastEditTime: 2022-07-07 16:05:36
  * @Description: 请填写简介
 -->
 <template>
@@ -110,13 +110,7 @@ export default {
           pid: -1,
           uid: 1,
           username: "root",
-          value: "# 首页的测试1 \n 现在未想好仅作占位用",
-        },
-        {
-          pid: -2,
-          uid: 1,
-          username: "root",
-          value: "# 首页的测试2 \n 现在未想好仅作占位用",
+          value: "# 公告 \n## 欢迎 \n 欢迎您访问本系统",
         },
       ]
     },

@@ -2,195 +2,239 @@
  * @Author: 
  * @Date: 2022-06-12 11:22:00
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-06-29 16:59:20
+ * @LastEditTime: 2022-07-01 09:32:54
  * @Description: 请填写简介
 -->
 <template>
   <div class="row justify-content-center py-3">
     <div class="col-lg-7">
-      <b-card no-body
-              class="h-auto">
-        <b-tabs card
-                lazy
-                v-model="tabsIndex">
+      <b-card no-body class="h-auto">
+        <b-tabs card lazy v-model="tabsIndex">
           <!-- 头部 -->
           <template v-slot:tabs-start>
             <!-- 返回上一页 -->
-            <b-nav-item @click.prevent="back"><svg xmlns="http://www.w3.org/2000/svg"
-                   width="16"
-                   height="16"
-                   fill="currentColor"
-                   class="bi bi-arrow-left"
-                   viewBox="0 0 16 16">
-                <path fill-rule="evenodd"
-                      d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
-              </svg></b-nav-item>
+            <b-nav-item @click.prevent="back"
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                fill="currentColor"
+                class="bi bi-arrow-left"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
+                /></svg
+            ></b-nav-item>
           </template>
           <!-- 尾部 -->
-          <template v-slot:tabs-end
-                    v-if="false">
+          <template v-slot:tabs-end v-if="false">
             <b-nav>
               <!-- 修改题目 -->
               <!-- TODO pid待修改 -->
-              <b-nav-item title="修改此题"
-                          @click="gotoModify({ pid: problemObj.pid })"
-                          v-if="isAdmin">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     width="16"
-                     height="16"
-                     fill="currentColor"
-                     class="bi bi-pencil-square"
-                     viewBox="0 0 16 16">
-                  <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                  <path fill-rule="evenodd"
-                        d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+              <b-nav-item
+                title="修改此题"
+                @click="gotoModify({ pid: problemObj.pid })"
+                v-if="isAdmin"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-pencil-square"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
+                  />
                 </svg>
               </b-nav-item>
               <!-- 展开详情 -->
-              <b-nav-item class="d-hidden-lt-lg"
-                          v-b-toggle.probDetailsPanel
-                          title="展开详情"
-                          v-show="!tabsIndex">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     width="16"
-                     height="16"
-                     fill="currentColor"
-                     class="bi bi-chevron-double-down"
-                     viewBox="0 0 16 16">
-                  <path fill-rule="evenodd"
-                        d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-                  <path fill-rule="evenodd"
-                        d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+              <b-nav-item
+                class="d-hidden-lt-lg"
+                v-b-toggle.probDetailsPanel
+                title="展开详情"
+                v-show="!tabsIndex"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  fill="currentColor"
+                  class="bi bi-chevron-double-down"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+                  />
+                  <path
+                    fill-rule="evenodd"
+                    d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+                  />
                 </svg>
               </b-nav-item>
             </b-nav>
           </template>
-          <b-tab title="题面"
-                 active>
-            <!-- 标题 -->
-            <b-row class="justify-content-center fill-x">
-              <b-col>
-                <div class="d-inline-block">
-                  <h1>
-                    <b>{{ problemObj.title }}</b>
-                  </h1>
-                </div>
-                <div class="d-inline-block" v-if="false">
-                  <p class="font-weight-light">难度:{{ problemObj.difficulty }}</p>
-                </div>
-                <hr />
-              </b-col>
-            </b-row>
-            <b-row class="justify-content-left fill-x fill-b flex-row-reverse">
-              <b-col class="">
-                <!-- 题目详情的折叠区域 -->
-                <b-collapse visible
-                            id="probDetailsPanel">
-                  <b-row v-if="false">
-                    <!-- 时空限制及通过、提交数 -->
-                    <b-col>
-                      <!-- 时空限制 -->
-                      <b-table :items="problemObj.info.limits"
-                               :fields="problemObj.info.limitsLabel"
-                               borderless
-                               fixed
-                               small
-                               class="mb-1">
-                      </b-table>
-                      <!-- 通过，提交数 -->
-                      <b-table :items="problemObj.info.num"
-                               :fields="problemObj.info.label"
-                               borderless
-                               fixed
-                               small
-                               class="border-bottom">
-                      </b-table>
-                    </b-col>
-                  </b-row>
-                  <!-- 标签 -->
-                  <b-row align-h="center">
-                    <b-col cols="4"
-                           class="px-0 pt-2">
-                      <b-button variant="outline-secondary"
-                                squared
-                                size="sm"
-                                class="border-0 px-0 py-0"
-                                v-b-toggle.problemLabel
-                                :pressed="false">
-                        <p class="h6 d-inline">标签</p>
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                             width="16"
-                             height="16"
-                             fill="currentColor"
-                             class="bi bi-chevron-double-down"
-                             viewBox="0 0 16 16">
-                          <path fill-rule="evenodd"
-                                d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-                          <path fill-rule="evenodd"
-                                d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-                        </svg>
-                      </b-button>
-                    </b-col>
-                  </b-row>
-                  <b-row class="mb-1">
-                    <b-col class="px-0">
-                      <b-collapse id="problemLabel"
-                                  class="mt-2">
-                        <b-badge class="ml-1"
-                                 pill
-                                 variant="light"
-                                 v-for="(item, index) in splitLabel()"
-                                 :key="index">
-                          {{ item }}
-                        </b-badge>
-                      </b-collapse>
-                    </b-col>
-                  </b-row>
+          <b-tab title="题面" active>
+            <b-skeleton-wrapper :loading="loading">
+              <template #loading>
+                <b-skeleton
+                  v-for="(item, index) in Math.ceil(Math.random() * 30)"
+                  :width="Math.ceil(Math.random() * 70) + '%'"
+                  :key="index"
+                ></b-skeleton>
+              </template>
+              <!-- 标题 -->
+              <b-row class="justify-content-center fill-x">
+                <b-col>
+                  <div class="d-inline-block">
+                    <h1>
+                      <b>{{ problemObj.title }}</b>
+                    </h1>
+                  </div>
+                  <div class="d-inline-block" v-if="false">
+                    <p class="font-weight-light">难度:{{ problemObj.difficulty }}</p>
+                  </div>
                   <hr />
-                  <b-row class="justify-content-end" v-if="false">
-                    <b-col cols="4">
-                      <b-link :to="{ name: 'solution', params: $route.params.pid }"
-                              class="text-decoration-none text-muted d-inline-block">题解</b-link>
-                    </b-col>
-                  </b-row>
-                </b-collapse>
-              </b-col>
-              <b-col class="px-0 border-right"
-                     lg="9">
-                <markdown :mdPageHeight="avalHeight"
-                          :Value="problemObj.value"
-                          showMode="preview"
-                          :showToolBar="false">
-                </markdown>
-              </b-col>
+                </b-col>
+              </b-row>
+              <b-row class="justify-content-left fill-x fill-b flex-row-reverse">
+                <b-col class="">
+                  <!-- 题目详情的折叠区域 -->
+                  <b-collapse visible id="probDetailsPanel">
+                    <b-row v-if="false">
+                      <!-- 时空限制及通过、提交数 -->
+                      <b-col>
+                        <!-- 时空限制 -->
+                        <b-table
+                          :items="problemObj.info.limits"
+                          :fields="problemObj.info.limitsLabel"
+                          borderless
+                          fixed
+                          small
+                          class="mb-1"
+                        >
+                        </b-table>
+                        <!-- 通过，提交数 -->
+                        <b-table
+                          :items="problemObj.info.num"
+                          :fields="problemObj.info.label"
+                          borderless
+                          fixed
+                          small
+                          class="border-bottom"
+                        >
+                        </b-table>
+                      </b-col>
+                    </b-row>
+                    <!-- 标签 -->
+                    <b-row align-h="center">
+                      <b-col cols="4" class="px-0 pt-2">
+                        <b-button
+                          variant="outline-secondary"
+                          squared
+                          size="sm"
+                          class="border-0 px-0 py-0"
+                          v-b-toggle.problemLabel
+                          :pressed="false"
+                        >
+                          <p class="h6 d-inline">标签</p>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            class="bi bi-chevron-double-down"
+                            viewBox="0 0 16 16"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+                            />
+                            <path
+                              fill-rule="evenodd"
+                              d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+                            />
+                          </svg>
+                        </b-button>
+                      </b-col>
+                    </b-row>
+                    <b-row class="mb-1">
+                      <b-col class="px-0">
+                        <b-collapse id="problemLabel" class="mt-2">
+                          <b-badge
+                            class="ml-1"
+                            pill
+                            variant="light"
+                            v-for="(item, index) in splitLabel()"
+                            :key="index"
+                          >
+                            {{ item }}
+                          </b-badge>
+                        </b-collapse>
+                      </b-col>
+                    </b-row>
+                    <hr />
+                    <b-row class="justify-content-end" v-if="false">
+                      <b-col cols="4">
+                        <b-link
+                          :to="{ name: 'solution', params: $route.params.pid }"
+                          class="text-decoration-none text-muted d-inline-block"
+                          >题解</b-link
+                        >
+                      </b-col>
+                    </b-row>
+                  </b-collapse>
+                </b-col>
+                <b-col class="px-0 border-right" lg="9">
+                  <markdown
+                    :mdPageHeight="avalHeight"
+                    :Value="problemObj.value"
+                    showMode="preview"
+                    :showToolBar="false"
+                  >
+                  </markdown>
+                </b-col>
+              </b-row>
+            </b-skeleton-wrapper>
+          </b-tab>
+          <b-tab title="题解" v-if="!isCompetition">
+            <b-row class="justify-content-center fill">
+              <markdown
+                :mdPageHeight="avalHeight"
+                :Value.sync="solution"
+                showMode="preview"
+                :showToolBar="false"
+              >
+                <template slot="right-after">
+                  <b-button size="sm" @click="submitSolution" title="提交" class="op-icon fa my-0">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      fill="currentColor"
+                      class="bi bi-check2-square"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5H3z"
+                      />
+                      <path
+                        d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"
+                      />
+                    </svg>
+                  </b-button>
+                </template>
+              </markdown>
             </b-row>
           </b-tab>
-          <b-tab title="题解"
-                   v-if="!isCompetition">
-              <b-row class="justify-content-center fill">
-                <markdown :mdPageHeight="avalHeight"
-                          :Value.sync="solution"
-                          showMode="preview"
-                          :showToolBar="false">
-                  <template slot="right-after">
-                    <b-button size="sm"
-                              @click="submitSolution"
-                              title="提交"
-                              class="op-icon fa my-0">
-                      <svg xmlns="http://www.w3.org/2000/svg"
-                           width="16"
-                           height="16"
-                           fill="currentColor"
-                           class="bi bi-check2-square"
-                           viewBox="0 0 16 16">
-                        <path d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5H3z" />
-                        <path d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z" />
-                      </svg>
-                    </b-button>
-                  </template>
-                </markdown>
-              </b-row>
-            </b-tab>
           <!-- 未认证则没有 -->
           <div v-if="false">
             <b-tab title="提交记录">
@@ -200,88 +244,103 @@
                     <b-col v-if="tasksInfo.length == 0 && !loading">
                       <p class="h5 pt-2">现无记录</p>
                     </b-col>
-                    <b-col cols="12"
-                           class="my-1 justify-content-start"
-                           v-for="(task, index) in tasksInfo"
-                           :key="index"
-                           v-else>
+                    <b-col
+                      cols="12"
+                      class="my-1 justify-content-start"
+                      v-for="(task, index) in tasksInfo"
+                      :key="index"
+                      v-else
+                    >
                       <!-- 预览部分 -->
-                      <span v-b-toggle="`accordion-${index}`"
-                            class="d-block">
+                      <span v-b-toggle="`accordion-${index}`" class="d-block">
                         <b-row>
                           <!-- 提交日期 -->
                           <b-col class="float-left pl-3">
                             <div class="float-left">
-                              <svg xmlns="http://www.w3.org/2000/svg"
-                                   width="16"
-                                   height="16"
-                                   fill="currentColor"
-                                   class="bi bi-chevron-down"
-                                   viewBox="0 0 16 16">
-                                <path fill-rule="evenodd"
-                                      d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                fill="currentColor"
+                                class="bi bi-chevron-down"
+                                viewBox="0 0 16 16"
+                              >
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+                                />
                               </svg>
                               <p class="mb-0 d-inline-block">{{ task.submitDate }}</p>
                             </div>
                           </b-col>
                           <!-- 提交状态 -->
                           <b-col class="float-right">
-                            <p :class="`float-right mb-0 d-inline-block text-${
+                            <p
+                              :class="`float-right mb-0 d-inline-block text-${
                                 task.status === 'AC' ? 'success' : 'danger'
-                              }`">
+                              }`"
+                            >
                               {{ task.preview }}
                             </p>
                           </b-col>
                           <!-- 提交语言 -->
-                          <b-col cols="2"
-                                 class="float-right">
+                          <b-col cols="2" class="float-right">
                             <p class="mb-0 d-inline-block float-left">语言：{{ task.lang }}</p>
                           </b-col>
                         </b-row>
                       </span>
                       <hr />
                       <!-- 主体部分 -->
-                      <b-collapse :id="`accordion-${index}`"
-                                  accordion="tasks"
-                                  role="tabpanel">
-                        <b-card no-body
-                                class="border-top-0 w-100">
+                      <b-collapse :id="`accordion-${index}`" accordion="tasks" role="tabpanel">
+                        <b-card no-body class="border-top-0 w-100">
                           <b-card-body>
                             <b-row>
                               <!-- 过题状态 -->
-                              <b-col :style="`max-height:${avalHeight * 0.6}px;`"
-                                     class="status-panel">
+                              <b-col
+                                :style="`max-height:${avalHeight * 0.6}px;`"
+                                class="status-panel"
+                              >
                                 <hr />
                                 <!-- 折叠详情 -->
                                 <span v-b-toggle.acRate>
-                                  <b-card-text class="mt-2 d-inline-block">通过:{{ task.acNum }}/{{ task.total }}</b-card-text>
-                                  <svg xmlns="http://www.w3.org/2000/svg"
-                                       width="16"
-                                       height="16"
-                                       fill="currentColor"
-                                       class="bi bi-chevron-down d-hidden-lt-lg"
-                                       viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd"
-                                          d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                  <b-card-text class="mt-2 d-inline-block"
+                                    >通过:{{ task.acNum }}/{{ task.total }}</b-card-text
+                                  >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    fill="currentColor"
+                                    class="bi bi-chevron-down d-hidden-lt-lg"
+                                    viewBox="0 0 16 16"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+                                    />
                                   </svg>
                                 </span>
-                                <b-collapse id="acRate"
-                                            visible>
-                                  <b-button v-for="(stat, index) in task.status"
-                                            :class="`ml-2 mb-2 btn-${stat} m-size-1`"
-                                            :key="index"
-                                            :title="task.details[index]"
-                                            squared>#{{ index }}<br />{{ statusMap[stat] }}</b-button>
+                                <b-collapse id="acRate" visible>
+                                  <b-button
+                                    v-for="(stat, index) in task.status"
+                                    :class="`ml-2 mb-2 btn-${stat} m-size-1`"
+                                    :key="index"
+                                    :title="task.details[index]"
+                                    squared
+                                    >#{{ index }}<br />{{ statusMap[stat] }}</b-button
+                                  >
                                 </b-collapse>
                                 <hr />
                               </b-col>
                               <!-- 提交代码 -->
                               <b-col lg="9">
-                                <code-editor :showIOArea="false"
-                                             :avalHeightRate="0.6"
-                                             :isEditMode="false"
-                                             :code="task.code"
-                                             :lang="task.lang"></code-editor>
+                                <code-editor
+                                  :showIOArea="false"
+                                  :avalHeightRate="0.6"
+                                  :isEditMode="false"
+                                  :code="task.code"
+                                  :lang="task.lang"
+                                ></code-editor>
                               </b-col>
                             </b-row>
                           </b-card-body>
@@ -289,35 +348,42 @@
                       </b-collapse>
                     </b-col>
                     <!-- 加载中。。。 -->
-                    <b-col v-show="loading && Boolean(nextTaskPage)"
-                           class="py-5">
-                      <b-spinner label="加载中。。。"
-                                 variant="primary"></b-spinner>
+                    <b-col v-show="loading && Boolean(nextTaskPage)" class="py-5">
+                      <b-spinner label="加载中。。。" variant="primary"></b-spinner>
                     </b-col>
                   </b-row>
                 </b-col>
               </b-row>
             </b-tab>
-            <b-tab title="提交题解"
-                   v-if="!isCompetition">
+            <b-tab title="提交题解" v-if="!isCompetition">
               <b-row class="justify-content-center fill">
-                <markdown :mdPageHeight="avalHeight"
-                          :Value.sync="solution"
-                          showMode="edit"
-                          :showToolBar="true">
+                <markdown
+                  :mdPageHeight="avalHeight"
+                  :Value.sync="solution"
+                  showMode="edit"
+                  :showToolBar="true"
+                >
                   <template slot="right-after">
-                    <b-button size="sm"
-                              @click="submitSolution"
-                              title="提交"
-                              class="op-icon fa my-0">
-                      <svg xmlns="http://www.w3.org/2000/svg"
-                           width="16"
-                           height="16"
-                           fill="currentColor"
-                           class="bi bi-check2-square"
-                           viewBox="0 0 16 16">
-                        <path d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5H3z" />
-                        <path d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z" />
+                    <b-button
+                      size="sm"
+                      @click="submitSolution"
+                      title="提交"
+                      class="op-icon fa my-0"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        fill="currentColor"
+                        class="bi bi-check2-square"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          d="M3 14.5A1.5 1.5 0 0 1 1.5 13V3A1.5 1.5 0 0 1 3 1.5h8a.5.5 0 0 1 0 1H3a.5.5 0 0 0-.5.5v10a.5.5 0 0 0 .5.5h10a.5.5 0 0 0 .5-.5V8a.5.5 0 0 1 1 0v5a1.5 1.5 0 0 1-1.5 1.5H3z"
+                        />
+                        <path
+                          d="m8.354 10.354 7-7a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"
+                        />
                       </svg>
                     </b-button>
                   </template>
@@ -341,29 +407,29 @@ export default {
     "code-editor": codeEditor,
   },
   computed: {
-    cols () {
+    cols() {
       return Math.floor(this.$store.state.avaliableHeight / 50)
     },
-    isBottom () {
+    isBottom() {
       return this.$store.state.isBottom
     },
-    isCompetition () {
+    isCompetition() {
       return !(isNaN(this.$route.params.cid) || isNaN(this.$route.params.pid))
     },
-    province () {
+    province() {
       return this.route.params.prov === "all" ? undefined : this.route.params.prov
     },
-    year () {
+    year() {
       return this.route.params.year
     },
-    pid () {
+    pid() {
       return this.route.params.pid
     },
   },
   created: function () {
     this.getProbDetails()
   },
-  data () {
+  data() {
     this.statusMap = {
       a: "AC",
       c: "CE",
@@ -402,16 +468,16 @@ export default {
     }
   },
   methods: {
-    nullFunc () { },
-    gotoModify (props) {
+    nullFunc() {},
+    gotoModify(props) {
       // debugger
       props["oldProblem"] = this.problemObj
       this.$emit("go-to", "modifyProblem", props)
     },
-    back () {
+    back() {
       this.$router.back()
     },
-    serializer (data) {
+    serializer(data) {
       let value = {
         info: {
           num: [{ acceptNum: data.acceptNum, submitNum: data.submitNum }],
@@ -433,14 +499,15 @@ export default {
       }
       return value
     },
-    getProbDetails: async function () {
+    getProbDetails: function () {
       let url = `${this.$store.state.webUrl.provincial_competition.self}/`
       let params = {
         province: this.province,
         year: this.year,
         pid: this.pid,
       }
-      await this.$axios({
+      this.loading = true
+      this.$axios({
         url,
         method: "GET",
         params,
@@ -458,8 +525,11 @@ export default {
             }, 3000)
           return {}
         })
+        .finally(() => {
+          this.loading = false
+        })
     },
-    getTasks () {
+    getTasks() {
       this.loading = true
       let info = this.userInfo
       let params = {
@@ -515,7 +585,7 @@ export default {
           // console.log(err)
         })
     },
-    getSubmitedSolution () {
+    getSubmitedSolution() {
       let info = this.userInfo
       if (!info) return
       let params = {
@@ -539,7 +609,7 @@ export default {
           this.hasSubmited = false
         })
     },
-    submitSolution () {
+    submitSolution() {
       if (this.solution === "") return
       let info = this.userInfo
       let method = this.hasSubmited ? "PUT" : "POST"
@@ -577,7 +647,7 @@ export default {
           console.log("failed")
         })
     },
-    submitCode (data) {
+    submitCode(data) {
       let uid = this.userInfo.uid
       let pid = this.$route.params.pid === undefined ? -1 : Number.parseInt(this.$route.params.pid)
       data.uid = uid
@@ -608,18 +678,18 @@ export default {
         })
       // console.log(data)
     },
-    splitLabel () {
+    splitLabel() {
       if (this.problemObj.label === undefined) return null
       return this.problemObj.label.split(",")
     },
   },
   watch: {
-    tabsIndex (current, previous) {
+    tabsIndex(current, previous) {
       this.tabsMap[current]()
       this.nextTaskPage = ""
       this.tasksInfo = []
     },
-    isBottom (current, previous) {
+    isBottom(current, previous) {
       if (current && this.tabsIndex == 2) {
         this.getTasks()
       }

@@ -84,117 +84,126 @@
           </template>
           <b-tab title="问题描述" active>
             <!-- 标题 -->
-            <b-row class="justify-content-center fill-x">
-              <b-col>
-                <div class="d-inline-block">
-                  <h1>
-                    <b>{{ problemObj.title }}</b>
-                  </h1>
-                </div>
-                <div class="d-inline-block">
-                  <p class="font-weight-light">难度:{{ problemObj.difficulty }}</p>
-                </div>
-                <hr />
-              </b-col>
-            </b-row>
-            <b-row class="justify-content-left fill-x fill-b flex-row-reverse">
-              <b-col class="">
-                <!-- 题目详情的折叠区域 -->
-                <b-collapse visible id="probDetailsPanel" class="">
-                  <b-row>
-                    <!-- 时空限制及通过、提交数 -->
-                    <b-col>
-                      <!-- 时空限制 -->
-                      <b-table
-                        :items="problemObj.info.limits"
-                        :fields="problemObj.info.limitsLabel"
-                        borderless
-                        fixed
-                        small
-                        class="mb-1"
-                      >
-                      </b-table>
-                      <!-- 通过，提交数 -->
-                      <b-table
-                        :items="problemObj.info.num"
-                        :fields="problemObj.info.label"
-                        borderless
-                        fixed
-                        small
-                        class="border-bottom"
-                      >
-                      </b-table>
-                    </b-col>
-                  </b-row>
-                  <!-- 标签 -->
-                  <b-row align-h="center">
-                    <b-col cols="4" class="px-0">
-                      <b-button
-                        variant="outline-secondary"
-                        squared
-                        size="sm"
-                        class="border-0 px-0 py-0"
-                        v-b-toggle.problemLabel
-                        :pressed="false"
-                      >
-                        <p class="h6 d-inline">标签</p>
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="16"
-                          height="16"
-                          fill="currentColor"
-                          class="bi bi-chevron-double-down"
-                          viewBox="0 0 16 16"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
-                          />
-                          <path
-                            fill-rule="evenodd"
-                            d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
-                          />
-                        </svg>
-                      </b-button>
-                    </b-col>
-                  </b-row>
-                  <b-row>
-                    <b-col class="px-0">
-                      <b-collapse id="problemLabel" class="mt-2">
-                        <b-badge
-                          class="ml-1"
-                          pill
-                          variant="light"
-                          v-for="(item, index) in splitLabel()"
-                          :key="index"
-                        >
-                          {{ item }}
-                        </b-badge>
-                      </b-collapse>
-                    </b-col>
-                  </b-row>
+            <b-skeleton-wrapper :loading="loading">
+              <template #loading>
+                <b-skeleton
+                  v-for="(item, index) in Math.ceil(Math.random() * 40)"
+                  :width="Math.ceil(Math.random() * 70) + '%'"
+                  :key="index"
+                ></b-skeleton>
+              </template>
+              <b-row class="justify-content-center fill-x">
+                <b-col>
+                  <div class="d-inline-block">
+                    <h1>
+                      <b>{{ problemObj.title }}</b>
+                    </h1>
+                  </div>
+                  <div class="d-inline-block">
+                    <p class="font-weight-light">难度:{{ problemObj.difficulty }}</p>
+                  </div>
                   <hr />
-                  <b-row class="justify-content-end">
-                    <b-col cols="4">
-                      <b-link
-                        :to="{ name: 'solution', params: $route.params.pid }"
-                        class="text-decoration-none text-muted d-inline-block"
-                        >题解</b-link
-                      >
-                    </b-col>
-                  </b-row>
-                </b-collapse>
-              </b-col>
-              <b-col class="px-0 border-right" lg="9">
-                <markdown
-                  :mdPageHeight="avalHeight"
-                  :Value="problemObj.value"
-                  showMode="preview"
-                  :showToolBar="false"
-                >
-                </markdown>
-              </b-col>
-            </b-row>
+                </b-col>
+              </b-row>
+              <b-row class="justify-content-left fill-x fill-b flex-row-reverse">
+                <b-col class="">
+                  <!-- 题目详情的折叠区域 -->
+                  <b-collapse visible id="probDetailsPanel" class="">
+                    <b-row>
+                      <!-- 时空限制及通过、提交数 -->
+                      <b-col>
+                        <!-- 时空限制 -->
+                        <b-table
+                          :items="problemObj.info.limits"
+                          :fields="problemObj.info.limitsLabel"
+                          borderless
+                          fixed
+                          small
+                          class="mb-1"
+                        >
+                        </b-table>
+                        <!-- 通过，提交数 -->
+                        <b-table
+                          :items="problemObj.info.num"
+                          :fields="problemObj.info.label"
+                          borderless
+                          fixed
+                          small
+                          class="border-bottom"
+                        >
+                        </b-table>
+                      </b-col>
+                    </b-row>
+                    <!-- 标签 -->
+                    <b-row align-h="center">
+                      <b-col cols="4" class="px-0">
+                        <b-button
+                          variant="outline-secondary"
+                          squared
+                          size="sm"
+                          class="border-0 px-0 py-0"
+                          v-b-toggle.problemLabel
+                          :pressed="false"
+                        >
+                          <p class="h6 d-inline">标签</p>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            class="bi bi-chevron-double-down"
+                            viewBox="0 0 16 16"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+                            />
+                            <path
+                              fill-rule="evenodd"
+                              d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+                            />
+                          </svg>
+                        </b-button>
+                      </b-col>
+                    </b-row>
+                    <b-row>
+                      <b-col class="px-0">
+                        <b-collapse id="problemLabel" class="mt-2">
+                          <b-badge
+                            class="ml-1"
+                            pill
+                            variant="light"
+                            v-for="(item, index) in splitLabel()"
+                            :key="index"
+                          >
+                            {{ item }}
+                          </b-badge>
+                        </b-collapse>
+                      </b-col>
+                    </b-row>
+                    <hr />
+                    <b-row class="justify-content-end">
+                      <b-col cols="4">
+                        <b-link
+                          :to="{ name: 'solution', params: $route.params.pid }"
+                          class="text-decoration-none text-muted d-inline-block"
+                          >题解</b-link
+                        >
+                      </b-col>
+                    </b-row>
+                  </b-collapse>
+                </b-col>
+                <b-col class="px-0 border-right" lg="9">
+                  <markdown
+                    :mdPageHeight="avalHeight"
+                    :Value="problemObj.value"
+                    showMode="preview"
+                    :showToolBar="false"
+                  >
+                  </markdown>
+                </b-col>
+              </b-row>
+            </b-skeleton-wrapper>
           </b-tab>
           <b-tab title="提交答案">
             <b-row class="justify-content-center fill">
@@ -451,6 +460,7 @@ export default {
     },
     getProbDetails: async function () {
       let url = `${this.$store.state.webUrl.problems}${this.$route.params.pid}/`
+      this.loading = true
       // debugger
       await this.$axios({
         url,
@@ -463,6 +473,9 @@ export default {
           console.log(err)
           this.$router.push({ name: "404" })
           return {}
+        })
+        .finally(() => {
+          this.loading = false
         })
     },
     getTasks() {
