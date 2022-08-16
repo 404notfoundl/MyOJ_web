@@ -53,16 +53,20 @@
         <div class="col-6 px-0 h-100 border-right">
           <textarea
             class="h-100 w-100 px-2 pt-1 border-0"
-            placeholder="输入数据，此部分还在开发中"
+            placeholder="输入数据"
             v-model.lazy="ioArea.input"
           ></textarea>
         </div>
         <div class="col-6 px-0 h-100">
+          <div class="h-100 w-100 px-2 pt-1 border-0 bg-white text-center" v-if="loading">
+            <b-spinner  variant="primary" label="Loading..."></b-spinner>
+          </div>
           <textarea
             class="h-100 w-100 px-2 pt-1 border-0"
-            placeholder="输出数据，此部分还在开发中"
-            v-model="ioArea.output"
+            placeholder="输出数据"
+            v-model="output"
             readonly
+            v-else
           ></textarea>
         </div>
       </div>
@@ -129,7 +133,6 @@ export default {
       usrLanguage: this.lang,
       ioArea: {
         input: "",
-        output: "",
       },
       alertText: "",
       themePath: {
@@ -140,15 +143,16 @@ export default {
         sqlserver: "ace/theme/sqlserver",
       },
       languagePath: {
-        //语言,注释的部分核心里还没写好
+        //语言,注释的部分评测机里还没写好
         c: "ace/mode/c_cpp",
-        // csharp: "ace/snippets/csharp", //
+        // csharp: "ace/mode/csharp", //
         cpp11: "ace/mode/c_cpp",
         // java: "ace/mode/java", //
         // javascript: "ace/mode/javascript", //
       },
-      O2: "",
+      O2: true,
       submitting: false,
+      loading: false,
     }
   },
   methods: {
@@ -178,58 +182,33 @@ export default {
       this.$refs.ace.style.height = "400px"
       this.aceEditor.resize()
     },
-
     submitUsrCode() {
-      // TODO 不应该写在这里，应当作为外部调用
-      // this.submitting = true
       if (this.checkEditorValidity() !== "√") {
         return false
       }
+      // 15K
       if (this.usrCode.length > 10240) {
-        console.log("too long")
+        this.toast("代码过长")
         return false
+      } else if (this.showIOArea) {
+        if (this.ioArea.input.length > 10240) {
+          this.toast("输入数据过长")
+          return false
+        } else if (this.ioArea.input.length == 0) {
+          this.toast("输入数据过短")
+          return false
+        }
       }
-      // let info = this.getUserInfo()
       let data = {
-        // uid: info.uid, //有待获取uid
-        // pid: this.$route.params.pid === undefined ? -1 : Number.parseInt(this.$route.params.pid), //-1表示是在线编辑器
-        // nanoId: nanoid(), //后台生成
         code: this.usrCode,
         lang: this.usrLanguage,
         O2: this.O2,
       }
       //编辑器的输入数据
       if (this.ioArea.input !== "") data.input = this.ioArea.input
+      this.loading = true
       this.$emit("submit", data)
       return
-      let url = `${this.$store.state.webUrl.task.submit}`
-      let method = "POST"
-      //之后是提交此记录
-      this.$axios({
-        url,
-        method,
-        data,
-        headers: {
-          authorization: `Bearer ${info.token}`,
-        },
-      })
-        .then((response) => {
-          this.$bvToast.toast(response.data.result, {
-            title: "提交结果",
-            autoHideDelay: 5000,
-          })
-          console.log(response)
-          this.submitting = false
-        })
-        .catch((err) => {
-          // debugger
-          this.$bvToast.toast(err, {
-            title: "提交结果",
-            autoHideDelay: 5000,
-          })
-          console.log(err)
-          this.submitting = false
-        })
     },
     editorScollerListener(event) {
       let editorDom = this.$refs.ace
@@ -281,7 +260,6 @@ export default {
     //保存输入代码
     if (this.isEditMode) this.aceEditor.on("blur", this.saveUsrCode)
   },
-
   props: {
     avalHeightRate: {
       type: Number,
@@ -295,10 +273,6 @@ export default {
       type: Boolean,
       default: true,
     },
-    // ojPageHeight: {
-    //   type: Number,
-    //   required: true,
-    // },
     code: {
       type: String,
       default: null,
@@ -306,6 +280,10 @@ export default {
     lang: {
       type: String,
       default: null,
+    },
+    output: {
+      type: String,
+      default: "",
     },
   },
   updated() {
@@ -316,6 +294,9 @@ export default {
     usrLanguage: function () {
       this.aceEditor.session.setMode(this.languagePath[this.usrLanguage])
       this.aceEditor.focus()
+    },
+    output: function () {
+      this.loading = false
     },
   },
 }

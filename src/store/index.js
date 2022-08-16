@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-07 21:07:28
+ * @LastEditTime: 2022-08-10 09:34:58
  * @Description: 请填写简介
  */
 import Vue from "vue"
@@ -105,13 +105,20 @@ const store = new Vuex.Store({
       provincial_competition: {
         self: `${root}/api/provincial_competition`,
       },
+      site_config: {
+        self: `${root}/config/config`,
+        get announcement() {
+          return `${this.self}/announcement/`
+        },
+        get accessible() {
+          return `${this.self}/accessible/`
+        },
+      },
     },
   },
   mutations: {
     setAvalHeight(state, params) {
       state.avaliableHeight = params
-      // debugger
-      // console.log(params)
     },
     setTopState(state, value) {
       state.isTop = value

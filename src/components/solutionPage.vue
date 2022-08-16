@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-01-31 09:48:46
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-07 16:05:36
+ * @LastEditTime: 2022-08-01 09:54:49
  * @Description: 请填写简介
 -->
 <template>
@@ -18,22 +18,21 @@
       </b-col>
     </b-row>
     <b-card class="mt-2 border" v-for="(solution, index) in solutions" :key="solution.pid">
-      <b-row>
-        <b-col cols="2">
-          <div class="d-inline-block">
-            <b-link
-              :to="{ name: 'usrInfo', params: { uid: solution.uid } }"
-              class="text-decoration-none"
-            >
-              <p class="text-left px-2 h5">
-                <b>{{ solution.username }}</b>
-              </p>
-            </b-link>
-          </div>
-        </b-col>
-      </b-row>
-      <solution :info="solution" :showToolBar="false"> </solution>
-      <!-- <p>{{ solution }}</p> -->
+    <b-row>
+      <b-col cols="2">
+        <div class="d-inline-block">
+          <b-link
+            :to="{ name: 'usrInfo', params: { uid: solution.uid } }"
+            class="text-decoration-none"
+          >
+            <p class="text-left px-2 h5">
+              <b>{{ solution.username }}</b>
+            </p>
+          </b-link>
+        </div>
+      </b-col>
+    </b-row>
+    <solution :info="solution" :showToolBar="false" :loading="loading"> </solution>
     </b-card>
   </div>
 </template>
@@ -49,9 +48,9 @@ export default {
     isSolutionMode() {
       return this.showMode === "solution"
     },
-    pageName(){
+    pageName() {
       return this.$route.name
-    }
+    },
   },
   created() {
     this.getInfo()
@@ -66,10 +65,12 @@ export default {
           value: "# 暂无题解",
         },
       ],
+      loading: false,
     }
   },
   methods: {
     getInfo() {
+      this.loading = true
       switch (this.pageName) {
         case "solution":
           this.getSolutions()
@@ -89,30 +90,31 @@ export default {
         params,
       })
         .then((response) => {
-          // console.log("success")
           if (response.data.length > 0) this.solutions = response.data
         })
-        .catch((err) => {
-          // console.log("failed")
-          // let data = [
-          //   {
-          //     uid: null,
-          //     value: "# 现无题解",
-          //     username: "",
-          //   },
-          // ]
-          // this.solutions = data
+        .catch((err) => {})
+        .finally(() => {
+          this.loading = false
         })
     },
     getNews() {
-      this.solutions = [
-        {
-          pid: -1,
-          uid: 1,
-          username: "root",
-          value: "# 公告 \n## 欢迎 \n 欢迎您访问本系统",
-        },
-      ]
+      this.$axios({
+        method: "GET",
+        url: `${this.$store.state.webUrl.site_config.announcement}`,
+      })
+        .then((response) => {
+          this.solutions = [
+            {
+              value: response.data.value,
+              username: response.data.backup,
+              uid: response.data.backup_2,
+            },
+          ]
+        })
+        .catch((err) => {})
+        .finally(() => {
+          this.loading = false
+        })
     },
   },
   props: {
@@ -121,11 +123,11 @@ export default {
       default: "main",
     },
   },
-  watch:{
-    pageName(){
-      this.getInfo();
-    }
-  }
+  watch: {
+    pageName() {
+      this.getInfo()
+    },
+  },
 }
 </script>
 <style lang="scss" scoped>

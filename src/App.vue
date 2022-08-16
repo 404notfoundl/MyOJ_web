@@ -10,7 +10,7 @@
     >
       <!-- <problem v-if="true"></problem> -->
       <transition name="fade" mode="out-in">
-        <router-view @go-to="goToPage" @submit="submitUserCode"></router-view>
+        <router-view @go-to="goToPage" @submit="submitUserCode" :output="output"></router-view>
       </transition>
     </div>
 
@@ -51,13 +51,14 @@ export default {
   name: "OJ",
   data() {
     return {
-      // value: '',
       mainHeight: 0, //login没占满，待修改
       oldHeight: 0,
       debounceListener: null,
       editorPage: true,
       navbarHeight: 40,
-      // isTop: true,
+      taskUUID: "",
+      output: "",
+      timerId: null,
     }
   },
   computed: {},
@@ -120,7 +121,32 @@ export default {
       //禁止ctrl+滚轮放大
       if (event.ctrlKey === true || event.metaKey) event.preventDefault()
     },
+    async getResult() {
+      let info = this.userInfo
+      let params = {
+        uid: info.uid,
+        pid: -1, //-1表示是在线编辑器,
+        uuid: this.taskUUID,
+      }
+      //编辑器的输入数据
+      let url = `${this.$store.state.webUrl.task.preview}`
+      if (url === null) return
+      let method = "GET"
+      //之后是提交此记录
+      this.loading = true
+      this.$axios({
+        url,
+        method,
+        params,
+        headers: {
+          authorization: `Bearer ${info.token}`,
+        },
+      }).then((response) => {
+        if (response.data.code == 1) this.output = response.data.result
+      })
+    },
     submitUserCode(data) {
+      this.output=""
       let uid = this.userInfo.uid
       let pid = this.$route.params.pid === undefined ? -1 : Number.parseInt(this.$route.params.pid)
       data.uid = uid
@@ -136,16 +162,20 @@ export default {
           authorization: `Bearer ${this.userInfo.token}`,
         },
       })
-        .then((response) => {
-          this.toast(response.data.result)
-          console.log(response)
+        .then(async (response) => {
+          this.toast(response.data.result.info)
+          this.taskUUID = response.data.result.uuid
+          for (let a = 0; a < 0; a++) {
+            await this.ojTimer(3000).then(this.getResult)
+            if(this.output.length>0)break;
+          }
+          if(this.output.length==0)this.output="记录可能已经丢失，请重新提交"
         })
         .catch((err) => {
           // debugger
           this.toast(err)
           console.log(err)
         })
-      console.log(data)
     },
   },
   beforeMount() {

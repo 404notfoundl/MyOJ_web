@@ -295,29 +295,26 @@ export default {
         })
     },
     hidePopover(b) {
-      if (b == 0) this.$refs.pwdPopover.$emit("close")
-      else if (b == 1) this.$refs.confirmPwdPopover.$emit("close")
+      this.$refs.pwdPopover.$emit("close")
+      this.$refs.confirmPwdPopover.$emit("close")
     },
     checkPwdVaild(b) {
-      if (b == 0) {
-        let par = /^[a-zA-Z_]\w{7,15}$/
-        if (par.test(this.usrAccount.passWord) != true) {
-          // debugger
-          this.isPwdVaild = false
-          this.$refs.pwdPopover.$emit("open")
-          // console.log('invaild')
-        } else {
-          this.isPwdVaild = true
-        }
-      } else if (b == 1) {
+      let par = /^[a-zA-Z_]\w{7,15}$/
+      if (par.test(this.usrAccount.passWord) != true) {
+        this.isPwdVaild = false
+        this.$refs.pwdPopover.$emit("open")
+      } else {
+        this.isPwdVaild = true
+      }
+      if (this.confirmPwd.length != 0) {
         if (this.usrAccount.passWord == this.confirmPwd) {
           this.isPwdEqual = true
         } else {
           this.$refs.confirmPwdPopover.$emit("open")
           this.isPwdEqual = false
         }
-      }
-      // _TestABCDEFGHIJK
+      } else this.isPwdEqual = false
+      if (this.isPwdEqual) this.hidePopover(b)
     },
     getRows: async function () {
       return await this.$axios({
@@ -334,7 +331,6 @@ export default {
           // debugger
           console.log(err)
         })
-      
     },
   },
   created: async function () {

@@ -94,7 +94,7 @@
                     </h1>
                   </div>
                   <div class="d-inline-block">
-                    <p class="font-weight-light">难度:{{ problemObj.difficulty }}</p>
+                    <p class="font-weight-light text-secondary">难度:{{ problemObj.difficulty }}</p>
                   </div>
                   <hr />
                 </b-col>
@@ -176,11 +176,12 @@
                       </b-col>
                     </b-row>
                     <hr />
+                    <!-- 题解 -->
                     <b-row class="justify-content-end">
                       <b-col cols="4">
                         <b-link
                           :to="{ name: 'solution', params: $route.params.pid }"
-                          class="text-decoration-none text-muted d-inline-block"
+                          class="text-decoration-none text-secondary d-inline-block"
                           ><b>题解</b></b-link
                         >
                       </b-col>
@@ -253,7 +254,7 @@
                           <b-col class="float-right">
                             <p
                               :class="`float-right mb-0 d-inline-block text-${
-                                task.status === 'AC' ? 'success' : 'danger'
+                                task.preview === 'AC' ? 'success' : 'danger'
                               }`"
                             >
                               {{ task.preview }}
@@ -265,10 +266,9 @@
                           </b-col>
                         </b-row>
                       </span>
-                      <hr />
                       <!-- 主体部分 -->
                       <b-collapse :id="`accordion-${index}`" accordion="tasks" role="tabpanel">
-                        <b-card no-body class="border-top-0 w-100">
+                        <b-card no-body class="w-100 br-0">
                           <b-card-body>
                             <b-row>
                               <!-- 过题状态 -->
@@ -322,10 +322,15 @@
                           </b-card-body>
                         </b-card>
                       </b-collapse>
+                      <hr class="hr-first" />
+                      <hr class="hr-second" />
                     </b-col>
                     <!-- 加载中。。。 -->
                     <b-col v-show="loading && Boolean(nextTaskPage)" class="py-5">
                       <b-spinner label="加载中。。。" variant="primary"></b-spinner>
+                    </b-col>
+                    <b-col v-show="!loading && Boolean(nextTaskPage)">
+                      <label>滚动以加载更多</label>
                     </b-col>
                   </b-row>
                 </b-col>
@@ -506,7 +511,6 @@ export default {
     },
     getTasks() {
       let info = this.userInfo
-      // TODO 比赛的提交记录
       let params = {
         uid: info.uid,
         pid: this.problemObj.pid === undefined ? -1 : Number.parseInt(this.problemObj.pid), //-1表示是在线编辑器
@@ -762,6 +766,14 @@ hr {
   margin-bottom: 0;
 }
 
+.hr-first {
+  border-color: #ccdee3;
+}
+
+.hr-second {
+  border-color: #ccd3d6;
+}
+
 .font-md {
   font-size: 16px;
 }
@@ -772,5 +784,9 @@ hr {
   border-top: 0px;
   border-left: 0px;
   border-right: 0px;
+}
+
+.br-0 {
+  border-radius: 0;
 }
 </style>

@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-27 10:52:51
+ * @LastEditTime: 2022-08-10 15:47:50
  * @Description: 请填写简介
  */
 export default {
@@ -15,7 +15,7 @@ export default {
      */
     ojDebounce(fn, wait) {
       //防止重复调用
-      var timer = null
+      let timer = null
       return function () {
         if (timer !== null) {
           clearTimeout(timer)
@@ -53,16 +53,16 @@ export default {
         autoHideDelay: delay,
       })
     },
-
     /**
-     * @description: 检测用户权限
-     * @param {*}
-     * @return {*}
+     * 
+     * @param {*} ms 延时，毫秒
+     * @returns promise
      */
-    // 暂时不要删
-    // checkValid() {
-    //   return true
-    // },
+    ojTimer(ms) {
+      return new Promise((resolve, reject) => {
+        setTimeout(resolve, ms)
+      })
+    },
   },
   computed: {
     isAdmin: function () {
