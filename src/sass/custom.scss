@@ -153,10 +153,14 @@ textarea {
 .card-header {
   padding: 0.75rem 1.25rem;
   margin-bottom: 0;
-  background-color: white;
+  background-color: $bgDefault;
   border-bottom: 1px solid rgba(0, 0, 0, 0.125);
 }
 
 .table-striped tbody tr:nth-of-type(odd) {
   background-color: #f6f7f8;
+}
+
+.br-0 {
+  border-radius: 0;
 }

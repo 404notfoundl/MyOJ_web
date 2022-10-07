@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-06-29 17:10:11
+ * @LastEditTime: 2022-08-25 16:57:48
  * @Description: 请填写简介
 -->
 <template lang="">
@@ -26,8 +26,7 @@
                   select-mode="single"
                   @row-selected="rowSelected"
                   id='probList' 
-                  :per-page="pageCols" 
-                  :current-page="currentPage">
+                  :key="currentPageComp">
                   <template #table-busy>
                     <div class="text-center text-danger my-2">
                       <b-spinner class="align-middle"></b-spinner>
@@ -40,7 +39,7 @@
             <b-row>
               <b-col>
                 <b-pagination v-model='currentPage' :total-rows="rows" :per-page='pageCols' aria-controls="probList"
-                  first-number last-number align="center">
+                  first-number last-number align="center" @change="nextPage">
                 </b-pagination>
               </b-col>
             </b-row>
@@ -51,7 +50,7 @@
           <div>
             <b-row :class="`position-absolute panel-${showSearch?'show':'hide'} w-30 z-b`">
               <b-col cols="10" class="px-0">
-                <b-card no-body>
+                <b-card no-body class="br-0">
                   <b-card-body>
                     <b-form @submit.prevent="searchProb">
                       <b-row>
@@ -74,9 +73,9 @@
                             number
                             required
                             v-model.lazy="searchKey.pid" 
-                            placeholder="输入题目编号">
+                            placeholder="题目编号">
                             </b-form-input>
-                            <p class="h6 mb-0" v-show="!pidIsInt">应当是整数</p>
+                            <p class="h6 mb-0 mt-1 text-secondary" v-show="!pidIsInt">应当是整数</p>
                           </b-form-group>
                         </b-col>
                       </b-row>
@@ -106,6 +105,9 @@ export default {
     },
     pidIsInt () {
       return (Number.isInteger(this.searchKey.pid) && this.searchKey.pid > 0) || this.searchKey.pid == ''
+    },
+    currentPageComp:function(){
+      return this.$route.params.page!=undefined?this.$route.params.page:1
     }
   },
   created () {
@@ -113,7 +115,7 @@ export default {
   data () {
     return {
       showSearch: false,
-      currentPage: 1,
+      currentPage: this.$route.params.page!=undefined?this.$route.params.page:1,
       // pageCols: 20,//一页的列数
       problemList: {},
       rows: 10,
@@ -137,13 +139,13 @@ export default {
         this.problemList = response.data
         this.rows = this.problemList[0].total
         this.problemList.splice(0, 1)
+        this.$nextTick(()=>{this.currentPage=this.currentPageComp})
         callback(this.problemList)
       })
         .catch(function (error) {
           console.log(error)
           callback([{ pid: 0, title: '可能是网络出现了问题，稍后刷新一下试试?' }])
-        })
-
+        }).finally(()=>{return true;})
     },
     jumpToProb (props) {
       this.$emit('go-to', 'problemObj', props)
@@ -155,8 +157,16 @@ export default {
     },
     rowSelected (item) {
       this.jumpToProb({ 'pid': item[0].pid })
+    },
+    nextPage(page){
+      this.$emit('go-to', 'probLib', {page})
     }
   },
+  watch:{
+    currentPageComp(){
+      this.currentPage=this.currentPageComp
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -235,5 +245,9 @@ $right-end: -(100vw * 0.14);
 
 button {
   background-color: white;
+}
+
+.btn-outline-secondary {
+    border: 1px solid #d0d7db;
 }
 </style>

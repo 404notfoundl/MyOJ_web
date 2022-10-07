@@ -170,6 +170,7 @@ export default {
             if(this.output.length>0)break;
           }
           if(this.output.length==0)this.output="记录可能已经丢失，请重新提交"
+          return true
         })
         .catch((err) => {
           // debugger

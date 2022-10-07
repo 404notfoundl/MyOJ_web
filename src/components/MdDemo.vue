@@ -84,12 +84,12 @@ export default {
           ol: true, // 有序列表
           ul: true, // 无序列表
           link: true, // 链接
-          //imagelink: true, // 图片链接
+          imagelink: false, // 图片链接
           code: true, // code
           table: true, // 表格
           fullscreen: true, // 全屏编辑
-          // readmodel: true, // 沉浸式阅读
-          // htmlcode: true, // 展示html源码
+          readmodel: true, // 沉浸式阅读
+          htmlcode: true, // 展示html源码
           help: true, // 帮助
           /* 1.3.5 */
           undo: true, // 上一步
@@ -116,7 +116,7 @@ export default {
     this.saveMarkdown = this.ojDebounce(this.onSaveMdListener, 500)
     //返回文本防抖
     this.returnValue = false
-    this.returnDebounce = this.ojDebounce(this.returnToFather, 200)
+    this.returnDebounce = this.ojDebounce(this.returnToFather, 500)
   },
   data() {
     return {
@@ -140,7 +140,7 @@ export default {
       //暂时这样
       if (this.showMode !== "preview") {
         this.$emit("update:value", this.value) //这是传回给Value的
-        console.log("return2father")
+        // console.log("return")
       }
     },
     handleFullScreen(bFull) {
@@ -177,46 +177,48 @@ export default {
     },
     //预览模式保存至本地，编辑模式保存至浏览器
     onSaveMdListener() {
-      if (this.value == "") return
-      let text = ""
-      if (!this.isEdit) {
-        this.downLoadDataToLoc(this.value)
-        text = "已保存至本地存储"
-      } else {
-        let solutions = this.getLocalJson("markdown")
-        if (solutions === null) solutions = {}
-        if (solutions[`${this.editMode}`] === undefined || solutions[`${this.editMode}`] === null)
-          solutions[`${this.editMode}`] = {}
+      this.$emit("onSave", this.value)   
+      return    
+      // if (this.value == "") return
+      // let text = ""
+      // if (!this.isEdit) {
+      //   this.downLoadDataToLoc(this.value)
+      //   text = "已保存至本地存储"
+      // } else {
+      //   let solutions = this.getLocalJson("markdown")
+      //   if (solutions === null) solutions = {}
+      //   if (solutions[`${this.editMode}`] === undefined || solutions[`${this.editMode}`] === null)
+      //     solutions[`${this.editMode}`] = {}
 
-        let solution = solutions[`${this.editMode}`]
-        //储存题解
-        if (this.$route.params.pid !== undefined && this.$route.params.pid !== null) {
-          if (solution[`${this.$route.params.pid}`] === undefined)
-            solution[`${this.$route.params.pid}`] = {}
-          solution[`${this.$route.params.pid}`].value = this.value
-        } else {
-          // if (solution['editor'] === undefined) solution['editor'] = {}
-          //添加编辑器,题目的储存
-          let obj = null
-          if (this.$attrs.problem !== undefined) {
-            obj = this.$attrs.problem
-            obj.value = this.value
-          } else {
-            obj = {}
-            obj.value = this.value
-          }
-          solutions[`${this.editMode}`] = obj
-          // solution['editor'].value = this.value
-        }
-        this.setLocalJson("markdown", solutions)
-        text = "已保存至浏览器"
-      }
-      // this.$emit("test")
-      this.$bvToast.toast(text, {
-        title: "成功",
-        variant: "info",
-        autoHideDelay: 3000,
-      })
+      //   let solution = solutions[`${this.editMode}`]
+      //   //储存题解
+      //   if (this.$route.params.pid !== undefined && this.$route.params.pid !== null) {
+      //     if (solution[`${this.$route.params.pid}`] === undefined)
+      //       solution[`${this.$route.params.pid}`] = {}
+      //     solution[`${this.$route.params.pid}`].value = this.value
+      //   } else {
+      //     // if (solution['editor'] === undefined) solution['editor'] = {}
+      //     //添加编辑器,题目的储存
+      //     let obj = null
+      //     if (this.$attrs.problem !== undefined) {
+      //       obj = this.$attrs.problem
+      //       obj.value = this.value
+      //     } else {
+      //       obj = {}
+      //       obj.value = this.value
+      //     }
+      //     solutions[`${this.editMode}`] = obj
+      //     // solution['editor'].value = this.value
+      //   }
+      //   this.setLocalJson("markdown", solutions)
+      //   text = "已保存至浏览器"
+      // }
+      // this.$bvToast.toast(text, {
+      //   title: "成功",
+      //   variant: "info",
+      //   autoHideDelay: 3000,
+      // })
+
     },
   },
   mounted: function () {},

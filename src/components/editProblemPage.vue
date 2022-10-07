@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-04-26 13:06:45
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-06-12 17:24:23
+ * @LastEditTime: 2022-08-26 10:31:28
  * @Description: 编辑题目的组件
 -->
 <template>
@@ -50,59 +50,8 @@
       <hr class="mb-0" />
       <b-row class="justify-content-left fill-x fill-b flex-row-reverse">
         <b-col>
-          <b-form-group v-show="newProblem.prov_comp_flag">
-            <div class="pt-2">
-              <b-row>
-                <b-col cols="4" class="pr-0 h-auto pt-1">
-                  <p class="mb-0">省份:</p>
-                </b-col>
-                <b-col cols="8" class="pl-0 h-auto">
-                  <b-form-input
-                    id="proc"
-                    v-model="newProblem.province"
-                    placeholder="输入首字母缩写"
-                    :state="provLenCheck"
-                    :required="newProblem.prov_comp_flag"
-                  >
-                  </b-form-input>
-                  <b-form-invalid-feedback id="prov"> 不超过5个字符 </b-form-invalid-feedback>
-                </b-col>
-              </b-row>
-              <b-row>
-                <b-col cols="4" class="pr-0 h-auto pt-1">
-                  <p class="mb-0">年份:</p>
-                </b-col>
-                <b-col cols="8" class="pl-0 h-auto">
-                  <b-form-input
-                    id="year"
-                    v-model="newProblem.year"
-                    placeholder="输入数字"
-                    type="number"
-                    :required="newProblem.prov_comp_flag"
-                  >
-                  </b-form-input>
-                </b-col>
-              </b-row>
-              <b-row>
-                <b-col cols="4" class="pr-0 h-auto pt-1">
-                  <p class="mb-0">题目序号:</p>
-                </b-col>
-                <b-col cols="8" class="pl-0 h-auto">
-                  <b-form-input
-                    id="pid"
-                    v-model="newProblem.pid"
-                    placeholder="输入数字"
-                    type="number"
-                    :required="newProblem.prov_comp_flag"
-                  >
-                  </b-form-input>
-                </b-col>
-              </b-row>
-            </div>
-            <hr class="mb-0" />
-          </b-form-group>
           <!-- 时空限制 -->
-          <b-form-group v-if="!newProblem.prov_comp_flag">
+          <b-form-group>
             <div class="pt-2">
               <b-row>
                 <b-col cols="4" class="pr-0 h-auto pt-1">
@@ -114,7 +63,7 @@
                     v-model="newProblem.info.limits[0].timeLimit"
                     placeholder="输入数字"
                     type="number"
-                    :required="!newProblem.prov_comp_flag"
+                    required
                   >
                   </b-form-input>
                 </b-col>
@@ -129,7 +78,7 @@
                     v-model="newProblem.info.limits[0].memoryLimit"
                     placeholder="输入数字"
                     type="number"
-                    :required="!newProblem.prov_comp_flag"
+                    required
                   >
                   </b-form-input>
                 </b-col>
@@ -177,7 +126,7 @@
                 <b-form-input
                   id="label"
                   v-model.trim="newProblem.label"
-                  placeholder="输入标签，','为分隔符"
+                  placeholder="输入标签，',' 为分隔符"
                   required
                 >
                 </b-form-input>
@@ -185,8 +134,27 @@
             </b-col>
           </b-row>
           <hr />
+          <b-form-group v-show="newProblem.spjFlag">
+            <div>
+              <p class="h6"><b>注意:</b>选择cpp文件,用于评测结果</p>
+              <b-form-file
+                v-model="newProblem.spjFile"
+                :state="false"
+                placeholder="选择评测程序"
+                drop-placeholder=".cpp文件放入此处"
+                size="sm"
+                accept=".cpp"
+                :required="newProblem.spjFlag"
+              >
+                <template slot="file-name" slot-scope="{ names }">
+                  <b-badge variant="light" pill>checker.cpp</b-badge>
+                </template>
+              </b-form-file>
+            </div>
+            <hr class="mb-0" />
+          </b-form-group>
           <!-- 输入输出数据 -->
-          <div v-show="!newProblem.prov_comp_flag">
+          <div>
             <p class="h6 text-info">
               <b>{{ warn }}</b>
             </p>
@@ -200,7 +168,7 @@
                 drop-placeholder=".in文件放入此处"
                 size="sm"
                 accept=".in"
-                :required="!new_file_flag && !newProblem.prov_comp_flag"
+                :required="!new_file_flag"
                 :disabled="new_file_flag"
               ></b-form-file>
               <b-form-file
@@ -213,17 +181,18 @@
                 class="mt-2"
                 accept=".out"
                 :disabled="new_file_flag"
-                :required="!new_file_flag && !newProblem.prov_comp_flag"
+                :required="!new_file_flag"
               ></b-form-file>
             </div>
             <b-form-checkbox v-model="new_file_flag" v-show="!label_display_none[route.name]"
-              ><h6>不添加新文件</h6></b-form-checkbox
+              ><h6>不修改文件</h6></b-form-checkbox
             >
           </div>
+          <!-- 题目类型 -->
           <b-row v-if="label_display_none[route.name]">
             <b-col>
               <b-form-radio-group
-                v-model="newProblem.prov_comp_flag"
+                v-model="newProblem.spjFlag"
                 :options="type_options"
               ></b-form-radio-group>
             </b-col>
@@ -239,6 +208,7 @@
             :showToolBar="true"
             :editMode="this.mode"
             :problem="newProblem"
+            @onSave="onMdSave"
           >
           </markdown>
           <b-popover ref="mdPopover" target="markdown" title="注意" :disabled="true" variant="info">
@@ -264,11 +234,11 @@ export default {
     },
   },
   created() {
-    this.newProblem.prov_comp_flag = false
+    this.newProblem = this.oldProblem
   },
   data() {
     return {
-      newProblem: this.oldProblem, // 为了省事直接用了，待修改
+      newProblem: null, // 为了省事直接用了，待修改
       user: {},
       warn: "",
       validate: false,
@@ -279,8 +249,8 @@ export default {
       },
       new_file_flag: false,
       type_options: [
-        { text: "主题库", value: false },
-        { text: "省赛(仅题面)", value: true },
+        { text: "常规", value: false },
+        { text: "spj", value: true, disabled: false },
       ],
     }
   },
@@ -295,6 +265,8 @@ export default {
         form.append("input", this.newProblem.inputFiles[cnt])
         form.append("output", this.newProblem.outputFiles[cnt])
       }
+      this.newProblem.spjFile = new File([this.newProblem.spjFile], "checker.cpp")
+      form.append("spjFile", this.newProblem.spjFile)
       for (let key in value) {
         form.append(key, value[key])
       }
@@ -349,8 +321,7 @@ export default {
     },
     submitProblem() {
       if (this.checkLabelsValid()) {
-        if (!this.newProblem.prov_comp_flag)
-          if (!this.new_file_flag) if (!this.checkFilesValid()) return
+        if (!this.new_file_flag) if (!this.checkFilesValid()) return
       } else return
 
       if (this.newProblem.value === "") {
@@ -362,9 +333,14 @@ export default {
       }
       let data = this.serializer()
       this.newProblem.label_old = this.label_old
+      debugger
+      return
       this.$emit("submit", data)
       this.$emit("update:value", this.newProblem)
       // this.toast("成功")
+    },
+    onMdSave(value) {
+      this.$emit("onSave", value)
     },
   },
   props: {
@@ -384,7 +360,8 @@ export default {
           value: "",
           inputFiles: null,
           outputFiles: null,
-          prov_comp_flag: false,
+          spjFlag: false,
+          spjFile: null,
         }
       },
     },

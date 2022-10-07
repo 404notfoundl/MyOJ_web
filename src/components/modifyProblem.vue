@@ -3,7 +3,13 @@
     <div class="row py-3">
       <div class="col">
         <b-card class="border-0">
-          <edit-page @submit="submitProblem" :oldProblem="oldProblem" :mode="mode"></edit-page>
+          <edit-page
+            @submit="submitProblem"
+            :oldProblem="newProblem"
+            :mode="mode"
+            @onSave="onMdSave"
+            :key="oldProblem.pid"
+          ></edit-page>
         </b-card>
       </div>
     </div>
@@ -13,7 +19,7 @@
 import editPage from "./editProblemPage"
 
 export default {
-  name: "problemModification",
+  name: "modifyProblem",
   beforeRouteEnter(to, from, next) {
     // 修改题目但没有原题数据时
     if (to.name === "modifyProblem" && to.params.oldProblem === undefined) {
@@ -24,30 +30,16 @@ export default {
     "edit-page": editPage,
   },
   computed: {
-    // avalHeight: {
-    //   get: function () {
-    //     return this.$store.state.avaliableHeight
-    //   },
-    // },
+    routeName() {
+      return this.$route.name
+    },
   },
   created() {
-    let md = this.getLocalJson("markdown")
-    if (md !== null)
-      if (md["append"] !== undefined && this.oldProblem.title === "") {
-        // md['append'].value = md['append'].value
-        this.newProblem = md["append"]
-      }
-    this.label_old = this.oldProblem.label
+    this.load()
   },
   data() {
     return {
-      newProblem: this.oldProblem,
-      user: {},
-      inputFiles: null,
-      outputFiles: null,
-      warn: "",
-      validate: false,
-      label_old: "",
+      newProblem: null,
     }
   },
   methods: {
@@ -58,9 +50,9 @@ export default {
         method = "PUT"
         url += `${this.$route.params.pid}/`
       }
-      if (data.get("prov_comp_flag")[0]==="t") {
-        url = `${this.$store.state.webUrl.provincial_competition.self}/`
-      }
+      // if (data.get("prov_comp_flag")[0] === "t") {
+      //   url = `${this.$store.state.webUrl.provincial_competition.self}/`
+      // }
       // debugger
       // let data = this.serializer()
       let info = this.userInfo
@@ -79,14 +71,25 @@ export default {
         },
       })
         .then((response) => {
-          // debugger
-          this.toast(response.data.result)
-          this.$router.replace({ name: "probLib" })
+          // this.toast(response.data.result)
+          this.$router.replace({ name: "probLib", params: { page: 1 } })
         })
         .catch((err) => {
           debugger
           this.toast(err.response.data.result)
         })
+    },
+    onMdSave(value) {
+      this.save(value)
+    },
+    save(value) {
+      if (value !== null && value !== undefined) this.newProblem.value = value
+      this.saveMdBorwser("add", "temporary", this.newProblem)
+    },
+    load() {
+      if (this.oldProblem.pid !== null) this.newProblem = this.oldProblem
+      else this.newProblem = this.getMdBorwser("add", "temporary")
+      if (this.newProblem == null) this.newProblem = this.oldProblem
     },
   },
   props: {
@@ -106,13 +109,19 @@ export default {
           value: "",
           inputFiles: null,
           outputFiles: null,
-          prov_comp_flag: false,
+          spjFlag: false,
+          spjFile: null,
         }
       },
     },
     mode: {
       type: String,
       default: "modify",
+    },
+  },
+  watch: {
+    routeName() {
+      this.load()
     },
   },
 }

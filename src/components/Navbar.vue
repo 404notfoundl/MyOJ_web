@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-06 17:28:25
+ * @LastEditTime: 2022-08-23 20:29:07
  * @Description: 请填写简介
 -->
 <template lang="html">
@@ -18,13 +18,12 @@
             <b-nav-item @click="goToPage('main', {})"><b>首页</b></b-nav-item>
 
             <b-nav-item-dropdown class="font-weight" text="题库" right>
-              <b-dropdown-item @click="goToPage('probLib', {})">主题库</b-dropdown-item>
-              <b-dropdown-item @click="goToPage('provincialCompetition', { prov: 'all' })"
-                >省赛题目</b-dropdown-item
-              >
+              <b-dropdown-item @click="goToPage('probLib', { page: 1 })">主题库</b-dropdown-item>
+              <!-- <b-dropdown-item @click="goToPage('provincialCompetition', { prov: 'all' })"
+                >省赛题目</b-dropdown-item> -->
             </b-nav-item-dropdown>
 
-            <b-nav-item @click="goToPage('competitionList', {})">
+            <b-nav-item @click="goToPage('competitionList', {})" disabled title="还在测试中">
               <b>比赛</b>
             </b-nav-item>
             <b-nav-item

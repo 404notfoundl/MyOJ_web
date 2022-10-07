@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-04-22 09:18:22
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-06-29 20:32:44
+ * @LastEditTime: 2022-08-16 16:30:16
  * @Description: 请填写简介
 -->
 <template>
@@ -49,6 +49,7 @@
                 hover
                 responsive
                 fixed
+                outlined
               >
                 <template #table-busy>
                   <div class="text-center text-danger my-2">

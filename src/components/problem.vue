@@ -250,19 +250,31 @@
                               <p class="mb-0 d-inline-block">{{ task.submitDate }}</p>
                             </div>
                           </b-col>
-                          <!-- 提交状态 -->
+                          <!-- 得分 -->
                           <b-col class="float-right">
                             <p
                               :class="`float-right mb-0 d-inline-block text-${
                                 task.preview === 'AC' ? 'success' : 'danger'
                               }`"
+                              title="得分"
                             >
-                              {{ task.preview }}
+                              {{ ((100 / task.total) * task.acNum).toFixed(2) }}
+                            </p>
+                          </b-col>
+                          <!-- 资源使用 -->
+                          <b-col cols="1" class="float-right">
+                            <p
+                              :class="`float-left mb-0 d-inline-block text-muted`"
+                              title="最大用时/最大内存"
+                            >
+                              {{ task.time_usage }}/{{ task.memory_usage }}
                             </p>
                           </b-col>
                           <!-- 提交语言 -->
-                          <b-col cols="2" class="float-right">
-                            <p class="mb-0 d-inline-block float-left">语言：{{ task.lang }}</p>
+                          <b-col cols="1" class="float-right pr-5">
+                            <p class="mb-0 d-inline-block float-left text-muted" title="语言">
+                              {{ task.lang }}
+                            </p>
                           </b-col>
                         </b-row>
                       </span>
@@ -343,6 +355,7 @@
                   :Value.sync="solution"
                   showMode="edit"
                   :showToolBar="true"
+                  @onSave="onMdSave"
                 >
                   <template slot="right-after">
                     <b-button
@@ -507,6 +520,7 @@ export default {
         })
         .finally(() => {
           this.loading = false
+          return true
         })
     },
     getTasks() {
@@ -580,9 +594,13 @@ export default {
         },
       })
         .then((response) => {
-          if (response.data.result === 404) this.hasSubmited = false
-          else this.hasSubmited = true
-          this.solution = response.data.value
+          if (response.data.result === 404) {
+            this.hasSubmited = false
+            this.solution = this.getMdBorwser("solution", this.$route.params.pid).value
+          } else {
+            this.hasSubmited = true
+            this.solution = response.data.value
+          }
         })
         .catch((err) => {
           this.hasSubmited = false
@@ -660,6 +678,9 @@ export default {
     splitLabel() {
       if (this.problemObj.label === undefined) return null
       return this.problemObj.label.split(",")
+    },
+    onMdSave(value) {
+      this.saveMdBorwser("solution", this.$route.params.pid, {value})
     },
   },
   mounted() {},

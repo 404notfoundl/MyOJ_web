@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-07-07 15:53:45
+ * @LastEditTime: 2022-08-25 15:54:35
  * @Description: 请填写简介
  */
 //注意参数next需要调用，否则出现意外
@@ -85,8 +85,8 @@ const routes = [
   { name: "modifyProblem", path: "/modify_problem/:pid", component: problemModifyer, props: true }, //修改题目
   { name: "login", path: "/login", component: loginPage, props: true }, //登录
   { name: "newSolutions", path: "/news", component: solution }, //最新题解
-  { name: "problemObj", path: "/problem_lib/:pid", component: problemObj }, //题目
-  { name: "probLib", path: "/problem_lib", component: problemLib }, //题目列表
+  { name: "problemObj", path: "/problem/:pid", component: problemObj }, //题目
+  { name: "probLib", path: "/problem_lib/:page", component: problemLib}, //题目列表
   {
     name: "solution",
     path: "/solution/:pid",
@@ -97,17 +97,17 @@ const routes = [
   { name: "competitionList", path: "/competition", component: competitionList }, // 比赛列表
   { name: "competitionPage", path: "/competition/:cid", component: competitionPage }, // 比赛详情页
   { name: "competitionProblem", path: "/competition/:cid/:pid", component: problemObj }, // 比赛题目详情页
-  {
-    name: "provincialCompetition",
-    path: "/provincial_competition/:prov/:year?",
-    component: provincialCompetitionList,
-  }, // 省赛题目
-  {
-    name: "provincialCompetitionPage",
-    path: "/provincial_competition/:prov/:year/:pid",
-    component: provincialCompetitionPage,
-  }, // 省赛题目页面
-
+  // {
+  //   name: "provincialCompetition",
+  //   path: "/provincial_competition/:prov/:year?",
+  //   component: provincialCompetitionList,
+  // }, // 省赛题目
+  // {
+  //   name: "provincialCompetitionPage",
+  //   path: "/provincial_competition/:prov/:year/:pid",
+  //   component: provincialCompetitionPage,
+  // }, // 省赛题目页面 
+  // 上述设计重复，不使用
   { name: "usrInfo", path: "/usr_info/:uid", component: personalDetails }, // 个人信息
   { name: "registPage", path: "/register/:pk", component: registPage }, // 注册页面
   // 测试新页面

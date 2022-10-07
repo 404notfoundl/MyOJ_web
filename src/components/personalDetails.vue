@@ -160,17 +160,19 @@
                 </b-form>
               </b-tab>
               <b-tab title="自定义词云图">
-                <b-col class="t-left pl-0 h6">
+                <b-col class="t-left pl-0">
                   <label><b>自定义词云图</b></label>
                 </b-col>
                 <!-- 表头 -->
                 <b-col cols="8" class="t-left">
                   <b-row class="row-input">
-                    <b-col class="px-0">
-                      <b-form-input placeholder="key" disabled class="br-0"> </b-form-input>
+                    <b-col class="px-0 ">
+                      <b-form-input placeholder="名称 (长度<10)" disabled class="br-0 pl-1 bb-0">
+                      </b-form-input>
                     </b-col>
                     <b-col class="px-0">
-                      <b-form-input placeholder="value" disabled class="br-0 bl-0"> </b-form-input>
+                      <b-form-input placeholder="值 (0~9999)" disabled class="br-0 pl-1 bb-0 bl-0">
+                      </b-form-input>
                     </b-col>
                   </b-row>
                 </b-col>
@@ -184,7 +186,7 @@
                             v-model.lazy.trim="item.word"
                             placeholder="key"
                             :required="userWordCloud.length - 1 != index"
-                            class="br-0 bt-0"
+                            class="br-0 pl-1"
                             @blur="addItem(index)"
                             :state="validateInput(index, true)"
                           >
@@ -193,9 +195,9 @@
                         <b-col class="px-0">
                           <b-form-input
                             v-model.lazy="item.count"
-                            placeholder="value(0~9999)"
+                            placeholder="value"
                             :required="userWordCloud.length - 1 != index"
-                            class="br-0 bl-0 bt-0"
+                            class="br-0 pl-1 bl-0"
                             @blur="addItem(index)"
                             :state="validateInput(index, false)"
                           >
@@ -268,6 +270,7 @@ export default {
     // TODO 暂未完成
     await this.getUserInfo()
     this.getRows()
+    return true
   },
   data() {
     return {
@@ -387,6 +390,9 @@ export default {
           this.toast(err.response.data.result)
           if (err.response.status == 404) this.$router.push({ name: "404" })
           else this.$router.push({ name: "main" })
+        })
+        .finally(() => {
+          return true
         })
     },
     getUserDetails() {
@@ -546,6 +552,9 @@ p {
 }
 .bt-0 {
   border-top: 0;
+}
+.bb-0 {
+  border-bottom: 0;
 }
 
 .row-input {
