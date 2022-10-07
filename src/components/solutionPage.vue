@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-01-31 09:48:46
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-01 09:54:49
+ * @LastEditTime: 2022-09-15 09:38:16
  * @Description: 请填写简介
 -->
 <template>
@@ -18,21 +18,21 @@
       </b-col>
     </b-row>
     <b-card class="mt-2 border" v-for="(solution, index) in solutions" :key="solution.pid">
-    <b-row>
-      <b-col cols="2">
-        <div class="d-inline-block">
-          <b-link
-            :to="{ name: 'usrInfo', params: { uid: solution.uid } }"
-            class="text-decoration-none"
-          >
-            <p class="text-left px-2 h5">
-              <b>{{ solution.username }}</b>
-            </p>
-          </b-link>
-        </div>
-      </b-col>
-    </b-row>
-    <solution :info="solution" :showToolBar="false" :loading="loading"> </solution>
+      <b-row>
+        <b-col cols="2">
+          <div class="d-inline-block">
+            <b-link
+              :to="{ name: 'usrInfo', params: { uid: solution.uid } }"
+              class="text-decoration-none"
+            >
+              <p class="text-left px-2 h5">
+                <b>{{ solution.username }}</b>
+              </p>
+            </b-link>
+          </div>
+        </b-col>
+      </b-row>
+      <solution :info="solution" :showToolBar="false" :loading="loading"> </solution>
     </b-card>
   </div>
 </template>
@@ -111,7 +111,15 @@ export default {
             },
           ]
         })
-        .catch((err) => {})
+        .catch((err) => {
+          this.solutions = [
+            {
+              value: "暂无",
+              username: "admin",
+              uid: 1,
+            },
+          ]
+        })
         .finally(() => {
           this.loading = false
         })

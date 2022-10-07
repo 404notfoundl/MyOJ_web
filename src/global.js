@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-26 11:11:37
+ * @LastEditTime: 2022-10-06 10:16:14
  * @Description: 请填写简介
  */
 export default {
@@ -53,11 +53,6 @@ export default {
         autoHideDelay: delay,
       })
     },
-    /**
-     *
-     * @param {*} ms 延时，毫秒
-     * @returns promise
-     */
     ojTimer(ms) {
       return new Promise((resolve, reject) => {
         setTimeout(resolve, ms)
@@ -72,7 +67,11 @@ export default {
       let solution = solutions[type]
       //储存题解
       if (solution[name] === undefined) solution[name] = {}
-      solution[name] = obj
+      let save_obj = JSON.parse(JSON.stringify(obj))
+      delete save_obj.inputFiles
+      delete save_obj.outputFiles
+      delete save_obj.spjFile
+      solution[name] = save_obj
       this.setLocalJson("markdown", solutions)
       this.toast("已保存至浏览器", 5000)
     },
@@ -84,7 +83,7 @@ export default {
         solutions[type][name] !== undefined
       )
         return solutions[type][name]
-      else return { value: "" }
+      else return null
     },
     saveMdLocal(value) {
       this.downLoadDataToLoc(this.value)
@@ -136,5 +135,8 @@ export default {
     route: function () {
       return this.$route
     },
+    competitionFlag(){ // 比赛还在测试中
+      return false
+    }
   },
 }

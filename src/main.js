@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-22 15:08:39
+ * @LastEditTime: 2022-09-11 10:45:38
  * @Description: 请填写简介
  */
 // app.js
@@ -31,14 +31,20 @@ import mixin from "./global"
 import axios from "axios"
 import qs from "qs"
 
-import vueAwesomeCountdown from 'vue-awesome-countdown'
+import vueAwesomeCountdown from "vue-awesome-countdown"
+// element-ui
+import { steps, step } from "element-ui"
+
+import "http"
 
 // Optionally install the BootstrapVue icon components plugin
-Vue.use(vueAwesomeCountdown, 'countdown') // Component name, `countdown` and `vac` by default
+Vue.use(vueAwesomeCountdown, "countdown") // Component name, `countdown` and `vac` by default
 Vue.use(PortalVue)
 Vue.use(IconsPlugin)
 Vue.use(BootstrapVue) //BootstrapVue
 Vue.use(MavonEditor) //markdown -- mavon
+Vue.use(steps)
+Vue.use(step)
 MavonEditor.mavonEditor
   .getMarkdownIt()
   .use(Md_Katex, { blockClass: "math-block", errorColor: " #cc0000" }) //实时渲染Latex
@@ -48,9 +54,9 @@ Vue.component(VeLiquidfill.name, VeLiquidfill) //水球图
 Vue.config.productionTip = false
 Vue.mixin(mixin) //全局方法
 //默认提交表单
-axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded;charset=utf-8"
-axios.defaults.headers.get["Content-Type"] = "application/x-www-form-urlencoded;charset=utf-8"
-axios.defaults.headers.delete["Content-Type"] = "application/x-www-form-urlencoded;charset=utf-8"
+// axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded;charset=utf-8"
+// axios.defaults.headers.get["Content-Type"] = "application/x-www-form-urlencoded;charset=utf-8"
+// axios.defaults.headers.delete["Content-Type"] = "application/x-www-form-urlencoded;charset=utf-8"
 // 下面暂时不要删
 // axios.defaults.transformRequest = [function (data) {
 //     let ret = ''
@@ -71,4 +77,3 @@ new Vue({
     App,
   },
 }).$mount("#app")
-// TODO 由于边学边用，许多东西都没有改，有待修改

@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-23 20:29:07
+ * @LastEditTime: 2022-10-06 09:58:50
  * @Description: 请填写简介
 -->
 <template lang="html">
@@ -23,7 +23,7 @@
                 >省赛题目</b-dropdown-item> -->
             </b-nav-item-dropdown>
 
-            <b-nav-item @click="goToPage('competitionList', {})" disabled title="还在测试中">
+            <b-nav-item @click="goToPage('competitionList', {})" disabled title="测试中" v-if="competitionFlag">
               <b>比赛</b>
             </b-nav-item>
             <b-nav-item
@@ -70,8 +70,8 @@
                 <b-dropdown-item href="#" @click="goToPage('checkSolution')">
                   审核题解
                 </b-dropdown-item>
-                <b-dropdown-item href="#" @click="goToPage('addCompetition')">
-                  添加比赛
+                <b-dropdown-item href="#" @click="goToPage('addCompetition')" disabled v-if="competitionFlag">
+                  添加比赛(测试中)
                 </b-dropdown-item>
               </div>
               <b-dropdown-item href="#" @click="logout">登出</b-dropdown-item>

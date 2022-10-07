@@ -14,7 +14,9 @@
                   :state="usrLanguage ? true : false"
                 >
                   <template v-slot:first>
-                    <b-form-select-option :value="null" disabled> 选择语言 </b-form-select-option>
+                    <b-form-select-option :value="null" disabled>
+                      选择语言
+                    </b-form-select-option>
                   </template>
                   <b-form-select-option
                     v-for="(path, name, index) in languagePath"
@@ -32,7 +34,7 @@
                 size="sm"
                 v-b-popover.hover.left="checkEditorValidity"
                 title=""
-                :disabled="submitting"
+                :disabled="Boolean(loading & showIOArea)"
                 >提交</b-button
               >
               <!-- submitting -->
@@ -58,8 +60,11 @@
           ></textarea>
         </div>
         <div class="col-6 px-0 h-100">
-          <div class="h-100 w-100 px-2 pt-1 border-0 bg-white text-center" v-if="loading">
-            <b-spinner  variant="primary" label="Loading..."></b-spinner>
+          <div
+            class="h-100 w-100 pt-3 border-0 bg-white text-center"
+            v-if="loading"
+          >
+            <b-spinner variant="primary" label="Loading..."></b-spinner>
           </div>
           <textarea
             class="h-100 w-100 px-2 pt-1 border-0"
@@ -67,6 +72,7 @@
             v-model="output"
             readonly
             v-else
+            @click="getResult"
           ></textarea>
         </div>
       </div>
@@ -84,7 +90,7 @@ import "ace-builds/src-min-noconflict/ext-emmet"
 require("ace-builds/webpack-resolver")
 export default {
   name: "CodeEditor",
-  beforeDestroy() {
+  beforeDestroy () {
     if (this.editor) {
       this.editor.destroy()
       this.editor = null
@@ -103,7 +109,7 @@ export default {
       return this.$store.state.avaliableHeight * this.avalHeightRate
     },
   },
-  created() {
+  created () {
     // debugger
     if (!this.isAuthed) {
       this.$router.push({ name: "login" })
@@ -126,7 +132,7 @@ export default {
     }
     // debugger
   },
-  data() {
+  data () {
     return {
       aceEditor: null,
       usrCode: this.code,
@@ -156,7 +162,7 @@ export default {
     }
   },
   methods: {
-    checkEditorValidity() {
+    checkEditorValidity () {
       let alertText = ""
       if (this.aceEditor) this.usrCode = this.aceEditor.getValue()
       if (this.usrLanguage !== null && this.usrCode !== "") {
@@ -168,7 +174,7 @@ export default {
         return alertText
       }
     },
-    saveUsrCode() {
+    saveUsrCode () {
       //此处有待修改
       this.usrCode = this.aceEditor.getValue()
       let usrC = this.getLocalJson("usrCode")
@@ -178,11 +184,11 @@ export default {
       usrC[`${pid}`] = { language: this.usrLanguage, code: this.usrCode }
       this.setLocalJson("usrCode", usrC)
     },
-    setEditorHeight() {
+    setEditorHeight () {
       this.$refs.ace.style.height = "400px"
       this.aceEditor.resize()
     },
-    submitUsrCode() {
+    submitUsrCode () {
       if (this.checkEditorValidity() !== "√") {
         return false
       }
@@ -210,7 +216,7 @@ export default {
       this.$emit("submit", data)
       return
     },
-    editorScollerListener(event) {
+    editorScollerListener (event) {
       let editorDom = this.$refs.ace
       if (event.ctrlKey === true || event.metaKey) {
         let fontSize = parseInt(editorDom.style.fontSize)
@@ -230,8 +236,13 @@ export default {
         // event.preventDefault()
       }
     },
+    getResult () {
+      if (this.rtnCode) return;
+      this.loading = true
+      this.$emit("refresh")
+    },
   },
-  mounted() {
+  mounted () {
     this.aceEditor = ace.edit(this.$refs.ace, {
       // maxLines: 40, // 最大行数，超过会自动出现滚动条
       // minLines: 40, // 最小行数，还未到最大行数时，编辑器会自动伸缩大小
@@ -285,8 +296,12 @@ export default {
       type: String,
       default: "",
     },
+    rtnCode: {
+      type: Number,
+      default: 0
+    }
   },
-  updated() {
+  updated () {
     this.aceEditor.resize()
     // debugger
   },
@@ -295,9 +310,12 @@ export default {
       this.aceEditor.session.setMode(this.languagePath[this.usrLanguage])
       this.aceEditor.focus()
     },
-    output: function () {
-      this.loading = false
+    rtnCode: function (newVal) {
+      if (newVal == 1) this.loading = false
     },
+    output: function (newVal) {
+      if (newVal !== "") this.loading = false
+    }
   },
 }
 </script>

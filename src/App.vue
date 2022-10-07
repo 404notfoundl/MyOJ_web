@@ -10,7 +10,13 @@
     >
       <!-- <problem v-if="true"></problem> -->
       <transition name="fade" mode="out-in">
-        <router-view @go-to="goToPage" @submit="submitUserCode" :output="output"></router-view>
+        <router-view
+          @go-to="goToPage"
+          @submit="submitUserCode"
+          @refresh="refresh"
+          :output="output"
+          :rtnCode="rtnCode"
+        ></router-view>
       </transition>
     </div>
 
@@ -49,7 +55,7 @@ let hideReturnTop = 0
 
 export default {
   name: "OJ",
-  data() {
+  data () {
     return {
       mainHeight: 0, //login没占满，待修改
       oldHeight: 0,
@@ -59,11 +65,13 @@ export default {
       taskUUID: "",
       output: "",
       timerId: null,
+      loading: false,
+      rtnCode: 0
     }
   },
   computed: {},
   methods: {
-    scrollToTop() {
+    scrollToTop () {
       let sTop = document.documentElement.scrollTop || document.body.scrollTop
       if (sTop > hideReturnTop) {
         window.requestAnimationFrame(this.scrollToTop)
@@ -71,7 +79,7 @@ export default {
         this.$store.commit("setTopState", true)
       }
     },
-    goToPage(name, params) {
+    goToPage (name, params) {
       this.$store.commit("setTopState", true)
       this.$store.commit("setBottomState", false)
       // if (name === "codeEditor") this.editorPage = false
@@ -83,7 +91,7 @@ export default {
         window.open(routeUrl.href, "_blank")
       } else this.$router.push({ name, params })
     },
-    windowResizeListener() {
+    windowResizeListener () {
       // debugger
       let newHeight = document.body.clientHeight - this.$refs.navbar.$el.offsetHeight
       if (newHeight !== this.oldHeight) {
@@ -94,7 +102,7 @@ export default {
       }
       // console.log(document.body.clientWidth)
     },
-    windowScollerListener(event) {
+    windowScollerListener (event) {
       //scrollTop是滚动条滚动时，距离顶部的距离
       let scrollTop = document.documentElement.scrollTop || document.body.scrollTop
       //windowHeight是可视区的高度
@@ -121,20 +129,20 @@ export default {
       //禁止ctrl+滚轮放大
       if (event.ctrlKey === true || event.metaKey) event.preventDefault()
     },
-    async getResult() {
+    getResult () {
       let info = this.userInfo
       let params = {
         uid: info.uid,
-        pid: -1, //-1表示是在线编辑器,
+        pid: 0, //0表示是在线编辑器,
         uuid: this.taskUUID,
       }
       //编辑器的输入数据
       let url = `${this.$store.state.webUrl.task.preview}`
       if (url === null) return
       let method = "GET"
+      this.rtnCode = 0
       //之后是提交此记录
-      this.loading = true
-      this.$axios({
+      return this.$axios({
         url,
         method,
         params,
@@ -142,13 +150,15 @@ export default {
           authorization: `Bearer ${info.token}`,
         },
       }).then((response) => {
-        if (response.data.code == 1) this.output = response.data.result
+        if (response.data.code == 1)
+          this.output = response.data.result === "" ? '无输出' : response.data.result
+        this.rtnCode = response.data.code
       })
     },
-    submitUserCode(data) {
-      this.output=""
+    submitUserCode (data) {
+      this.output = ""
       let uid = this.userInfo.uid
-      let pid = this.$route.params.pid === undefined ? -1 : Number.parseInt(this.$route.params.pid)
+      let pid = this.$route.params.pid === undefined ? 0 : Number.parseInt(this.$route.params.pid)
       data.uid = uid
       data.pid = pid
       let url = `${this.$store.state.webUrl.task.submit}`
@@ -163,13 +173,15 @@ export default {
         },
       })
         .then(async (response) => {
-          this.toast(response.data.result.info)
-          this.taskUUID = response.data.result.uuid
-          for (let a = 0; a < 0; a++) {
+          this.toast(response.data.result)
+          this.taskUUID = response.data.uuid
+          this.loading = true
+          for (let a = 0; a < 1; a++) {
             await this.ojTimer(3000).then(this.getResult)
-            if(this.output.length>0)break;
+            if (this.output.length > 0) break
           }
-          if(this.output.length==0)this.output="记录可能已经丢失，请重新提交"
+          this.loading = false
+          if (this.output.length == 0) this.output = "记录可能已经丢失，请重新提交/点击刷新"
           return true
         })
         .catch((err) => {
@@ -178,13 +190,20 @@ export default {
           console.log(err)
         })
     },
+    async refresh () {
+      if (this.loading || this.taskUUID.length == 0) return
+      this.output = ""
+      await this.getResult()
+      if (this.rtnCode == 0)
+        this.output = "记录可能已经丢失，请重新提交/点击刷新"
+    },
   },
-  beforeMount() {
+  beforeMount () {
     window.addEventListener("mousewheel", this.windowScollerListener, {
       passive: false,
     })
   },
-  mounted() {
+  mounted () {
     this.mainHeight = window.innerHeight - this.$refs.navbar.$el.offsetHeight
     this.navbarHeight = this.$refs.navbar.$el.offsetHeight
     this.oldHeight = this.mainHeight
@@ -195,7 +214,7 @@ export default {
   components: {
     Navbar,
   },
-  beforeDestroy() {
+  beforeDestroy () {
     // if (this.editorPage)
     window.removeEventListener("mousewheel", this.windowScollerListener)
     window.removeEventListener("resize", this.debounceListener)

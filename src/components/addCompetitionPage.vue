@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-04-24 20:50:18
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-16 15:41:46
+ * @LastEditTime: 2022-09-25 09:22:18
  * @Description: 创建竞赛页面
 -->
 <template>
@@ -36,6 +36,7 @@
                         type="datetime"
                         :disabled-date="disabledStartDate"
                         :disabled-time="disabledStartTime"
+                        class="mb-1"
                       ></date-picker>
                       <br />
                       <date-picker
@@ -56,7 +57,7 @@
                       </b-form-input>
                     </div>
                   </b-form-group>
-                  <b-button type="submit" class="right-top mt-1" variant="outline-primary"
+                  <b-button type="submit" size="lg" class="right-top mt-1 br-0" variant="outline-secondary"
                     >提交</b-button
                   >
                 </b-col>
@@ -255,5 +256,9 @@ export default {
   position: absolute;
   right: 2%;
   top: 2%;
+}
+
+input[name='date']{
+  border-radius: 0;
 }
 </style>

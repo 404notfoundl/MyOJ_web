@@ -1,5 +1,9 @@
 <template>
-  <div :style="'height:' + ojPageHeight + 'px'" class="w-100" :key="$route.params.uid">
+  <div
+    :style="'height:' + ojPageHeight + 'px'"
+    class="w-100"
+    :key="$route.params.uid"
+  >
     <!-- 上半部分 -->
     <div class="row h-25 w-100 justify-content-center pt-1">
       <div class="col-lg-8 h-100 px-0 position-relative">
@@ -25,6 +29,9 @@
               <div class="row w-100 justify-content-start">
                 <b>
                   <h1 class="h1 text-left">{{ userDetail.username }}</h1>
+                  <p class="h6 text-left font-weight-light text-muted">
+                    {{ submitInfo.email }}
+                  </p>
                 </b>
               </div>
             </div>
@@ -52,8 +59,6 @@
                 </div>
               </div>
             </div>
-            <!-- <div class="col-5 h-50"></div>
-            <div class="col-3 h-auto"></div> -->
           </div>
         </b-card>
       </div>
@@ -95,9 +100,10 @@
                   v-for="(item, index) in userAcs"
                   :key="index"
                 >
-                  <b-link :to="{ name: 'problemObj', params: { pid: item.name } }">{{
-                    item.name
-                  }}</b-link>
+                  <b-link
+                    :to="{ name: 'problemObj', params: { pid: item.name } }"
+                    >{{ item.name }}</b-link
+                  >
                 </div>
               </b-row>
             </b-tab>
@@ -153,7 +159,9 @@
                   <b-form-group>
                     <b-row>
                       <b-col cols="8" style="text-align: right">
-                        <b-button type="submit" variant="outline-primary">提交</b-button>
+                        <b-button type="submit" variant="outline-primary"
+                          >提交</b-button
+                        >
                       </b-col>
                     </b-row>
                   </b-form-group>
@@ -166,19 +174,31 @@
                 <!-- 表头 -->
                 <b-col cols="8" class="t-left">
                   <b-row class="row-input">
-                    <b-col class="px-0 ">
-                      <b-form-input placeholder="名称 (长度<10)" disabled class="br-0 pl-1 bb-0">
+                    <b-col class="px-0">
+                      <b-form-input
+                        placeholder="名称 (长度<10)"
+                        disabled
+                        class="br-0 pl-1 bb-0"
+                      >
                       </b-form-input>
                     </b-col>
                     <b-col class="px-0">
-                      <b-form-input placeholder="值 (0~9999)" disabled class="br-0 pl-1 bb-0 bl-0">
+                      <b-form-input
+                        placeholder="值 (0~9999)"
+                        disabled
+                        class="br-0 pl-1 bb-0 bl-0"
+                      >
                       </b-form-input>
                     </b-col>
                   </b-row>
                 </b-col>
                 <!-- 内容 -->
                 <b-form @submit.prevent="submitUserWordCloud">
-                  <b-form-group v-for="(item, index) in userWordCloud" :key="item.id" class="mb-0">
+                  <b-form-group
+                    v-for="(item, index) in userWordCloud"
+                    :key="item.id"
+                    class="mb-0"
+                  >
                     <b-col cols="8" class="t-left">
                       <b-row class="row-input">
                         <b-col class="px-0">
@@ -228,7 +248,9 @@
                   <b-form-group class="mt-2">
                     <b-row>
                       <b-col cols="8" style="text-align: right">
-                        <b-button type="submit" variant="outline-primary">提交</b-button>
+                        <b-button type="submit" variant="outline-primary"
+                          >提交</b-button
+                        >
                       </b-col>
                     </b-row>
                   </b-form-group>
@@ -259,20 +281,20 @@ export default {
     avartarSize: function () {
       return (this.ojPageHeight * 0.1 <= 50 ? 50 : this.ojPageHeight * 0.1) + "px"
     },
-    isSelf() {
+    isSelf () {
       return this.$route.params.uid == this.userInfo.uid
     },
-    uid() {
+    uid () {
       return this.$route.params.uid
     },
   },
-  async created() {
+  async created () {
     // TODO 暂未完成
     await this.getUserInfo()
     this.getRows()
     return true
   },
-  data() {
+  data () {
     return {
       currentTabIndex: 0,
       ojPageHeight: this.$store.state.avaliableHeight,
@@ -299,7 +321,7 @@ export default {
     }
   },
   methods: {
-    getRows() {
+    getRows () {
       let info = this.userInfo
       this.$axios({
         url: `${this.$store.state.webUrl.user.details}`,
@@ -309,13 +331,11 @@ export default {
           type: 3,
         },
         headers: {
-          // "Content-Type": "multipart/form-data",
           authorization: `Bearer ${info.token}`,
         },
       })
         .then((response) => {
           if (response.data.length > 0 && response.data[0].value.length > 2) {
-            this.createFlag = false
             let words = JSON.parse(response.data[0].value)
             for (let key in words) {
               this.wordCloudChartData.rows.push({ word: key, count: words[key] })
@@ -324,25 +344,27 @@ export default {
             }
             this.wordCloudChartData.rows.push({ word: this.userDetail.username, count: 9999 })
           } else {
-            this.createFlag = true
             let wordCloudObj = this.getLocalJson("ojWordCloud").words
             if (wordCloudObj == null) wordCloudObj = [{ word: "oj", count: 9999 }]
             else wordCloudObj.push({ word: this.userDetail.username, count: 9999 })
             this.wordCloudChartData.rows = wordCloudObj
           }
           this.userWordCloud.push({ id: nanoid(), word: "", count: "" })
+          if (response.data.length > 0)
+            this.createFlag = false
+          else
+            this.createFlag = true
         })
         .catch((err) => {
           console.log(err)
         })
       // 默认
     },
-    submitUserinfo() {
+    submitUserinfo () {
       let info = this.userInfo
       let data = {
         avatar_url: this.submitInfo.avatarUrl,
       }
-      // debugger
       this.$axios({
         url: `${this.$store.state.webUrl.user.info}${this.$route.params.uid}/`,
         method: "PUT",
@@ -367,7 +389,7 @@ export default {
           this.currentTabIndex = 0
         })
     },
-    async getUserInfo() {
+    async getUserInfo () {
       let info = this.userInfo
       await this.$axios({
         url: `${this.$store.state.webUrl.user.info}${this.$route.params.uid}/`,
@@ -395,7 +417,7 @@ export default {
           return true
         })
     },
-    getUserDetails() {
+    getUserDetails () {
       let info = this.userInfo
       this.$axios({
         url: `${this.$store.state.webUrl.user.details}`,
@@ -404,7 +426,6 @@ export default {
           uid: this.uid,
         },
         headers: {
-          // "Content-Type": "multipart/form-data",
           authorization: `Bearer ${info.token}`,
         },
       })
@@ -415,11 +436,11 @@ export default {
           console.log(err)
         })
     },
-    removeItem(index) {
+    removeItem (index) {
       delete this.submitWordCloud[this.userWordCloud[index].word]
       this.userWordCloud.splice(index, 1)
     },
-    addItem(index) {
+    addItem (index) {
       let last = this.userWordCloud.length - 1
       if (
         index == last &&
@@ -428,7 +449,7 @@ export default {
       )
         this.userWordCloud.push({ id: nanoid(), word: "", count: "" })
     },
-    validateInput(index, isKey) {
+    validateInput (index, isKey) {
       if (this.userWordCloud[index].word == "" || this.userWordCloud[index].count == "") {
         this.isWordValid = this.isWordValid & ~(1 << index)
         return null
@@ -454,11 +475,13 @@ export default {
         return !isNaN(this.userWordCloud[index].count) && this.userWordCloud[index].count < 10000
       }
     },
-    submitUserWordCloud() {
+    submitUserWordCloud () {
       let dx = this.userWordCloud.length
       if (this.userWordCloud[dx - 1].word == "" && this.userWordCloud[dx - 1].count == "") dx--
-      if (this.isWordValid != (1 << dx) - 1) return
-      //TODO 提交submitWordCloud
+      if (this.isWordValid != (1 << dx) - 1) {
+        this.toast("请按要求填写", 3000)
+        return
+      }
       let info = this.userInfo
       let method = this.createFlag ? "POST" : "PUT"
       let url = this.createFlag
@@ -477,7 +500,7 @@ export default {
         },
       })
         .then((response) => {
-          if (this.createFlag) this.createFlag = !this.createFlag
+          if (this.createFlag) this.createFlag = false
           this.$bvToast.toast(response.data.result, {
             title: "提交结果",
             autoHideDelay: 5000,
@@ -495,10 +518,10 @@ export default {
     // },
   },
   watch: {
-    uid(value) {
+    uid (value) {
       this.getUserInfo()
     },
-    currentTabIndex(value) {
+    currentTabIndex (value) {
       if (value == 1) this.getUserDetails()
     },
   },
@@ -568,11 +591,26 @@ p {
 }
 
 input:disabled {
-  background-color: white;
+  background-color: unset;
   font-weight: bold;
 }
 input::placeholder {
   color: gray;
+}
+input{
+    outline-style: none ;
+    border: 1px solid #ccc; 
+    border-radius: 3px;
+    padding: 6px;
+    font-size: 14px;
+    width: 100%;
+    font-family: "Microsoft soft";
+}
+input:focus{
+    border-color: #66afe9;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
 }
 
 .fixed-right {

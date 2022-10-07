@@ -265,9 +265,9 @@
                           <b-col cols="1" class="float-right">
                             <p
                               :class="`float-left mb-0 d-inline-block text-muted`"
-                              title="最大用时/最大内存"
+                              title="最大用时/最大内存(验证中)"
                             >
-                              {{ task.time_usage }}/{{ task.memory_usage }}
+                              {{ task.time_usage }} / -
                             </p>
                           </b-col>
                           <!-- 提交语言 -->
@@ -596,7 +596,8 @@ export default {
         .then((response) => {
           if (response.data.result === 404) {
             this.hasSubmited = false
-            this.solution = this.getMdBorwser("solution", this.$route.params.pid).value
+            this.solution = this.getMdBorwser("solution", this.$route.params.pid)
+            if(this.solution==null)this.solution=""
           } else {
             this.hasSubmited = true
             this.solution = response.data.value

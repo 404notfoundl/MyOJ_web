@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-10 09:34:58
+ * @LastEditTime: 2022-09-18 16:08:40
  * @Description: 请填写简介
  */
 import Vue from "vue"
@@ -47,6 +47,12 @@ const store = new Vuex.Store({
       },
       get label() {
         return `${this.root}/api/labels/`
+      },
+      api: {
+        self: `${root}/api`,
+        get spj(){
+          return `${this.self}/spj/`
+        }
       },
       competition: {
         self: `${root}/api/competition`,

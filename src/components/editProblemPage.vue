@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-04-26 13:06:45
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-26 10:31:28
+ * @LastEditTime: 2022-10-02 21:29:50
  * @Description: 编辑题目的组件
 -->
 <template>
@@ -21,6 +21,7 @@
                 v-model="newProblem.title"
                 placeholder="输入标题"
                 required
+                :disabled="step != 0"
               ></b-form-input>
             </b-form-group>
           </div>
@@ -34,14 +35,22 @@
                 v-model="newProblem.difficulty"
                 placeholder="输入难度"
                 required
+                :disabled="step != 0"
               >
               </b-form-input>
             </b-form-group>
           </div>
           <div class="d-inline-block pos-right-bottom">
-            <b-button variant="outline-secondary" squared size="lg" :pressed="false" type="submit">
+            <b-button
+              variant="outline-secondary"
+              squared
+              size="lg"
+              :pressed="false"
+              :disabled="loading"
+              type="submit"
+            >
               <p class="h6 d-inline">
-                <b>{{ submitTitle }}</b>
+                <b>{{ submitTitleD }}</b>
               </p>
             </b-button>
           </div>
@@ -49,157 +58,198 @@
       </b-row>
       <hr class="mb-0" />
       <b-row class="justify-content-left fill-x fill-b flex-row-reverse">
+        <!-- spj 步骤条 -->
+        <b-col cols="12" v-show="newProblem.method">
+          <el-steps :active="step" simple finish-status="success" class="br-0">
+            <el-step
+              v-for="(data, index) in steps"
+              :key="index"
+              :title="data.title"
+            ></el-step>
+          </el-steps>
+        </b-col>
         <b-col>
-          <!-- 时空限制 -->
-          <b-form-group>
-            <div class="pt-2">
-              <b-row>
-                <b-col cols="4" class="pr-0 h-auto pt-1">
-                  <p class="mb-0">时限(ms):</p>
-                </b-col>
-                <b-col cols="8" class="pl-0 h-auto">
+          <div v-if="step == 0">
+            <!-- 时空限制 -->
+            <b-form-group>
+              <div class="pt-2">
+                <b-row>
+                  <b-col cols="4" class="pr-0 h-auto pt-1">
+                    <p class="mb-0">时限(ms):</p>
+                  </b-col>
+                  <b-col cols="8" class="pl-0 h-auto">
+                    <b-form-input
+                      id="timeLimit"
+                      v-model="newProblem.info.limits[0].timeLimit"
+                      placeholder="输入数字"
+                      type="number"
+                      required
+                    >
+                    </b-form-input>
+                  </b-col>
+                </b-row>
+                <b-row>
+                  <b-col cols="4" class="pr-0 h-auto pt-1">
+                    <p class="mb-0">空限(MB):</p>
+                  </b-col>
+                  <b-col cols="8" class="pl-0 h-auto">
+                    <b-form-input
+                      id="timeLimit"
+                      v-model="newProblem.info.limits[0].memoryLimit"
+                      placeholder="输入数字"
+                      type="number"
+                      required
+                    >
+                    </b-form-input>
+                  </b-col>
+                </b-row>
+              </div>
+              <hr class="mb-0" />
+            </b-form-group>
+            <!-- 标签 -->
+            <b-row align-h="center">
+              <b-col cols="4" class="px-0">
+                <b-button
+                  variant="outline-secondary"
+                  squared
+                  size="sm"
+                  class="border-0 px-0 py-0"
+                  v-b-toggle.problemLabel
+                  :pressed="false"
+                  disabled
+                >
+                  <p class="h6 d-inline">标签</p>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    fill="currentColor"
+                    class="bi bi-chevron-double-down"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+                    />
+                  </svg>
+                </b-button>
+              </b-col>
+            </b-row>
+            <b-row>
+              <b-col class="">
+                <b-form-group lable="标签:" label-for="label">
                   <b-form-input
-                    id="timeLimit"
-                    v-model="newProblem.info.limits[0].timeLimit"
-                    placeholder="输入数字"
-                    type="number"
+                    id="label"
+                    v-model.trim="newProblem.label"
+                    placeholder="输入标签，',' 为分隔符"
                     required
                   >
                   </b-form-input>
-                </b-col>
-              </b-row>
-              <b-row>
-                <b-col cols="4" class="pr-0 h-auto pt-1">
-                  <p class="mb-0">空限(MB):</p>
-                </b-col>
-                <b-col cols="8" class="pl-0 h-auto">
-                  <b-form-input
-                    id="timeLimit"
-                    v-model="newProblem.info.limits[0].memoryLimit"
-                    placeholder="输入数字"
-                    type="number"
-                    required
+                </b-form-group>
+              </b-col>
+            </b-row>
+            <hr />
+            <!-- spj -->
+            <b-form-group v-show="newProblem.method">
+              <div>
+                <p class="h6">
+                  <b>注意:</b>选择cpp文件,用于评测结果<br />请使用
+                  <a
+                    href="https://github.com/MikeMirzayanov/testlib"
+                    target="_blank"
+                    title=""
+                    >testlib</a
+                  >, 将会关闭标准流
+                </p>
+                <b-form-file
+                  v-model="newProblem.spjFile"
+                  placeholder="选择评测程序"
+                  drop-placeholder=".cpp文件放入此处"
+                  size="sm"
+                  accept=".cpp,.cc"
+                  :required="Boolean(newProblem.method)"
+                >
+                  <template slot="file-name" slot-scope="{ names }">
+                    <b-badge variant="light" pill>checker.cpp</b-badge>
+                  </template>
+                </b-form-file>
+              </div>
+              <slot name="extra"> </slot>
+              <hr class="mb-0" />
+            </b-form-group>
+            <div>
+              <p class="h6 text-info">
+                <b>{{ warn }}</b>
+              </p>
+              <div>
+                <p class="h6">
+                  <b>注意:</b>输入输出文件应当同名,后缀分别为<b>.in</b>和<b
+                    >.out</b
                   >
-                  </b-form-input>
-                </b-col>
-              </b-row>
-            </div>
-            <hr class="mb-0" />
-          </b-form-group>
-          <!-- 题目详情的折叠区域 -->
-          <!-- 标签 -->
-          <b-row align-h="center">
-            <b-col cols="4" class="px-0">
-              <b-button
-                variant="outline-secondary"
-                squared
-                size="sm"
-                class="border-0 px-0 py-0"
-                v-b-toggle.problemLabel
-                :pressed="false"
-                disabled
+                </p>
+                <b-form-file
+                  v-model="newProblem.inputFiles"
+                  placeholder="选择输入数据"
+                  multiple
+                  drop-placeholder=".in文件放入此处"
+                  size="sm"
+                  accept=".in"
+                  :required="!new_file_flag"
+                  :disabled="new_file_flag"
+                ></b-form-file>
+                <b-form-file
+                  v-model="newProblem.outputFiles"
+                  placeholder="选择输出数据"
+                  multiple
+                  drop-placeholder=".out文件放入此处"
+                  size="sm"
+                  class="mt-2"
+                  accept=".out"
+                  :disabled="new_file_flag"
+                  :required="!new_file_flag"
+                ></b-form-file>
+              </div>
+              <b-form-checkbox
+                v-model="new_file_flag"
+                v-show="!label_display_none[route.name]"
               >
-                <p class="h6 d-inline">标签</p>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  fill="currentColor"
-                  class="bi bi-chevron-double-down"
-                  viewBox="0 0 16 16"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
-                  />
-                  <path
-                    fill-rule="evenodd"
-                    d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
-                  />
-                </svg>
-              </b-button>
-            </b-col>
-          </b-row>
-          <b-row>
-            <b-col class="">
-              <b-form-group lable="标签:" label-for="label">
-                <b-form-input
-                  id="label"
-                  v-model.trim="newProblem.label"
-                  placeholder="输入标签，',' 为分隔符"
-                  required
-                >
-                </b-form-input>
-              </b-form-group>
-            </b-col>
-          </b-row>
-          <hr />
-          <b-form-group v-show="newProblem.spjFlag">
-            <div>
-              <p class="h6"><b>注意:</b>选择cpp文件,用于评测结果</p>
-              <b-form-file
-                v-model="newProblem.spjFile"
-                :state="false"
-                placeholder="选择评测程序"
-                drop-placeholder=".cpp文件放入此处"
-                size="sm"
-                accept=".cpp"
-                :required="newProblem.spjFlag"
-              >
-                <template slot="file-name" slot-scope="{ names }">
-                  <b-badge variant="light" pill>checker.cpp</b-badge>
-                </template>
-              </b-form-file>
+                <h6>不修改文件</h6>
+              </b-form-checkbox>
             </div>
-            <hr class="mb-0" />
-          </b-form-group>
-          <!-- 输入输出数据 -->
-          <div>
-            <p class="h6 text-info">
-              <b>{{ warn }}</b>
-            </p>
-            <div>
-              <p class="h6"><b>注意:</b>输入输出文件应当同名,后缀分别为<b>.in</b>和<b>.out</b></p>
-              <b-form-file
-                v-model="newProblem.inputFiles"
-                :state="false"
-                placeholder="选择输入数据"
-                multiple
-                drop-placeholder=".in文件放入此处"
-                size="sm"
-                accept=".in"
-                :required="!new_file_flag"
-                :disabled="new_file_flag"
-              ></b-form-file>
-              <b-form-file
-                v-model="newProblem.outputFiles"
-                :state="false"
-                placeholder="选择输出数据"
-                multiple
-                drop-placeholder=".out文件放入此处"
-                size="sm"
-                class="mt-2"
-                accept=".out"
-                :disabled="new_file_flag"
-                :required="!new_file_flag"
-              ></b-form-file>
-            </div>
-            <b-form-checkbox v-model="new_file_flag" v-show="!label_display_none[route.name]"
-              ><h6>不修改文件</h6></b-form-checkbox
-            >
+            <!-- 题目类型 -->
+            <b-row v-if="label_display_none[route.name]">
+              <b-col>
+                <b-form-radio-group
+                  v-model="newProblem.method"
+                  :options="type_options"
+                  @input="changeMethod"
+                ></b-form-radio-group>
+              </b-col>
+            </b-row>
           </div>
-          <!-- 题目类型 -->
-          <b-row v-if="label_display_none[route.name]">
-            <b-col>
-              <b-form-radio-group
-                v-model="newProblem.spjFlag"
-                :options="type_options"
-              ></b-form-radio-group>
-            </b-col>
-          </b-row>
+          <!-- spj 第二步 -->
+          <div v-else-if="step === 1">
+            <b-row class="pt-2">
+              <b-col>
+                <p class="h5 mb-0">请提供程序以验证正确性</p>
+              </b-col>
+            </b-row>
+            <hr />
+            <b-row>
+              <b-col class="h-100">
+                <slot name="spj_result">
+                  <p>运行结果</p>
+                </slot>
+              </b-col>
+            </b-row>
+          </div>
         </b-col>
         <!-- markdown -->
-        <b-col class="px-0 border-right" lg="9">
+        <b-col class="border-right" lg="9">
           <markdown
             id="markdown"
             :mdPageHeight="avalHeight * heightRate"
@@ -209,9 +259,30 @@
             :editMode="this.mode"
             :problem="newProblem"
             @onSave="onMdSave"
+            v-if="step == 0"
           >
           </markdown>
-          <b-popover ref="mdPopover" target="markdown" title="注意" :disabled="true" variant="info">
+          <!-- 编辑器 -->
+          <code-editor
+            class="pl-2"
+            :showIOArea="false"
+            :avalHeightRate="heightRate * 0.8"
+            :isEditMode="true"
+            code=""
+            lang="c"
+            v-else-if="step == 1"
+            @submit="submitTestCode"
+          ></code-editor>
+          <div v-else-if="step === 2">
+            <p class="h4 pt-3">已完成</p>
+          </div>
+          <b-popover
+            ref="mdPopover"
+            target="markdown"
+            title="注意"
+            :disabled="true"
+            variant="info"
+          >
             此处不能为空
           </b-popover>
         </b-col>
@@ -221,24 +292,29 @@
 </template>
 <script>
 import markdown from "@/components/MdDemo"
+import codeEditor from "@/components/CodeEditor"
 
 export default {
   name: "editProblem",
   components: {
     markdown,
+    "code-editor": codeEditor,
   },
   computed: {
-    provLenCheck() {
+    provLenCheck () {
       if (this.newProblem.province === undefined) return false
       return this.newProblem.province.length < 6 ? true : false
     },
+    previewMode () {
+      return this.step == 2
+    }
   },
-  created() {
-    this.newProblem = this.oldProblem
+  created () {
+    this.changeMethod(this.newProblem.method)
   },
-  data() {
+  data () {
     return {
-      newProblem: null, // 为了省事直接用了，待修改
+      newProblem: this.oldProblem, // 为了省事直接用了，待修改
       user: {},
       warn: "",
       validate: false,
@@ -249,13 +325,16 @@ export default {
       },
       new_file_flag: false,
       type_options: [
-        { text: "常规", value: false },
-        { text: "spj", value: true, disabled: false },
+        { text: "常规", value: 0 },
+        { text: "spj", value: 1, disabled: false },
       ],
+      steps: [{ title: "初始化" }, { title: "验证" }, { title: "完成" }],
+      step: 0,
+      submitTitleD: this.submitTitle,
     }
   },
   methods: {
-    serializer() {
+    serializer () {
       let value = this.newProblem
       value["label_old"] = this.label_old
       let form = new FormData()
@@ -268,11 +347,11 @@ export default {
       this.newProblem.spjFile = new File([this.newProblem.spjFile], "checker.cpp")
       form.append("spjFile", this.newProblem.spjFile)
       for (let key in value) {
-        form.append(key, value[key])
+        if (key != "spjFile") form.append(key, value[key])
       }
       return form
     },
-    checkLabelsValid() {
+    checkLabelsValid () {
       // 四则运算,入门,#,#,#,#,#,#,#,#
       let result = true
       let modelStr = /^[\u4e00-\u9fa5,a-zA-Z0-9 ]+$/
@@ -290,7 +369,7 @@ export default {
       this.warn = ""
       return result
     },
-    checkFilesValid() {
+    checkFilesValid () {
       if (this.newProblem.inputFiles === null || this.newProblem.outputFiles === null) return false
       let map = {}
       let inputLength = 0,
@@ -319,30 +398,41 @@ export default {
       // this.validate = true
       return true
     },
-    submitProblem() {
-      if (this.checkLabelsValid()) {
-        if (!this.new_file_flag) if (!this.checkFilesValid()) return
-      } else return
-
-      if (this.newProblem.value === "") {
-        this.$refs.mdPopover.$emit("open")
-        setTimeout(() => {
-          this.$refs.mdPopover.$emit("close")
-        }, 5000)
+    submitProblem () {
+      if (this.step == 0) {
+        if (this.checkLabelsValid()) {
+          if (!this.new_file_flag) if (!this.checkFilesValid()) return
+        } else return
+        if (this.newProblem.value === "") {
+          this.$refs.mdPopover.$emit("open")
+          setTimeout(() => {
+            this.$refs.mdPopover.$emit("close")
+          }, 5000)
+          return
+        }
+      }
+      else if (this.step == 2) {
+        this.$router.replace({ 'name': 'probLib', params: { 'page': 1 } })
         return
       }
+
       let data = this.serializer()
       this.newProblem.label_old = this.label_old
-      debugger
-      return
       this.$emit("submit", data)
       this.$emit("update:value", this.newProblem)
-      // this.toast("成功")
     },
-    onMdSave(value) {
+    onMdSave (value) {
       this.$emit("onSave", value)
     },
+    changeMethod (checked) {
+      if (checked) this.submitTitleD = "下一步"
+      else this.submitTitleD = "提交"
+    },
+    submitTestCode (data) {
+      this.$emit("submit_code", data)
+    },
   },
+  mounted () { },
   props: {
     oldProblem: {
       type: Object,
@@ -360,7 +450,7 @@ export default {
           value: "",
           inputFiles: null,
           outputFiles: null,
-          spjFlag: false,
+          method: 0,
           spjFile: null,
         }
       },
@@ -377,6 +467,24 @@ export default {
       type: Number,
       default: 1,
     },
+    nextStep: {
+      type: Number,
+      default: 0,
+    },
+    errMsg: {
+      type: String,
+      default: "test",
+    },
+    loading: {
+      type: Boolean,
+      default: false
+    }
+  },
+  watch: {
+    nextStep (newVal) {
+      if (this.step < 3) this.step = newVal
+      if (this.step == 2) this.submitTitleD = '完成'
+    },
   },
 }
 </script>
@@ -387,6 +495,11 @@ export default {
   border-top: 0px;
   border-left: 0px;
   border-right: 0px;
+  &:disabled,
+  &[readonly] {
+    background-color: unset;
+    border-bottom: 0;
+  }
 }
 
 input {
