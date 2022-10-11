@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-25 20:00:36
+ * @LastEditTime: 2022-10-07 10:44:09
  * @Description: 请填写简介
  */
 //注意参数next需要调用，否则出现意外
@@ -108,7 +108,7 @@ const routes = [
   //   component: provincialCompetitionPage,
   // }, // 省赛题目页面 
   // 上述设计重复，不使用
-  { name: "usrInfo", path: "/usr_info/:uid", component: personalDetails }, // 个人信息
+  { name: "usrInfo", path: "/user_info/:uid", component: personalDetails }, // 个人信息
   { name: "registPage", path: "/register/:pk", component: registPage }, // 注册页面
   // 测试新页面
   { name: "testPage", path: "/test_page", component: testPage },

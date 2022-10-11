@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-11 10:45:38
+ * @LastEditTime: 2022-10-07 10:04:26
  * @Description: 请填写简介
  */
 // app.js
@@ -53,19 +53,6 @@ Vue.component(Vehistogram.name, Vehistogram) //柱状图
 Vue.component(VeLiquidfill.name, VeLiquidfill) //水球图
 Vue.config.productionTip = false
 Vue.mixin(mixin) //全局方法
-//默认提交表单
-// axios.defaults.headers.post["Content-Type"] = "application/x-www-form-urlencoded;charset=utf-8"
-// axios.defaults.headers.get["Content-Type"] = "application/x-www-form-urlencoded;charset=utf-8"
-// axios.defaults.headers.delete["Content-Type"] = "application/x-www-form-urlencoded;charset=utf-8"
-// 下面暂时不要删
-// axios.defaults.transformRequest = [function (data) {
-//     let ret = ''
-//     for (let it in data) {
-//       ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-//     }
-//     debugger
-//     return ret
-// }]
 //axios
 Vue.prototype.$axios = axios
 Vue.prototype.$qs = qs

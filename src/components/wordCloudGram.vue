@@ -1,17 +1,18 @@
 <!--
  * @Author: 
  * @Date: 2022-01-24 19:31:21
- * @LastEditors: 
- * @LastEditTime: 2022-08-01 10:50:57
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-10-07 10:20:26
  * @Description: 请填写简介
 -->
-<template lang="">
+<template >
   <div class="h-auto w-auto">
     <ve-wordcloud
       :data="data"
       width="100%"
       :height="gramHeight"
       :settings="chartSettings"
+      class="z-4"
     ></ve-wordcloud>
   </div>
 </template>

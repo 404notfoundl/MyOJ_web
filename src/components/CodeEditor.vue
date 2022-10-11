@@ -237,7 +237,7 @@ export default {
       }
     },
     getResult () {
-      if (this.rtnCode) return;
+      if (this.rtnCode || this.output=='') return;
       this.loading = true
       this.$emit("refresh")
     },

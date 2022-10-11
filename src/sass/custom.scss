@@ -25,7 +25,26 @@
     }
   }
 }
+// 宽 高 z轴
+@for $i from 1 to 10 {
+  .w-#{$i*10} {
+    width: $i * 10% !important;
+  }
+  .h-#{$i*10} {
+    height: $i * 10% !important;
+  }
+  .z-#{$i} {
+    z-index: $z-index - $i * 10 !important;
+  }
+}
 
+.h-5 {
+  height: 5% !important;
+}
+
+.z-0 {
+  z-index: $z-index !important;
+}
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
   color: white;
@@ -50,42 +69,6 @@
 
 .mh-10 {
   max-height: 10% !important;
-}
-
-.w-80 {
-  width: 80% !important;
-}
-
-.h-5 {
-  height: 5% !important;
-}
-.h-20 {
-  height: 20% !important;
-}
-.h-30 {
-  height: 30% !important;
-}
-.h-70 {
-  height: 70% !important;
-}
-.h-80 {
-  height: 80% !important;
-}
-
-.z-0 {
-  z-index: $z-index !important;
-}
-.z-1 {
-  z-index: $z-index - 10 !important;
-}
-.z-2 {
-  z-index: $z-index - 20 !important;
-}
-.z-3 {
-  z-index: $z-index - 30 !important;
-}
-.z-4 {
-  z-index: $z-index - 40 !important;
 }
 
 .fixed-right-bottom {

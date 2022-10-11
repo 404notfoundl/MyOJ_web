@@ -8,7 +8,7 @@
     <div class="row h-25 w-100 justify-content-center pt-1">
       <div class="col-lg-8 h-100 px-0 position-relative">
         <div class="position-center h-100 z-4 w-100 pb-5">
-          <!-- TODO 此部分计划显示用户通过题目标签及数量 -->
+          <!-- 自定义词云图 -->
           <wordcloud
             :gramHeight="ojPageHeight * 0.25 + 'px'"
             gramShape="pentagon"
@@ -149,6 +149,7 @@
                           <b-form-input
                             v-model.lazy.trim="submitInfo.avatarUrl"
                             placeholder="输入头像url"
+                            type="url"
                             required
                           >
                           </b-form-input>
@@ -257,7 +258,6 @@
                 </b-form>
               </b-tab>
             </div>
-            <b-tab title="禁用" v-if="false"><p>I'm a disabled tab!</p></b-tab>
           </b-tabs>
         </b-card>
       </div>
@@ -279,7 +279,7 @@ export default {
   },
   computed: {
     avartarSize: function () {
-      return (this.ojPageHeight * 0.1 <= 50 ? 50 : this.ojPageHeight * 0.1) + "px"
+      return (this.ojPageHeight * 0.1 <= 64 ? 64 : this.ojPageHeight * 0.1) + "px"
     },
     isSelf () {
       return this.$route.params.uid == this.userInfo.uid
@@ -593,24 +593,27 @@ p {
 input:disabled {
   background-color: unset;
   font-weight: bold;
+  border: 0;
 }
 input::placeholder {
   color: gray;
 }
-input{
-    outline-style: none ;
-    border: 1px solid #ccc; 
-    border-radius: 3px;
-    padding: 6px;
-    font-size: 14px;
-    width: 100%;
-    font-family: "Microsoft soft";
+input {
+  outline-style: none;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 6px;
+  font-size: 14px;
+  width: 100%;
+  font-family: "Microsoft soft";
 }
-input:focus{
-    border-color: #66afe9;
-    outline: 0;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+input:focus {
+  border-color: #66afe9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+    0 0 8px rgba(102, 175, 233, 0.6);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+    0 0 8px rgba(102, 175, 233, 0.6);
 }
 
 .fixed-right {

@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-04-26 13:06:45
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-02 21:29:50
+ * @LastEditTime: 2022-10-11 10:54:04
  * @Description: 编辑题目的组件
 -->
 <template>
@@ -107,51 +107,38 @@
               <hr class="mb-0" />
             </b-form-group>
             <!-- 标签 -->
-            <b-row align-h="center">
-              <b-col cols="4" class="px-0">
-                <b-button
-                  variant="outline-secondary"
-                  squared
-                  size="sm"
-                  class="border-0 px-0 py-0"
-                  v-b-toggle.problemLabel
-                  :pressed="false"
-                  disabled
-                >
-                  <p class="h6 d-inline">标签</p>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    fill="currentColor"
-                    class="bi bi-chevron-double-down"
-                    viewBox="0 0 16 16"
+            <b-form-group
+              label="标签"
+              label-for="tag-labels"
+              :state="labels_state"
+            >
+              <b-row>
+                <b-col class="">
+                  <b-form-tags
+                    input-id="tag-labels"
+                    v-model="label_new"
+                    class=""
+                    remove-on-delete
+                    placeholder="添加标签，回车确定"
+                    tag-pills
+                    tag-variant="info"
+                    :tag-validator="validateTags"
+                    no-outer-focus
+                    :state="labels_state"
+                    add-button-text="+"
+                    invalid-tag-text="无效标签"
+                    separator=","
                   >
-                    <path
-                      fill-rule="evenodd"
-                      d="M1.646 6.646a.5.5 0 0 1 .708 0L8 12.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
-                    />
-                    <path
-                      fill-rule="evenodd"
-                      d="M1.646 2.646a.5.5 0 0 1 .708 0L8 8.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
-                    />
-                  </svg>
-                </b-button>
-              </b-col>
-            </b-row>
-            <b-row>
-              <b-col class="">
-                <b-form-group lable="标签:" label-for="label">
-                  <b-form-input
-                    id="label"
-                    v-model.trim="newProblem.label"
-                    placeholder="输入标签，',' 为分隔符"
-                    required
-                  >
-                  </b-form-input>
-                </b-form-group>
-              </b-col>
-            </b-row>
+                  </b-form-tags>
+                </b-col>
+              </b-row>
+              <template #invalid-feedback> 标签数在8个以内 </template>
+              <template #description>
+                <div id="tags-validation-help">
+                  标签只应包含汉字,字母,数字或空格
+                </div>
+              </template>
+            </b-form-group>
             <hr />
             <!-- spj -->
             <b-form-group v-show="newProblem.method">
@@ -307,10 +294,16 @@ export default {
     },
     previewMode () {
       return this.step == 2
+    },
+    labels_state () {
+      let rtn = this.label_new.length < 9 && this.label_new.length > 0 ? true : false
+      if (this.label_new.length == 0) rtn = null
+      return rtn
     }
   },
   created () {
     this.changeMethod(this.newProblem.method)
+    this.label_new=this.newProblem.label.split(',')      
   },
   data () {
     return {
@@ -318,6 +311,8 @@ export default {
       user: {},
       warn: "",
       validate: false,
+      label_msg: "",
+      label_new: [],
       label_old: this.oldProblem.label,
       label_display_none: {
         addCompetition: true,
@@ -350,6 +345,13 @@ export default {
         if (key != "spjFile") form.append(key, value[key])
       }
       return form
+    },
+    validateTags (tag) {
+      let result = true
+      let modelStr = /^[\u4e00-\u9fa5 a-zA-Z0-9]+$/
+      result = modelStr.test(tag)
+      result &= tag.length < 10
+      return result
     },
     checkLabelsValid () {
       // 四则运算,入门,#,#,#,#,#,#,#,#
@@ -400,9 +402,12 @@ export default {
     },
     submitProblem () {
       if (this.step == 0) {
-        if (this.checkLabelsValid()) {
+        if (this.labels_state) {
           if (!this.new_file_flag) if (!this.checkFilesValid()) return
-        } else return
+        } else {
+          this.toast("请按要求填写标签", 3000)
+          return
+        }
         if (this.newProblem.value === "") {
           this.$refs.mdPopover.$emit("open")
           setTimeout(() => {
@@ -432,7 +437,9 @@ export default {
       this.$emit("submit_code", data)
     },
   },
-  mounted () { },
+  mounted () {
+
+  },
   props: {
     oldProblem: {
       type: Object,
@@ -485,6 +492,9 @@ export default {
       if (this.step < 3) this.step = newVal
       if (this.step == 2) this.submitTitleD = '完成'
     },
+    label_new () {
+      this.newProblem.label = this.label_new.join(",")
+    }
   },
 }
 </script>

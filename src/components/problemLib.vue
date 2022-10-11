@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-08-25 16:57:48
+ * @LastEditTime: 2022-10-10 12:37:51
  * @Description: 请填写简介
 -->
 <template lang="">
@@ -26,11 +26,18 @@
                   select-mode="single"
                   @row-selected="rowSelected"
                   id='probList' 
-                  :key="currentPageComp">
+                  :key="tableKey">
                   <template #table-busy>
                     <div class="text-center text-danger my-2">
                       <b-spinner class="align-middle"></b-spinner>
                       <strong>加载中...</strong>
+                    </div>
+                  </template>
+                  <template :slot="`cell(label)`" slot-scope="data">
+                    <div class="">
+                      <b-badge class="ml-1" variant="secondary" v-for="(item,index) in data.value.split(',')" :key="item" v-show="index<2">
+                        {{item}}
+                      </b-badge>
                     </div>
                   </template>
                 </b-table>
@@ -53,6 +60,7 @@
                 <b-card no-body class="br-0">
                   <b-card-body>
                     <b-form @submit.prevent="searchProb">
+                      <!-- 搜索按钮 -->
                       <b-row>
                         <b-col>
                           <b-form-group>
@@ -64,19 +72,44 @@
                           </b-form-group>
                         </b-col>
                       </b-row>
+                      <!-- 输入框 -->
                       <b-row>
                         <b-col>
                           <b-form-group>
                             <b-form-input 
-                            type="search" 
-                            trim 
-                            number
-                            required
-                            v-model.lazy="searchKey.pid" 
-                            placeholder="题目编号">
+                              type="search" 
+                              trim 
+                              v-model.lazy="searchKey.pid" 
+                              placeholder="题目编号/标题"
+                            >
                             </b-form-input>
-                            <p class="h6 mb-0 mt-1 text-secondary" v-show="!pidIsInt">应当是整数</p>
                           </b-form-group>
+                        </b-col>
+                      </b-row>
+                      <!-- 标签筛选 -->
+                      <b-row>
+                        <b-col>
+                          <span class='h6 text-muted d-block mb-0' v-b-toggle="'fliter-labels'">
+                            标签筛选
+                            <svg class="bi bi-arrows-collapse" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                              <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8zm6-7a.5.5 0 0 1 .5.5V6a.5.5 0 0 1-1 0V1.5A.5.5 0 0 1 8 1z"/>
+                              <path fill-rule="evenodd" d="M10.354 3.646a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L8 5.293l1.646-1.647a.5.5 0 0 1 .708 0zM8 15a.5.5 0 0 0 .5-.5V10a.5.5 0 0 0-1 0v4.5a.5.5 0 0 0 .5.5z"/>
+                              <path fill-rule="evenodd" d="M10.354 12.354a.5.5 0 0 0 0-.708l-2-2a.5.5 0 0 0-.708 0l-2 2a.5.5 0 0 0 .708.708L8 10.707l1.646 1.647a.5.5 0 0 0 .708 0z"/>
+                            </svg>
+                          </span>
+                          <b-collapse id='fliter-labels' class="py-1">
+                            <b-badge 
+                              class='ml-1 py-1'
+                              pill variant='light'
+                              v-for="value in siteLabels"
+                              :key="value.word" size='lg'
+                              href="#"
+                              :active="searchKey.selectedLabel==value.word"
+                              @click="labelClick(value.word)"
+                              >
+                              {{value.word}}
+                            </b-badge>
+                          </b-collapse>
                         </b-col>
                       </b-row>
                     </b-form>
@@ -104,67 +137,101 @@ export default {
       return Math.floor((this.$store.state.avaliableHeight / 35 * 0.8))
     },
     pidIsInt () {
-      return (Number.isInteger(this.searchKey.pid) && this.searchKey.pid > 0) || this.searchKey.pid == ''
+      return (Number.isInteger(Number(this.searchKey.pid)) && Number(this.searchKey.pid) > 0) && this.searchKey.pid !== ''
     },
-    currentPageComp:function(){
-      return this.$route.params.page!=undefined?this.$route.params.page:1
+    currentPageComp: function () {
+      return this.$route.params.page != undefined ? this.$route.params.page : 1
+    },
+    tableKey () {
+      let key = ""
+      for (let qkey in this.query_data)
+        key += this.query_data[qkey]
+      key += this.searchKey.selectedLabel
+      key += this.currentPageComp
+      return key
     }
   },
   created () {
+    this.getSiteLabels()
   },
   data () {
     return {
       showSearch: false,
-      currentPage: this.$route.params.page!=undefined?this.$route.params.page:1,
+      currentPage: this.$route.params.page != undefined ? this.$route.params.page : 1,
       // pageCols: 20,//一页的列数
       problemList: {},
       rows: 10,
       searchKey: {
-        pid: ''
+        pid: '',
+        selectedLabel:''
       },
-      listName: [{ key: 'pid', label: '#' }, { key: 'title', label: '名称' }, { key: 'acceptNum', label: '通过' }, { key: 'submitNum', label: '提交' }, { key: 'accepted', label: ' ' }]
+      listName: [{ key: 'pid', label: '#' }, { key: 'title', label: '名称',class:'w-50' }, { key: 'label', label: '标签',class:'w-20' }, { key: 'acceptNum', label: '通过' }, { key: 'submitNum', label: '提交' }],
+      query_data: {},
+      siteLabels: []
     }
   },
   methods: {
     getProbList (ctx, callback) {
       //有待修改，还在测试
-      // debugger
+      let params = {
+        page: this.currentPage,
+        cols: this.pageCols
+      }
+      for (let key in this.query_data)
+        params[key] = this.query_data[key]
+
       this.$axios({
         url: `${this.$store.state.webUrl.problems}`,
-        params: {
-          page: this.currentPage,
-          cols: this.pageCols
-        }
+        params
       }).then((response) => {
         this.problemList = response.data
         this.rows = this.problemList[0].total
         this.problemList.splice(0, 1)
-        this.$nextTick(()=>{this.currentPage=this.currentPageComp})
+        this.$nextTick(() => { this.currentPage = this.currentPageComp })
         callback(this.problemList)
       })
         .catch(function (error) {
           console.log(error)
           callback([{ pid: 0, title: '可能是网络出现了问题，稍后刷新一下试试?' }])
-        }).finally(()=>{return true;})
+        }).finally(() => { return true; })
     },
     jumpToProb (props) {
       this.$emit('go-to', 'problemObj', props)
     },
     searchProb () {
-      if (!this.pidIsInt)
+      if (!this.pidIsInt) {
+        this.query_data = {
+          'title__contains': this.searchKey.pid,
+          'label__contains': this.searchKey.selectedLabel
+        }
         return
+      }
       this.jumpToProb(this.searchKey)
     },
     rowSelected (item) {
       this.jumpToProb({ 'pid': item[0].pid })
     },
-    nextPage(page){
-      this.$emit('go-to', 'probLib', {page})
-    }
+    nextPage (page) {
+      this.$emit('go-to', 'probLib', { page })
+    },
+    getSiteLabels () {
+      return this.$axios({
+        url: `${this.$store.state.webUrl.label}`,
+      }).then((response) => {
+        this.siteLabels = response.data
+      })
+    },
+    labelClick (label) {
+      if(this.searchKey.selectedLabel!=label)
+        this.searchKey.selectedLabel=label
+      else
+        this.searchKey.selectedLabel=''
+      this.searchProb()
+    },
   },
-  watch:{
-    currentPageComp(){
-      this.currentPage=this.currentPageComp
+  watch: {
+    currentPageComp () {
+      this.currentPage = this.currentPageComp
     }
   }
 }
@@ -239,15 +306,16 @@ $right-end: -(100vw * 0.14);
   transition-duration: 0.5s;
 }
 
-.w-30 {
-  width: 30%;
-}
-
 button {
   background-color: white;
 }
 
 .btn-outline-secondary {
-    border: 1px solid #d0d7db;
+  border: 1px solid #d0d7db;
+}
+
+.active{
+  background-color: black !important;
+  color: white !important;
 }
 </style>
