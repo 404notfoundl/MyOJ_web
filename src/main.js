@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-07 10:04:26
+ * @LastEditTime: 2022-10-18 20:06:16
  * @Description: 请填写简介
  */
 // app.js
@@ -22,9 +22,9 @@ import store from "./store/index"
 import Vehistogram from "v-charts/lib/histogram.common"
 import VeWordCloud from "v-charts/lib/wordcloud.min"
 import VeLiquidfill from "v-charts/lib/liquidfill.common"
+import VePie from "v-charts/lib/pie.common"
 //editor
 import ace from "ace-builds"
-Vue.use(ace)
 //全局方法
 import mixin from "./global"
 //axios
@@ -36,8 +36,11 @@ import vueAwesomeCountdown from "vue-awesome-countdown"
 import { steps, step } from "element-ui"
 
 import "http"
+import VueClipboards from "vue-clipboard2"
 
 // Optionally install the BootstrapVue icon components plugin
+Vue.use(VueClipboards)
+Vue.use(ace)
 Vue.use(vueAwesomeCountdown, "countdown") // Component name, `countdown` and `vac` by default
 Vue.use(PortalVue)
 Vue.use(IconsPlugin)
@@ -51,6 +54,7 @@ MavonEditor.mavonEditor
 Vue.component(VeWordCloud.name, VeWordCloud) //词云
 Vue.component(Vehistogram.name, Vehistogram) //柱状图
 Vue.component(VeLiquidfill.name, VeLiquidfill) //水球图
+Vue.component(VePie.name, VePie)
 Vue.config.productionTip = false
 Vue.mixin(mixin) //全局方法
 //axios

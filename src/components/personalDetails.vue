@@ -83,14 +83,9 @@
                   <achistogram></achistogram>
                 </div>
                 <div class="col-6">
-                  <acpercent
-                    :accept_num="userDetail.acceptNum"
-                    :submit_num="userDetail.submitNum"
-                  ></acpercent>
+                  <ve-pie :data="acPieChart" :colors="pieColor"></ve-pie>
                 </div>
               </div>
-              <!-- <div class="col-9">
-                  </div> -->
             </b-tab>
             <b-tab title="通过题目">
               <b-row>
@@ -318,6 +313,11 @@ export default {
       submitWordCloud: {},
       isWordValid: 0,
       createFlag: true,
+      acPieChart: {
+        columns: ['title', 'value'],
+        rows: []
+      },
+      pieColor:['#bddd22','#ff7500']
     }
   },
   methods: {
@@ -407,6 +407,8 @@ export default {
           this.submitInfo.email = response.data.email
           if (response.data.avatar_url != "") this.userDetail.avatarUrl = response.data.avatar_url
           else this.userDetail.avatarUrl = require("../assets/Akkarin.png")
+          this.acPieChart.rows.push({ 'title': 'AC', 'value': this.userDetail.acceptNum })
+          this.acPieChart.rows.push({ 'title': 'WA', 'value': this.userDetail.submitNum - this.userDetail.acceptNum })
         })
         .catch((err) => {
           this.toast(err.response.data.result)

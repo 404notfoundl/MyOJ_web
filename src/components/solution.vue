@@ -1,5 +1,8 @@
 <template>
-  <div class="overflow-hidden position-relative" :style="`max-height:${maxHeight}`">
+  <div
+    class="overflow-hidden position-relative"
+    :style="`max-height:${maxHeight}`"
+  >
     <!-- 载入等待 -->
     <b-skeleton-wrapper :loading="loading">
       <template #loading>
@@ -61,7 +64,7 @@ export default {
     markdown,
   },
   computed: {
-    isHide() {
+    isHide () {
       return this.maxHeight !== "unset"
     },
   },
@@ -71,11 +74,11 @@ export default {
     }
   },
   methods: {
-    unFold() {
+    unFold () {
       this.maxHeight = "unset"
     },
   },
-  mounted() {},
+  mounted () { },
   props: {
     info: {
       type: Object,

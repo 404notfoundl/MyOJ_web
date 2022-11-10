@@ -17,29 +17,29 @@
               <div class='pt-2 text-info' @click="showMsgModal">{{extraMsg}}</div>
             </template>
             <template v-slot:spj_result>
-  <p v-if="rtnCode">{{ loading ? "请等待结果" : "等待提交验证代码" }}</p>
-  <div v-else>
-    <p class="font-weight-bolder text-left mb-1">运行结果：</p>
-    <b-form-radio-group v-model="selectFliter" :options="fliterTypes" class="">
-    </b-form-radio-group>
-    <b-list-group
-      class="scroller py-1 br-0"
-      :style="`max-height:${avalHeight * 0.64}px;`"
-    >
-      <b-list-group-item
-        v-for="(key, index) in rtnRes.status"
-        :key="index"
-        class="py-1 text-wrap text-monospace text-break"
-        v-show="fliterResults(index)"
-      >
-        <div class="font-weight-bold d-inline-block">#{{ index }}:</div>
-        <div class="font-weight-light d-inline-block text-left">
-          {{ rtnRes.details[index] }}
-        </div>
-      </b-list-group-item>
-    </b-list-group>
-  </div>
-</template>          
+              <p v-if="rtnCode">{{ loading ? "请等待结果" : "等待提交验证代码" }}</p>
+              <div v-else>
+                <p class="font-weight-bolder text-left mb-1">运行结果：</p>
+                <b-form-radio-group v-model="selectFliter" :options="fliterTypes" class="">
+                </b-form-radio-group>
+                <b-list-group
+                  class="scroller py-1 br-0"
+                  :style="`max-height:${avalHeight * 0.64}px;`"
+                >
+                  <b-list-group-item
+                    v-for="(key, index) in rtnRes.status"
+                    :key="index"
+                    class="py-1 text-wrap text-monospace text-break"
+                    v-show="fliterResults(index)"
+                  >
+                    <div class="font-weight-bold d-inline-block">#{{ index }}:</div>
+                    <div class="font-weight-light d-inline-block text-left">
+                      {{ rtnRes.details[index] }}
+                    </div>
+                  </b-list-group-item>
+                </b-list-group>
+              </div>
+            </template>          
           </edit-page>
         </b-card>
       </div>

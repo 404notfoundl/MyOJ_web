@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-04-26 13:06:45
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-11 10:54:04
+ * @LastEditTime: 2022-10-15 20:07:44
  * @Description: 编辑题目的组件
 -->
 <template>
@@ -158,15 +158,23 @@
                   drop-placeholder=".cpp文件放入此处"
                   size="sm"
                   accept=".cpp,.cc"
-                  :required="Boolean(newProblem.method)"
+                  :required="Boolean(newProblem.method) && new_checker_flag"
+                  :disabled="new_checker_flag"
                 >
                   <template slot="file-name" slot-scope="{ names }">
                     <b-badge variant="light" pill>checker.cpp</b-badge>
                   </template>
                 </b-form-file>
+                <b-form-checkbox
+                  v-model="new_checker_flag"
+                  v-show="!label_display_none[route.name]"
+                  class="mt-1"
+                >
+                  <h6>不修改评测程序</h6>
+                </b-form-checkbox>
               </div>
               <slot name="extra"> </slot>
-              <hr class="mb-0" />
+              <hr class="my-0" />
             </b-form-group>
             <div>
               <p class="h6 text-info">
@@ -203,12 +211,13 @@
               <b-form-checkbox
                 v-model="new_file_flag"
                 v-show="!label_display_none[route.name]"
+                class="mt-1"
               >
                 <h6>不修改文件</h6>
               </b-form-checkbox>
             </div>
             <!-- 题目类型 -->
-            <b-row v-if="label_display_none[route.name]">
+            <b-row v-if="label_display_none[route.name] || modifyFlag">
               <b-col>
                 <b-form-radio-group
                   v-model="newProblem.method"
@@ -299,11 +308,14 @@ export default {
       let rtn = this.label_new.length < 9 && this.label_new.length > 0 ? true : false
       if (this.label_new.length == 0) rtn = null
       return rtn
+    },
+    modifyFlag () {
+      return this.$route.name == 'modifyProblem'
     }
   },
   created () {
     this.changeMethod(this.newProblem.method)
-    this.label_new=this.newProblem.label.split(',')      
+    this.label_new = this.newProblem.label.split(',')
   },
   data () {
     return {
@@ -311,17 +323,16 @@ export default {
       user: {},
       warn: "",
       validate: false,
-      label_msg: "",
       label_new: [],
-      label_old: this.oldProblem.label,
       label_display_none: {
         addCompetition: true,
         appendProblem: true,
       },
       new_file_flag: false,
+      new_checker_flag: false,
       type_options: [
         { text: "常规", value: 0 },
-        { text: "spj", value: 1, disabled: false },
+        { text: "spj", value: 1 },
       ],
       steps: [{ title: "初始化" }, { title: "验证" }, { title: "完成" }],
       step: 0,
@@ -331,7 +342,6 @@ export default {
   methods: {
     serializer () {
       let value = this.newProblem
-      value["label_old"] = this.label_old
       let form = new FormData()
       form.append("timeLimit", this.newProblem.info.limits[0].timeLimit)
       form.append("memoryLimit", this.newProblem.info.limits[0].memoryLimit)
@@ -339,11 +349,15 @@ export default {
         form.append("input", this.newProblem.inputFiles[cnt])
         form.append("output", this.newProblem.outputFiles[cnt])
       }
-      this.newProblem.spjFile = new File([this.newProblem.spjFile], "checker.cpp")
+      if (this.newProblem.method == 1)
+        this.newProblem.spjFile = new File([this.newProblem.spjFile], "checker.cpp")
       form.append("spjFile", this.newProblem.spjFile)
       for (let key in value) {
-        if (key != "spjFile") form.append(key, value[key])
+        if (value[key] === null || value[key] === undefined) continue
+        else if (key != "spjFile") form.append(key, value[key])
       }
+      form.append('newFile', !this.new_file_flag)
+      form.append('newChecker', !this.new_checker_flag)
       return form
     },
     validateTags (tag) {
@@ -422,7 +436,6 @@ export default {
       }
 
       let data = this.serializer()
-      this.newProblem.label_old = this.label_old
       this.$emit("submit", data)
       this.$emit("update:value", this.newProblem)
     },

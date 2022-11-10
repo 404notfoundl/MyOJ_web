@@ -94,12 +94,16 @@
                     </h1>
                   </div>
                   <div class="d-inline-block">
-                    <p class="font-weight-light text-secondary">难度:{{ problemObj.difficulty }}</p>
+                    <p class="font-weight-light text-secondary">
+                      难度:{{ problemObj.difficulty }}
+                    </p>
                   </div>
                   <hr />
                 </b-col>
               </b-row>
-              <b-row class="justify-content-left fill-x fill-b flex-row-reverse">
+              <b-row
+                class="justify-content-left fill-x fill-b flex-row-reverse"
+              >
                 <b-col class="">
                   <!-- 题目详情的折叠区域 -->
                   <b-collapse visible id="probDetailsPanel" class="">
@@ -181,7 +185,10 @@
                       <b-col cols="4">
                         <b-link
                           :to="{ name: 'solution', params: $route.params.pid }"
-                          class="text-decoration-none text-secondary d-inline-block"
+                          class="
+                            text-decoration-none text-secondary
+                            d-inline-block
+                          "
                           ><b>题解</b></b-link
                         >
                       </b-col>
@@ -247,7 +254,9 @@
                                   d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
                                 />
                               </svg>
-                              <p class="mb-0 d-inline-block">{{ task.submitDate }}</p>
+                              <p class="mb-0 d-inline-block">
+                                {{ task.submitDate }}
+                              </p>
                             </div>
                           </b-col>
                           <!-- 得分 -->
@@ -272,14 +281,21 @@
                           </b-col>
                           <!-- 提交语言 -->
                           <b-col cols="1" class="float-right pr-5">
-                            <p class="mb-0 d-inline-block float-left text-muted" title="语言">
+                            <p
+                              class="mb-0 d-inline-block float-left text-muted"
+                              title="语言"
+                            >
                               {{ task.lang }}
                             </p>
                           </b-col>
                         </b-row>
                       </span>
                       <!-- 主体部分 -->
-                      <b-collapse :id="`accordion-${index}`" accordion="tasks" role="tabpanel">
+                      <b-collapse
+                        :id="`accordion-${index}`"
+                        accordion="tasks"
+                        role="tabpanel"
+                      >
                         <b-card no-body class="w-100 br-0">
                           <b-card-body>
                             <b-row>
@@ -292,7 +308,9 @@
                                 <!-- 折叠详情 -->
                                 <span v-b-toggle.acRate>
                                   <b-card-text class="mt-2 d-inline-block"
-                                    >通过:{{ task.acNum }}/{{ task.total }}</b-card-text
+                                    >通过:{{ task.acNum }}/{{
+                                      task.total
+                                    }}</b-card-text
                                   >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -315,7 +333,9 @@
                                     :key="index"
                                     :title="task.details[index]"
                                     squared
-                                    >#{{ index }}<br />{{ statusMap[stat] }}</b-button
+                                    >#{{ index }}<br />{{
+                                      statusMap[stat]
+                                    }}</b-button
                                   >
                                 </b-collapse>
                                 <hr />
@@ -338,8 +358,14 @@
                       <hr class="hr-second" />
                     </b-col>
                     <!-- 加载中。。。 -->
-                    <b-col v-show="loading && Boolean(nextTaskPage)" class="py-5">
-                      <b-spinner label="加载中。。。" variant="primary"></b-spinner>
+                    <b-col
+                      v-show="loading && Boolean(nextTaskPage)"
+                      class="py-5"
+                    >
+                      <b-spinner
+                        label="加载中。。。"
+                        variant="primary"
+                      ></b-spinner>
                     </b-col>
                     <b-col v-show="!loading && Boolean(nextTaskPage)">
                       <label>滚动以加载更多</label>
@@ -403,20 +429,20 @@ export default {
     "code-editor": codeEditor,
   },
   computed: {
-    cols() {
+    cols () {
       return Math.floor(this.$store.state.avaliableHeight / 50)
     },
-    isBottom() {
+    isBottom () {
       return this.$store.state.isBottom
     },
-    isCompetition() {
+    isCompetition () {
       return !(isNaN(this.$route.params.cid) || isNaN(this.$route.params.pid))
     },
   },
   created: function () {
     this.getProbDetails()
   },
-  data() {
+  data () {
     this.statusMap = {
       a: "AC",
       c: "CE",
@@ -456,16 +482,17 @@ export default {
     }
   },
   methods: {
-    nullFunc() {},
-    gotoModify(props) {
+    nullFunc () { },
+    gotoModify (props) {
       // debugger
       props["oldProblem"] = this.problemObj
       this.$emit("go-to", "modifyProblem", props)
     },
-    back() {
+    back () {
       this.$router.back()
     },
-    serializer(data) {
+    serializer (data) {
+      let labels_map = ['title', 'label', 'difficulty', 'value', 'pid', 'method']
       let value = {
         info: {
           num: [{ acceptNum: data.acceptNum, submitNum: data.submitNum }],
@@ -479,11 +506,9 @@ export default {
             { key: "memoryLimit", label: "空间限制" },
           ],
         },
-        title: data.title,
-        label: data.label,
-        difficulty: data.difficulty,
-        value: data.value,
-        pid: data.pid,
+      }
+      for (let key in labels_map) {
+        value[labels_map[key]] = data[labels_map[key]]
       }
       return value
     },
@@ -523,7 +548,7 @@ export default {
           return true
         })
     },
-    getTasks() {
+    getTasks () {
       let info = this.userInfo
       let params = {
         uid: info.uid,
@@ -578,7 +603,7 @@ export default {
           this.loading = false
         })
     },
-    getSubmitedSolution() {
+    getSubmitedSolution () {
       let info = this.userInfo
       if (!info) return
       let params = {
@@ -596,8 +621,8 @@ export default {
         .then((response) => {
           if (response.data.result === 404) {
             this.hasSubmited = false
-            this.solution = this.getMdBorwser("solution", this.$route.params.pid)
-            if(this.solution==null)this.solution=""
+            this.solution = this.getMdBorwser("solution", this.$route.params.pid).value
+            if (this.solution == null) this.solution = ""
           } else {
             this.hasSubmited = true
             this.solution = response.data.value
@@ -607,7 +632,7 @@ export default {
           this.hasSubmited = false
         })
     },
-    submitSolution() {
+    submitSolution () {
       if (this.solution === "") return
       let info = this.userInfo
       let method = this.hasSubmited ? "PUT" : "POST"
@@ -645,7 +670,7 @@ export default {
           console.log("failed")
         })
     },
-    submitCode(data) {
+    submitCode (data) {
       let uid = this.userInfo.uid
       let pid = this.$route.params.pid === undefined ? -1 : Number.parseInt(this.$route.params.pid)
       data.uid = uid
@@ -667,31 +692,28 @@ export default {
       })
         .then((response) => {
           this.toast(response.data.result)
-          // console.log(response)
         })
         .catch((err) => {
           // debugger
           this.toast(err)
-          // console.log(err)
         })
-      // console.log(data)
     },
-    splitLabel() {
+    splitLabel () {
       if (this.problemObj.label === undefined) return null
       return this.problemObj.label.split(",")
     },
-    onMdSave(value) {
-      this.saveMdBorwser("solution", this.$route.params.pid, {value})
+    onMdSave (value) {
+      this.saveMdBorwser("solution", this.$route.params.pid, { value })
     },
   },
-  mounted() {},
+  mounted () { },
   watch: {
-    tabsIndex(current, previous) {
+    tabsIndex (current, previous) {
       this.tabsMap[current]()
       this.nextTaskPage = ""
       this.tasksInfo = []
     },
-    isBottom(current, previous) {
+    isBottom (current, previous) {
       if (current && this.tabsIndex == 2) {
         this.getTasks()
       }

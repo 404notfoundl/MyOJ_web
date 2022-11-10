@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-04-09 20:00:37
+ * @LastEditTime: 2022-10-18 20:04:52
  * @Description: 请填写简介
 -->
 <template lang="">
@@ -43,7 +43,7 @@ export default {
             color: "#ec583a",
             insideColor: "white",
           },
-          color: ["#9ad3de"],
+          color: ["#bddd22"],
           outline: {
             show: false,
           },

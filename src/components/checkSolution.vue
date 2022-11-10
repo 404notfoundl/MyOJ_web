@@ -2,21 +2,27 @@
  * @Author: 
  * @Date: 2022-03-07 08:38:44
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-05-01 08:49:59
+ * @LastEditTime: 2022-10-14 16:07:14
  * @Description: 请填写简介
 -->
 <template>
   <div>
-    <b-row class="justify-content-center align-items-center" :style="`min-height:${avalHeight}px;`">
+    <b-row
+      class="justify-content-center align-items-center"
+      :style="`min-height:${avalHeight}px;`"
+    >
       <b-col lg="7">
-        <b-card :style="`min-height:${avalHeight * 0.8}px;`" class="position-relative mt-1">
+        <b-card
+          :style="`min-height:${avalHeight * 0.8}px;`"
+          class="position-relative mt-1"
+        >
           <b-row class="h-100">
             <!-- 标题 -->
             <b-col class="h-25" cols="12">
               <p class="h3">
                 <b>审核题解</b>
               </p>
-              <hr />
+              <hr class="b-b" />
             </b-col>
             <!-- 标签 -->
             <b-col cols="12">
@@ -38,18 +44,26 @@
                   </b-row>
                 </b-col>
               </b-row>
-              <hr />
+              <hr class="" />
             </b-col>
             <!-- 主体 -->
             <b-col cols="12" :style="`min-height:${avalHeight * 0.6}px;`">
               <b-row>
-                <b-col v-for="(task, index) in solutionList" :key="index" cols="12" class="mt-1">
+                <b-col
+                  v-for="(task, index) in solutionList"
+                  :key="index"
+                  cols="12"
+                  class="mt-1"
+                >
                   <!-- 预览部分 -->
                   <span v-b-toggle="`accordion-${index}`" class="d-block">
                     <b-row class="justify-content-between">
                       <b-col cols="2">
                         <router-link
-                          :to="{ name: 'problemObj', params: { pid: task.pid } }"
+                          :to="{
+                            name: 'problemObj',
+                            params: { pid: task.pid },
+                          }"
                           class="text-reset"
                         >
                           {{ task.pid }}
@@ -74,7 +88,11 @@
                   </span>
                   <hr />
                   <!-- 主体部分 -->
-                  <b-collapse :id="`accordion-${index}`" accordion="tasks" role="tabpanel">
+                  <b-collapse
+                    :id="`accordion-${index}`"
+                    accordion="tasks"
+                    role="tabpanel"
+                  >
                     <markdown
                       :mdPageHeight="avalHeight"
                       :Value.sync="task.value"
@@ -205,16 +223,16 @@ export default {
           console.log("failed", err)
         })
     },
-    serliazer(data) {
+    serliazer (data) {
       for (let d in data) {
         data[d].submitDate = new Date(data[d].submitDate).format("MM-dd HH:mm")
       }
     },
-    submitSolution(state, index) {
+    submitSolution (state, index) {
       let info = this.userInfo
       let data = this.solutionList[index]
       data["status"] = state
-      // debugger.
+
       if (!state) {
         // 通过
         this.$axios({
@@ -230,17 +248,17 @@ export default {
 
             this.$axios({
               method: "DELETE",
-              url: `${this.$store.state.webUrl.solution.check}${data.pid}/`,
-              data,
+              url: `${this.$store.state.webUrl.solution.check}${data.uid}&${data.pid}/`,
               headers: {
                 authorization: `Bearer ${info.token}`,
               },
+            }, {
+              data
             })
               .then((response) => {
                 console.log("delete")
                 this.toast("成功")
                 this.solutionList.splice(index, 1)
-                // debugger
               })
               .catch((err) => {
                 // debugger
@@ -287,5 +305,9 @@ hr {
 .fix-bottom {
   position: absolute;
   bottom: 2%;
+}
+
+.b-b {
+  border-width: 8px;
 }
 </style>

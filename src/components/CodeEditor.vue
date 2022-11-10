@@ -54,7 +54,7 @@
       <div class="row h-100">
         <div class="col-6 px-0 h-100 border-right">
           <textarea
-            class="h-100 w-100 px-2 pt-1 border-0"
+            class="h-100 w-100 px-2 pt-1 border-0 scroller"
             placeholder="输入数据"
             v-model.lazy="ioArea.input"
           ></textarea>
@@ -67,7 +67,7 @@
             <b-spinner variant="primary" label="Loading..."></b-spinner>
           </div>
           <textarea
-            class="h-100 w-100 px-2 pt-1 border-0"
+            class="h-100 w-100 px-2 pt-1 border-0 scroller"
             placeholder="输出数据"
             v-model="output"
             readonly
@@ -237,7 +237,7 @@ export default {
       }
     },
     getResult () {
-      if (this.rtnCode || this.output=='') return;
+      if (this.rtnCode || this.output == '') return;
       this.loading = true
       this.$emit("refresh")
     },

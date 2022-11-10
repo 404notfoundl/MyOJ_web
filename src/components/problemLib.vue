@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-10 12:37:51
+ * @LastEditTime: 2022-10-15 11:38:28
  * @Description: 请填写简介
 -->
 <template lang="">
@@ -35,8 +35,14 @@
                   </template>
                   <template :slot="`cell(label)`" slot-scope="data">
                     <div class="">
-                      <b-badge class="ml-1" variant="secondary" v-for="(item,index) in data.value.split(',')" :key="item" v-show="index<2">
-                        {{item}}
+                      <b-badge
+                        class="ml-1"
+                        variant="secondary"
+                        v-for="(item, index) in data.value.split(',')"
+                        :key="item"
+                        v-show="index < 2"
+                      >
+                        {{ item }}
                       </b-badge>
                     </div>
                   </template>
@@ -97,7 +103,7 @@
                               <path fill-rule="evenodd" d="M10.354 12.354a.5.5 0 0 0 0-.708l-2-2a.5.5 0 0 0-.708 0l-2 2a.5.5 0 0 0 .708.708L8 10.707l1.646 1.647a.5.5 0 0 0 .708 0z"/>
                             </svg>
                           </span>
-                          <b-collapse id='fliter-labels' class="py-1">
+                          <b-collapse id='fliter-labels' class="py-1" v-model="labelFilterFlag">
                             <b-badge 
                               class='ml-1 py-1'
                               pill variant='light'
@@ -163,11 +169,12 @@ export default {
       rows: 10,
       searchKey: {
         pid: '',
-        selectedLabel:''
+        selectedLabel: ''
       },
-      listName: [{ key: 'pid', label: '#' }, { key: 'title', label: '名称',class:'w-50' }, { key: 'label', label: '标签',class:'w-20' }, { key: 'acceptNum', label: '通过' }, { key: 'submitNum', label: '提交' }],
+      listName: [{ key: 'pid', label: '#' }, { key: 'title', label: '名称', class: 'w-50' }, { key: 'label', label: '标签', class: 'w-20' }, { key: 'acceptNum', label: '通过' }, { key: 'submitNum', label: '提交' }],
       query_data: {},
-      siteLabels: []
+      siteLabels: [],
+      labelFilterFlag: false
     }
   },
   methods: {
@@ -222,16 +229,20 @@ export default {
       })
     },
     labelClick (label) {
-      if(this.searchKey.selectedLabel!=label)
-        this.searchKey.selectedLabel=label
+      if (this.searchKey.selectedLabel != label)
+        this.searchKey.selectedLabel = label
       else
-        this.searchKey.selectedLabel=''
+        this.searchKey.selectedLabel = ''
       this.searchProb()
     },
   },
   watch: {
     currentPageComp () {
       this.currentPage = this.currentPageComp
+    },
+    showSearch (value) {
+      if (!value && this.labelFilterFlag || value && !this.labelFilterFlag)
+        this.$root.$emit('bv::toggle::collapse', 'fliter-labels')
     }
   }
 }
@@ -314,7 +325,7 @@ button {
   border: 1px solid #d0d7db;
 }
 
-.active{
+.active {
   background-color: black !important;
   color: white !important;
 }
