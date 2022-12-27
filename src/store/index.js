@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-18 16:08:40
+ * @LastEditTime: 2022-12-14 10:31:15
  * @Description: 请填写简介
  */
 import Vue from "vue"
@@ -15,7 +15,8 @@ Vue.use(Vuex)
 //创建VueX对象
 let root = "http://127.0.0.1:8000"
 let site_root = "http://121.41.31.72:8008"
-// root = site_root
+let test_root = "http://192.168.32.100:8008"
+root = site_root
 const store = new Vuex.Store({
   strict: true,
   state: {
@@ -50,9 +51,9 @@ const store = new Vuex.Store({
       },
       api: {
         self: `${root}/api`,
-        get spj(){
+        get spj() {
           return `${this.self}/spj/`
-        }
+        },
       },
       competition: {
         self: `${root}/api/competition`,

@@ -149,7 +149,7 @@
                     >
                   </b-form>
                   <b-popover ref="pwdPopover" target="pwd" title="密码要求" :disabled="true">
-                    密码需要由字母，下划线开头，且只包含字母，下划线，数字的8到16位字符组成
+                    密码应由字母，数字，符号组成，且长度为8-16位。
                   </b-popover>
                   <b-popover
                     ref="confirmPwdPopover"
@@ -299,7 +299,7 @@ export default {
       this.$refs.confirmPwdPopover.$emit("close")
     },
     checkPwdVaild(b) {
-      let par = /^[a-zA-Z_]\w{7,15}$/
+      let par = /^[\w\W]{8,16}$/
       if (par.test(this.usrAccount.passWord) != true) {
         this.isPwdVaild = false
         this.$refs.pwdPopover.$emit("open")

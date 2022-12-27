@@ -143,7 +143,7 @@ export default {
         if (this.rtnCode != 1) {
           this.formattedMsg = this.formatErrMsg("cpp", response.data.err)
           if (this.rtnCode == 2)
-            this.extraMsg = "出现了错误，详情..."
+            this.extraMsg = "出现了错误，详情...", this.showFooter = false
           else if (response.data.data != undefined) {
             if (type == 0) {
               this.rtnData = JSON.parse(response.data.data)
@@ -160,8 +160,8 @@ export default {
     submitProblem (data) {
       if (this.step == 1)
         return this.getTestResult()
-      if (this.step==2){
-        this.$router.push({name:'probLib',params:{page:1}})
+      if (this.step == 2) {
+        this.$router.push({ name: 'probLib', params: { page: 1 } })
       }
       let method = "POST"
       let url = `${this.$store.state.webUrl.save}`
@@ -226,6 +226,8 @@ export default {
       return "```" + lang + "\n" + str + "\n" + "```"
     },
     toNext () {
+      // 出错不进入下一步
+      if (this.rtnCode == 2) return
       this.next()
       this.rtnCode = 1
       this.getSpjRes(1)

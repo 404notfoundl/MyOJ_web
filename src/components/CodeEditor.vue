@@ -1,5 +1,5 @@
 <template>
-  <div class="w-100" ref="editor_div" :style="`height:${avalHeight - 17}px;`">
+  <div class="w-100" :style="`height:${avalHeight - 17}px;`">
     <!-- 编辑器主体 -->
     <div :class="'row h-' + heightRate">
       <div class="col-12 px-0 py-0 h-100">
@@ -51,29 +51,65 @@
     </div>
     <!-- 输入输出部分 -->
     <div v-if="isEditMode && showIOArea" class="h-25">
-      <div class="row h-100">
-        <div class="col-6 px-0 h-100 border-right">
-          <textarea
-            class="h-100 w-100 px-2 pt-1 border-0 scroller"
-            placeholder="输入数据"
-            v-model.lazy="ioArea.input"
-          ></textarea>
+      <div class="row h-100 scroller bg-white font-bolder" ref="ioAreaPanel">
+        <div class="col-6 px-0 h-auto border-right d-inline-flex">
+          <div class="h-auto mx-1">
+            <label class="d-block border-0 mb-0 pt-1 text-monospace code-line"
+              >1.</label
+            >
+            <label
+              class="d-block border-0 mb-0 text-monospace code-line"
+              v-for="val in showLines"
+              :key="val"
+              >{{ val + 1 }}.</label
+            >
+          </div>
+          <div class="flex-grow-1">
+            <textarea
+              wrap="off"
+              class="scroller-x h-100 w-100 px-1 pt-1 border-0 text-monospace"
+              placeholder="输入数据"
+              v-model="ioArea.input"
+            ></textarea>
+          </div>
         </div>
-        <div class="col-6 px-0 h-100">
+        <div class="col-6 px-0 h-auto d-inline-flex">
+          <div class="h-auto mx-1">
+            <label class="d-block border-0 mb-0 pt-1 text-monospace code-line"
+              >1.</label
+            >
+            <label
+              class="d-block border-0 mb-0 text-monospace code-line"
+              v-for="val in showLines"
+              :key="val"
+              >{{ val + 1 }}.</label
+            >
+          </div>
           <div
-            class="h-100 w-100 pt-3 border-0 bg-white text-center"
+            class="h-100 w-100 pt-3 border-0 bg-white text-center flex-grow-1"
             v-if="loading"
           >
             <b-spinner variant="primary" label="Loading..."></b-spinner>
           </div>
-          <textarea
-            class="h-100 w-100 px-2 pt-1 border-0 scroller"
-            placeholder="输出数据"
-            v-model="output"
-            readonly
-            v-else
-            @click="getResult"
-          ></textarea>
+          <div v-else class="flex-grow-1">
+            <textarea
+              wrap="off"
+              class="
+                scroller-x
+                h-100
+                w-100
+                px-1
+                pt-1
+                border-0
+                scroller
+                text-monospace
+              "
+              placeholder="输出数据"
+              v-model="output"
+              readonly
+              @click="getResult"
+            ></textarea>
+          </div>
         </div>
       </div>
     </div>
@@ -85,7 +121,6 @@ import ace from "ace-builds"
 import "ace-builds/webpack-resolver" // 在 webpack 环境中使用必须要导入
 import "ace-builds/src-min-noconflict/ext-language_tools"
 import "ace-builds/src-min-noconflict/ext-emmet"
-// import { nanoid } from "nanoid"
 
 require("ace-builds/webpack-resolver")
 export default {
@@ -108,6 +143,12 @@ export default {
       // debugger
       return this.$store.state.avaliableHeight * this.avalHeightRate
     },
+    showLines: function () {
+      return this.inputLines > this.outputLines ? this.inputLines : this.outputLines
+    },
+    areaInput: function () {
+      return this.ioArea.input
+    }
   },
   created () {
     // debugger
@@ -130,7 +171,6 @@ export default {
         this.usrLanguage = "c"
       }
     }
-    // debugger
   },
   data () {
     return {
@@ -156,12 +196,24 @@ export default {
         // java: "ace/mode/java", //
         // javascript: "ace/mode/javascript", //
       },
+      inputLines: 0,
+      inputLinesListener: null,
+      outputLines: 0,
+      outputLinesListener: null,
       O2: true,
       submitting: false,
       loading: false,
     }
   },
   methods: {
+    calLines (str) {
+      let lines = 0
+      for (let index in str) {
+        if (str[index] == '\n')
+          lines++
+      }
+      return lines
+    },
     checkEditorValidity () {
       let alertText = ""
       if (this.aceEditor) this.usrCode = this.aceEditor.getValue()
@@ -241,6 +293,12 @@ export default {
       this.loading = true
       this.$emit("refresh")
     },
+    scrollBottom () {
+      this.$nextTick(() => {
+        if (this.$refs.ioAreaPanel.scrollTop < this.$refs.ioAreaPanel.scrollHeight)
+          this.$refs.ioAreaPanel.scrollTop = this.$refs.ioAreaPanel.scrollHeight
+      })
+    }
   },
   mounted () {
     this.aceEditor = ace.edit(this.$refs.ace, {
@@ -315,6 +373,23 @@ export default {
     },
     output: function (newVal) {
       if (newVal !== "") this.loading = false
+      if (this.outputLinesListener == null) {
+        this.outputLinesListener = this.ojDebounce(() => {
+          this.outputLines = this.calLines(this.output)
+          this.scrollBottom()
+        }, 20)
+      }
+      this.outputLinesListener()
+    },
+    areaInput () {
+      if (this.inputLinesListener == null) {
+        this.inputLinesListener = this.ojDebounce(() => {
+          this.inputLines = this.calLines(this.ioArea.input)
+          if (this.inputLines > this.outputLines)
+            this.scrollBottom()
+        }, 20)
+      }
+      this.inputLinesListener()
     }
   },
 }
@@ -325,12 +400,16 @@ export default {
   min-width: 100%;
 }
 
-.hidden-scorller {
-  overflow: hidden;
+.bg-white {
+  background-color: white;
 }
 
 .bg-black {
   background-color: black;
+}
+
+.bg-line {
+  background-color: #f1f7f6;
 }
 
 .bottom-right-relative {
@@ -352,5 +431,13 @@ export default {
 hr {
   border: 5px solid #aaa;
   opacity: 75%;
+}
+
+.code-line {
+  color: gray;
+}
+
+.font-bolder {
+  font-size: 18px;
 }
 </style>

@@ -179,46 +179,6 @@ export default {
     onSaveMdListener() {
       this.$emit("onSave", this.value)   
       return    
-      // if (this.value == "") return
-      // let text = ""
-      // if (!this.isEdit) {
-      //   this.downLoadDataToLoc(this.value)
-      //   text = "已保存至本地存储"
-      // } else {
-      //   let solutions = this.getLocalJson("markdown")
-      //   if (solutions === null) solutions = {}
-      //   if (solutions[`${this.editMode}`] === undefined || solutions[`${this.editMode}`] === null)
-      //     solutions[`${this.editMode}`] = {}
-
-      //   let solution = solutions[`${this.editMode}`]
-      //   //储存题解
-      //   if (this.$route.params.pid !== undefined && this.$route.params.pid !== null) {
-      //     if (solution[`${this.$route.params.pid}`] === undefined)
-      //       solution[`${this.$route.params.pid}`] = {}
-      //     solution[`${this.$route.params.pid}`].value = this.value
-      //   } else {
-      //     // if (solution['editor'] === undefined) solution['editor'] = {}
-      //     //添加编辑器,题目的储存
-      //     let obj = null
-      //     if (this.$attrs.problem !== undefined) {
-      //       obj = this.$attrs.problem
-      //       obj.value = this.value
-      //     } else {
-      //       obj = {}
-      //       obj.value = this.value
-      //     }
-      //     solutions[`${this.editMode}`] = obj
-      //     // solution['editor'].value = this.value
-      //   }
-      //   this.setLocalJson("markdown", solutions)
-      //   text = "已保存至浏览器"
-      // }
-      // this.$bvToast.toast(text, {
-      //   title: "成功",
-      //   variant: "info",
-      //   autoHideDelay: 3000,
-      // })
-
     },
   },
   mounted: function () {},

@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-07 10:44:09
+ * @LastEditTime: 2022-12-14 13:51:34
  * @Description: 请填写简介
  */
 //注意参数next需要调用，否则出现意外
@@ -86,7 +86,7 @@ const routes = [
   { name: "login", path: "/login", component: loginPage, props: true }, //登录
   { name: "newSolutions", path: "/news", component: solution }, //最新题解
   { name: "problemObj", path: "/problem/:pid", component: problemObj }, //题目
-  { name: "probLib", path: "/problem_lib/:page", component: problemLib}, //题目列表
+  { name: "probLib", path: "/problem_lib/:page", component: problemLib }, //题目列表
   {
     name: "solution",
     path: "/solution/:pid",
@@ -106,7 +106,7 @@ const routes = [
   //   name: "provincialCompetitionPage",
   //   path: "/provincial_competition/:prov/:year/:pid",
   //   component: provincialCompetitionPage,
-  // }, // 省赛题目页面 
+  // }, // 省赛题目页面
   // 上述设计重复，不使用
   { name: "usrInfo", path: "/user_info/:uid", component: personalDetails }, // 个人信息
   { name: "registPage", path: "/register/:pk", component: registPage }, // 注册页面
@@ -130,6 +130,7 @@ let authPage = {
   usrInfo: "usrInfo",
   appendProblem: "appendProblem",
   checkSolution: "checkSolution",
+  codeEditor: "codeEditor",
 }
 
 //路由守卫
@@ -152,7 +153,7 @@ router.beforeEach(async (to, from, next) => {
           // console.log("pass!")
         })
         .catch(() => {
-          pass = false
+          pass = false          
           // console.log("unauthed!")
         })
     }

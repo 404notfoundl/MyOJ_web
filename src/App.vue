@@ -150,8 +150,10 @@ export default {
           authorization: `Bearer ${info.token}`,
         },
       }).then((response) => {
-        if (response.data.code == 1)
+        if (response.data.code == 1) {
           this.output = response.data.result === "" ? '无输出' : response.data.result
+          if (this.output.length >= 512) this.output += '...'
+        }
         this.rtnCode = response.data.code
       })
     },
@@ -180,14 +182,22 @@ export default {
             await this.ojTimer(3000).then(this.getResult)
             if (this.output.length > 0) break
           }
-          this.loading = false
           if (this.output.length == 0) this.output = "记录可能已经丢失，请重新提交/点击刷新"
           return true
         })
         .catch((err) => {
           // debugger
-          this.toast(err)
+          if (err.response.status == 401) {
+            this.toast("请先登录")
+            this.output = "请先登录"
+          } else {
+            this.toast(err)
+            this.output = err
+          }
+          this.rtnCode = 1
           console.log(err)
+        }).finally(() => {
+          this.loading = false
         })
     },
     async refresh () {
