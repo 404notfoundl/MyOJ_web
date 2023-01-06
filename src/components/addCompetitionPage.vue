@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-04-24 20:50:18
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-09-25 09:22:18
+ * @LastEditTime: 2023-01-06 17:01:42
  * @Description: 创建竞赛页面
 -->
 <template>
@@ -121,7 +121,6 @@ export default {
     }
   },
   methods: {
-    // TODO 数据的格式化还没完成
     addTab() {
       this.tabInfo.tab_count++
       this.problem_list.push({

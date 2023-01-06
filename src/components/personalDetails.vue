@@ -284,7 +284,6 @@ export default {
     },
   },
   async created () {
-    // TODO 暂未完成
     await this.getUserInfo()
     this.getRows()
     return true

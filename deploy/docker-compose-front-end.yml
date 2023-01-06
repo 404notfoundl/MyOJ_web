@@ -10,4 +10,3 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:Z
       - ../dist:/home/html:Z
-      - ./static:/home/online_judge/static:Z # 后端静态文件转发

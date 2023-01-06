@@ -21,4 +21,5 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
-front_end.tar
+*.tar
+*.tar.gz

@@ -25,7 +25,6 @@
           <template v-slot:tabs-end>
             <b-nav>
               <!-- 修改题目 -->
-              <!-- TODO pid待修改 -->
               <b-nav-item
                 title="修改此题"
                 @click="gotoModify({ pid: problemObj.pid })"
@@ -239,7 +238,7 @@
                       <span v-b-toggle="`accordion-${index}`" class="d-block">
                         <b-row>
                           <!-- 提交日期 -->
-                          <b-col class="float-left pl-3">
+                          <b-col cols="7" class="float-left pl-3">
                             <div class="float-left">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -259,35 +258,49 @@
                               </p>
                             </div>
                           </b-col>
-                          <!-- 得分 -->
-                          <b-col class="float-right">
-                            <p
-                              :class="`float-right mb-0 d-inline-block text-${
-                                task.preview === 'AC' ? 'success' : 'danger'
-                              }`"
-                              title="得分"
-                            >
-                              {{ ((100 / task.total) * task.acNum).toFixed(2) }}
-                            </p>
+                          <b-col
+                            cols="5"
+                            class="
+                              d-inline-flex
+                              float-right
+                              justify-content-around
+                            "
+                          >
+                            <div class="">
+                              <p
+                                :class="`float-right mb-0 d-inline-block text-${
+                                  task.preview === 'AC' ? 'success' : 'danger'
+                                }`"
+                                title="通过/总数"
+                              >
+                                {{ task.acNum }} / {{ task.total }}
+                              </p>
+                            </div>
+                            <!-- 资源使用 -->
+                            <div cols="1" class="">
+                              <p
+                                :class="`float-left mb-0 d-inline-block text-muted`"
+                                title="最大用时/最大内存(验证中)"
+                              >
+                                {{ task.time_usage }} / -
+                              </p>
+                            </div>
+                            <!-- 提交语言 -->
+                            <div cols="1" class="pr-5">
+                              <p
+                                class="
+                                  mb-0
+                                  d-inline-block
+                                  float-left
+                                  text-muted
+                                "
+                                title="语言"
+                              >
+                                {{ task.lang }}
+                              </p>
+                            </div>
                           </b-col>
-                          <!-- 资源使用 -->
-                          <b-col cols="1" class="float-right">
-                            <p
-                              :class="`float-left mb-0 d-inline-block text-muted`"
-                              title="最大用时/最大内存(验证中)"
-                            >
-                              {{ task.time_usage }} / -
-                            </p>
-                          </b-col>
-                          <!-- 提交语言 -->
-                          <b-col cols="1" class="float-right pr-5">
-                            <p
-                              class="mb-0 d-inline-block float-left text-muted"
-                              title="语言"
-                            >
-                              {{ task.lang }}
-                            </p>
-                          </b-col>
+                          <!-- 通过/总数 -->
                         </b-row>
                       </span>
                       <!-- 主体部分 -->
