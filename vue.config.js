@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:22:40
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-06-29 19:32:03
+ * @LastEditTime: 2023-01-08 11:00:11
  * @Description: 请填写简介
  */
 //引入
@@ -11,21 +11,11 @@ module.exports = {
   pages: {
     index: {
       entry: "src/main.js",
+      productionSourceMap: false
     },
   },
   lintOnSave: false,
   chainWebpack: (config) => {
-    // const CompressionWebpackPlugin = require("compression-webpack-plugin")
-    // if (process.env.NODE_ENV === "production") {
-    //   config.plugin("CompressionPlugin").use(
-    //     new CompressionWebpackPlugin({
-    //       test: /\.(js|css)$/,
-    //       threshold: 10240, // 超过10kb的文件就压缩
-    //       deleteOriginalAssets: true, // 不删除源文件
-    //       minRatio: 0.8,
-    //     })
-    //   )
-    // }
 
     config.module
       .rule("vue")

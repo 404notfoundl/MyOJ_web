@@ -277,7 +277,7 @@
                               </p>
                             </div>
                             <!-- 资源使用 -->
-                            <div cols="1" class="">
+                            <div class="">
                               <p
                                 :class="`float-left mb-0 d-inline-block text-muted`"
                                 title="最大用时/最大内存(验证中)"
@@ -286,7 +286,7 @@
                               </p>
                             </div>
                             <!-- 提交语言 -->
-                            <div cols="1" class="pr-5">
+                            <div class="pr-5">
                               <p
                                 class="
                                   mb-0

@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-08 08:59:21
+ * @LastEditTime: 2023-01-31 20:59:37
  * @Description: 请填写简介
  */
 import Vue from "vue"
@@ -16,7 +16,7 @@ Vue.use(Vuex)
 let root = "http://127.0.0.1:8000"
 let site_root = "http://121.41.31.72:8008"
 let test_root = "http://192.168.32.100:8008"
-root = site_root
+root = test_root
 const store = new Vuex.Store({
   strict: true,
   state: {
