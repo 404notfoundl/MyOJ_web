@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-14 16:54:48
+ * @LastEditTime: 2023-02-12 20:39:00
  * @Description: 请填写简介
 -->
 <template lang="html">
@@ -15,7 +15,7 @@
           <b-navbar-nav>
             <b-nav-item @click="goToPage('main', {})"><b>首页</b></b-nav-item>
             <b-nav-item-dropdown class="font-weight" text="题库" right>
-              <b-dropdown-item @click="goToPage('probLib', { page: 1 })">主题库</b-dropdown-item>
+              <b-dropdown-item @click="goToPage('probLib', { page: 1 })" class='text-center'>主题库</b-dropdown-item>
               <!-- <b-dropdown-item @click="goToPage('provincialCompetition', { prov: 'all' })"
                 >省赛题目</b-dropdown-item> -->
             </b-nav-item-dropdown>
@@ -149,7 +149,6 @@ export default {
       this.$emit("go-to", pagePath, params)
     },
     logout () {
-      // debugger
       this.deleteLocal("user")
       this.$store.commit("setUserInfo", null)
       this.$router.replace({ name: "login" })

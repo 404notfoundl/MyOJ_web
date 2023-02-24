@@ -316,7 +316,7 @@ export default {
         columns: ['title', 'value'],
         rows: []
       },
-      pieColor:['#bddd22','#ff7500']
+      pieColor: ['#bddd22', '#ff7500']
     }
   },
   methods: {
@@ -381,6 +381,7 @@ export default {
           data.avatarUrl = this.submitInfo.avatarUrl
           this.$store.commit("setUserInfo", data)
           this.userInfo.avatarUrl = this.submitInfo.avatarUrl
+          this.userDetail.avatarUrl = this.submitInfo.avatarUrl
           this.currentTabIndex = 0
         })
         .catch((err) => {

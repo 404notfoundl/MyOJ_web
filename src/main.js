@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-18 20:06:16
+ * @LastEditTime: 2023-02-06 17:02:22
  * @Description: 请填写简介
  */
 // app.js
@@ -53,11 +53,11 @@ MavonEditor.mavonEditor
   .use(Md_Katex, { blockClass: "math-block", errorColor: " #cc0000" }) //实时渲染Latex
 Vue.component(VeWordCloud.name, VeWordCloud) //词云
 Vue.component(Vehistogram.name, Vehistogram) //柱状图
-Vue.component(VeLiquidfill.name, VeLiquidfill) //水球图
+// Vue.component(VeLiquidfill.name, VeLiquidfill) //水球图
 Vue.component(VePie.name, VePie)
 Vue.config.productionTip = false
 Vue.mixin(mixin) //全局方法
-//axios
+//axios                                  
 Vue.prototype.$axios = axios
 Vue.prototype.$qs = qs
 new Vue({

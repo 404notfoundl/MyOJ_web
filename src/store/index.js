@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-01-31 20:59:37
+ * @LastEditTime: 2023-02-23 21:40:48
  * @Description: 请填写简介
  */
 import Vue from "vue"
@@ -14,8 +14,8 @@ Vue.use(Vuex)
 //这是全局变量所用
 //创建VueX对象
 let root = "http://127.0.0.1:8000"
-let site_root = "http://121.41.31.72:8008"
-let test_root = "http://192.168.32.100:8008"
+let web_root = "http://121.41.31.72:8008"
+let test_root = "http://192.168.241.100:8008"
 root = test_root
 const store = new Vuex.Store({
   strict: true,
@@ -131,6 +131,7 @@ const store = new Vuex.Store({
       state.isTop = value
     },
     setUserInfo(state, info, flag = true) {
+      // TODO 后端中删除相关信息
       if (info != null && info.avatarUrl == "") info.avatarUrl = require("../assets/Akkarin.png")
       state.userInfo = info
       if (flag) GlobalMethod.methods.setLocalJson("user", info)

@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-04-26 13:06:45
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-15 20:07:44
+ * @LastEditTime: 2023-02-13 14:45:31
  * @Description: 编辑题目的组件
 -->
 <template>
@@ -165,6 +165,7 @@
                     <b-badge variant="light" pill>checker.cpp</b-badge>
                   </template>
                 </b-form-file>
+                <!-- TODO 后端相应部分还没写好，先同步 -->
                 <b-form-checkbox
                   v-model="new_checker_flag"
                   v-show="!label_display_none[route.name]"
@@ -193,8 +194,8 @@
                   drop-placeholder=".in文件放入此处"
                   size="sm"
                   accept=".in"
-                  :required="!new_file_flag"
-                  :disabled="new_file_flag"
+                  :required="!new_checker_flag"
+                  :disabled="new_checker_flag"
                 ></b-form-file>
                 <b-form-file
                   v-model="newProblem.outputFiles"
@@ -204,12 +205,13 @@
                   size="sm"
                   class="mt-2"
                   accept=".out"
-                  :disabled="new_file_flag"
-                  :required="!new_file_flag"
+                  :disabled="new_checker_flag"
+                  :required="!new_checker_flag"
                 ></b-form-file>
               </div>
+              <!-- TODO 后端相应部分还没写好，先同步 (new_file_flag) -->
               <b-form-checkbox
-                v-model="new_file_flag"
+                v-model="new_checker_flag"
                 v-show="!label_display_none[route.name]"
                 class="mt-1"
               >
@@ -328,7 +330,7 @@ export default {
         addCompetition: true,
         appendProblem: true,
       },
-      new_file_flag: false,
+      new_file_flag: true, // TODO 后端完成后此处修改为false
       new_checker_flag: false,
       type_options: [
         { text: "常规", value: 0 },

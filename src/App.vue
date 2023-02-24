@@ -51,7 +51,7 @@ import Navbar from "./components/Navbar"
 // import prob from "@/components/problem"
 import "@/scripts/Date"
 
-let hideReturnTop = 0
+let hideReturnTop = 16
 
 export default {
   name: "OJ",
@@ -75,8 +75,10 @@ export default {
       let sTop = document.documentElement.scrollTop || document.body.scrollTop
       if (sTop > hideReturnTop) {
         window.requestAnimationFrame(this.scrollToTop)
-        window.scrollTo(0, sTop - sTop / 8)
+        window.scrollTo(0, 3 * sTop / 4)
         this.$store.commit("setTopState", true)
+      } else {
+        window.scroll(0, 0)
       }
     },
     goToPage (name, params) {

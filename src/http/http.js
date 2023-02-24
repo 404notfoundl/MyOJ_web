@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-09-11 10:38:54
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-07 10:02:58
+ * @LastEditTime: 2023-02-06 22:08:13
  * @Description: 请填写简介
  */
 
@@ -22,7 +22,7 @@ axios.interceptors.response.use(
         // 401: 未登录
         // 未登录时跳转登录界面，登录成功后回调登录前被拦截的地址 query.redirect
         case 401:
-          this.$router.push({ name: "404" })
+          // this.$router.push({ name: "404" })
           break
         // 403 token过期
         case 403:

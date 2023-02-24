@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-01-24 19:22:40
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-06 15:33:04
+ * @LastEditTime: 2023-02-22 14:08:49
  * @Description: 请填写简介
 -->
 # MyOJ_web
@@ -16,24 +16,26 @@ v16.13.2
 npm -v
 8.1.2
 ```
-## 部署
-需要修改以下选项
-`src/store/index.js`
-```javascript
-let root = "http://localhost:8000" // 后端的地址
+## 安装
+~~~shell
+npm i
+~~~
+
+## 调试(开发环境)
+```shell
+npm run serve
 ```
-* 从 `server` 部署
-  请参考 `server` 部分
-* 单独部署
-  1. 修改nginx配置
-      ```
-      deploy/nginx/nginx.conf
-      ```
-      需要修改uwsgi转发的地址
-  2. 部署
-      ```shell
-      npm i
-      npm run build
-      cd deploy
-      docker-compose up -d
-      ```
+
+## 部署
+  请修改 `src\store\index.js`
+  ```js
+  let root = "http://127.0.0.1:8008" // 后端的地址
+  ```
+  安装依赖并运行
+  ```shell
+  npm run build
+  ```
+  将 `dist` 中文件移至 `server` 端 `deploy/nginx/html` 中
+
+## 配置文件
+* nginx 于后端 `deploy/nginx/nginx.conf`

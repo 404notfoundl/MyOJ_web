@@ -450,7 +450,7 @@ export default {
     },
     isCompetition () {
       return !(isNaN(this.$route.params.cid) || isNaN(this.$route.params.pid))
-    },
+    }
   },
   created: function () {
     this.getProbDetails()
