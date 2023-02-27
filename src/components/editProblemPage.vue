@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-04-26 13:06:45
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-13 14:45:31
+ * @LastEditTime: 2023-02-24 16:49:58
  * @Description: 编辑题目的组件
 -->
 <template>
@@ -358,7 +358,8 @@ export default {
         if (value[key] === null || value[key] === undefined) continue
         else if (key != "spjFile") form.append(key, value[key])
       }
-      form.append('newFile', !this.new_file_flag)
+      // TODO 改回 new_file_flag
+      form.append('newFile', !this.new_checker_flag)
       form.append('newChecker', !this.new_checker_flag)
       return form
     },
@@ -409,7 +410,7 @@ export default {
         }
       }
       if (inputLength !== outputLength) {
-        this.warn = "输入文件过多"
+        this.warn = "输入输出文件数量不匹配"
         return false
       }
       this.warn = ""
@@ -419,7 +420,10 @@ export default {
     submitProblem () {
       if (this.step == 0) {
         if (this.labels_state) {
-          if (!this.new_file_flag) if (!this.checkFilesValid()) return
+          // TODO 改回 new_file_flag
+          if (!this.new_checker_flag)
+            if (!this.checkFilesValid()) 
+              return
         } else {
           this.toast("请按要求填写标签", 3000)
           return
@@ -436,7 +440,6 @@ export default {
         this.$router.replace({ 'name': 'probLib', params: { 'page': 1 } })
         return
       }
-
       let data = this.serializer()
       this.$emit("submit", data)
       this.$emit("update:value", this.newProblem)

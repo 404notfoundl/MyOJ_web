@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-09-11 10:38:54
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-06 22:08:13
+ * @LastEditTime: 2023-02-24 13:44:06
  * @Description: 请填写简介
  */
 
@@ -32,6 +32,7 @@ axios.interceptors.response.use(
           break
         // 其他错误，弹出对应的响应信息
         default:
+          debugger
           break
       }
       return Promise.reject(error.response)

@@ -212,7 +212,7 @@ export default {
     },
   },
   props: {},
-  data() {
+  data () {
     this.infoMap = {
       username: "用户名",
       email: "邮箱",
@@ -239,7 +239,7 @@ export default {
   },
   watch: {
     isRegist: {
-      handler(val) {
+      handler (val) {
         if (val) {
           // console.log(this.$refs.pwdPopover)
           // this.$refs.pwdPopover.show = true
@@ -248,10 +248,10 @@ export default {
     },
   },
   methods: {
-    toRegister() {
+    toRegister () {
       this.isRegist = !this.isRegist
     },
-    registAccount() {
+    registAccount () {
       let newUser = this.usrAccount
       this.$axios({
         url: this.$store.state.webUrl.user.register,
@@ -294,11 +294,11 @@ export default {
           this.toast(err.response.data.result)
         })
     },
-    hidePopover(b) {
+    hidePopover (b) {
       this.$refs.pwdPopover.$emit("close")
       this.$refs.confirmPwdPopover.$emit("close")
     },
-    checkPwdVaild(b) {
+    checkPwdVaild (b) {
       let par = /^[\w\W]{8,16}$/
       if (par.test(this.usrAccount.passWord) != true) {
         this.isPwdVaild = false
@@ -348,6 +348,9 @@ export default {
         wordCloudObj["date"] = new Date().format("yyyy-MM-dd")
         this.setLocalJson("ojWordCloud", wordCloudObj)
       } else {
+        if (wordCloudObj["words"] == undefined) {
+          wordCloudObj.words = []
+        }
         // console.log("use local words")
       }
     }
@@ -357,8 +360,8 @@ export default {
     // console.log("实现邮箱验证中，暂不开放注册")
     // console.log('可使用\n123456@qq.com\n123456asd\n登录')
   },
-  mounted() {},
-  updated() {},
+  mounted () { },
+  updated () { },
 }
 </script>
 <style scoped>

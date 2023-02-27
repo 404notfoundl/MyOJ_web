@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-06 17:02:22
+ * @LastEditTime: 2023-02-24 12:51:09
  * @Description: 请填写简介
  */
 // app.js
@@ -21,7 +21,7 @@ import store from "./store/index"
 //图表
 import Vehistogram from "v-charts/lib/histogram.common"
 import VeWordCloud from "v-charts/lib/wordcloud.min"
-import VeLiquidfill from "v-charts/lib/liquidfill.common"
+// import VeLiquidfill from "v-charts/lib/liquidfill.common"
 import VePie from "v-charts/lib/pie.common"
 //editor
 import ace from "ace-builds"
@@ -30,12 +30,13 @@ import mixin from "./global"
 //axios
 import axios from "axios"
 import qs from "qs"
-
+// 倒计时
 import vueAwesomeCountdown from "vue-awesome-countdown"
-// element-ui
+// element-ui-step
 import { steps, step } from "element-ui"
 
 import "http"
+// 粘贴板
 import VueClipboards from "vue-clipboard2"
 
 // Optionally install the BootstrapVue icon components plugin
