@@ -1,12 +1,12 @@
 <template>
   <div
     :style="'height:' + ojPageHeight + 'px'"
-    class="w-100"
+    class="w-100 justify-content-center"
     :key="$route.params.uid"
   >
     <!-- 上半部分 -->
-    <div class="row h-25 w-100 justify-content-center pt-1">
-      <div class="col-lg-8 h-100 px-0 position-relative">
+    <div class="row h-25 justify-content-center pt-3">
+      <div class="col-lg-7 h-100 position-relative">
         <div class="position-center h-100 z-4 w-100 pb-5">
           <!-- 自定义词云图 -->
           <wordcloud
@@ -64,8 +64,8 @@
       </div>
     </div>
     <!-- 下半部分 -->
-    <div class="row h-auto w-100 justify-content-center pt-3">
-      <div class="col-lg-8 h-100 px-0">
+    <div class="row h-auto justify-content-center pt-3">
+      <div class="col-lg-7 h-100">
         <b-card class="h-100 w-100">
           <hr class="mb-0" />
           <b-tabs

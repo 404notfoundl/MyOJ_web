@@ -2,7 +2,7 @@
  * @Author: 
  * @Date: 2022-01-24 19:22:40
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-22 14:08:49
+ * @LastEditTime: 2023-02-28 09:23:15
  * @Description: 请填写简介
 -->
 # MyOJ_web
@@ -21,7 +21,7 @@ npm -v
 npm i
 ~~~
 
-## 调试(开发环境)
+## 开发环境启动
 ```shell
 npm run serve
 ```
