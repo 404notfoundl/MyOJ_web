@@ -2,15 +2,15 @@
  * @Author: 
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2022-10-15 11:38:28
+ * @LastEditTime: 2023-02-28 14:46:08
  * @Description: 请填写简介
 -->
 <template lang="">
   <div class="pt-3">
     <div class="row justify-content-center">
-      <div class="col-lg-6 position-relative">
+      <div class="col-lg-6 prob-lib-position-lg">
         <!-- 题库栏 -->
-        <b-card no-body class="z-t">
+        <b-card no-body class="w-100 z-t">
           <b-card-body>
             <b-row>
               <b-col>
@@ -59,78 +59,74 @@
           </b-card-body>
         </b-card> 
         <!-- 搜索栏 -->
-        <div >
-          <div>
-            <b-row :class="`position-absolute panel-${showSearch?'show':'hide'} w-30 z-b`">
-              <b-col cols="10" class="px-0">
-                <b-card no-body class="br-0">
-                  <b-card-body>
-                    <b-form @submit.prevent="searchProb">
-                      <!-- 搜索按钮 -->
-                      <b-row>
-                        <b-col>
-                          <b-form-group>
-                            <b-button variant="outline-primary" small squared type="submit" block>
-                              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                              </svg>
-                            </b-button>
-                          </b-form-group>
-                        </b-col>
-                      </b-row>
-                      <!-- 输入框 -->
-                      <b-row>
-                        <b-col>
-                          <b-form-group>
-                            <b-form-input 
-                              type="search" 
-                              trim 
-                              v-model.lazy="searchKey.pid" 
-                              placeholder="题目编号/标题"
-                            >
-                            </b-form-input>
-                          </b-form-group>
-                        </b-col>
-                      </b-row>
-                      <!-- 标签筛选 -->
-                      <b-row>
-                        <b-col>
-                          <span class='h6 text-muted d-block mb-0' v-b-toggle="'fliter-labels'">
-                            标签筛选
-                            <svg class="bi bi-arrows-collapse" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                              <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8zm6-7a.5.5 0 0 1 .5.5V6a.5.5 0 0 1-1 0V1.5A.5.5 0 0 1 8 1z"/>
-                              <path fill-rule="evenodd" d="M10.354 3.646a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L8 5.293l1.646-1.647a.5.5 0 0 1 .708 0zM8 15a.5.5 0 0 0 .5-.5V10a.5.5 0 0 0-1 0v4.5a.5.5 0 0 0 .5.5z"/>
-                              <path fill-rule="evenodd" d="M10.354 12.354a.5.5 0 0 0 0-.708l-2-2a.5.5 0 0 0-.708 0l-2 2a.5.5 0 0 0 .708.708L8 10.707l1.646 1.647a.5.5 0 0 0 .708 0z"/>
-                            </svg>
-                          </span>
-                          <b-collapse id='fliter-labels' class="py-1" v-model="labelFilterFlag">
-                            <b-badge 
-                              class='ml-1 py-1'
-                              pill variant='light'
-                              v-for="value in siteLabels"
-                              :key="value.word" size='lg'
-                              href="#"
-                              :active="searchKey.selectedLabel==value.word"
-                              @click="labelClick(value.word)"
-                              >
-                              {{value.word}}
-                            </b-badge>
-                          </b-collapse>
-                        </b-col>
-                      </b-row>
-                    </b-form>
-                  </b-card-body>
-                </b-card>
-              </b-col>
-              <b-col cols="2" class="px-0">
-                <b-button :class="`button-${showSearch?'show':'hide'}`" squared variant="outline-secondary" @click="showSearch=!showSearch">
-                  <p class="h6 my-0" v-show="!showSearch">&gt;</p>
-                  <p class="h6 my-0" v-show="showSearch">&lt;</p>       
-                </b-button>
-              </b-col>
-            </b-row>
-          </div>
-        </div>       
+        <b-row :class="`panel-${showSearch?'show':'hide'} w-30 position-absolute d-show-st-lg z-b`">
+          <b-col cols="10" class="px-0">
+            <b-card no-body class="br-0">
+              <b-card-body>
+                <b-form @submit.prevent="searchProb">
+                  <!-- 搜索按钮 -->
+                  <b-row>
+                    <b-col>
+                      <b-form-group>
+                        <b-button variant="outline-primary" small squared type="submit" block>
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                          </svg>
+                        </b-button>
+                      </b-form-group>
+                    </b-col>
+                  </b-row>
+                  <!-- 输入框 -->
+                  <b-row>
+                    <b-col>
+                      <b-form-group>
+                        <b-form-input 
+                          type="search" 
+                          trim 
+                          v-model.lazy="searchKey.pid" 
+                          placeholder="题目编号/标题"
+                        >
+                        </b-form-input>
+                      </b-form-group>
+                    </b-col>
+                  </b-row>
+                  <!-- 标签筛选 -->
+                  <b-row>
+                    <b-col>
+                      <span class='h6 text-muted d-block mb-0' v-b-toggle="'fliter-labels'">
+                        标签筛选
+                        <svg class="bi bi-arrows-collapse" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                          <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8zm6-7a.5.5 0 0 1 .5.5V6a.5.5 0 0 1-1 0V1.5A.5.5 0 0 1 8 1z"/>
+                          <path fill-rule="evenodd" d="M10.354 3.646a.5.5 0 0 1 0 .708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L8 5.293l1.646-1.647a.5.5 0 0 1 .708 0zM8 15a.5.5 0 0 0 .5-.5V10a.5.5 0 0 0-1 0v4.5a.5.5 0 0 0 .5.5z"/>
+                          <path fill-rule="evenodd" d="M10.354 12.354a.5.5 0 0 0 0-.708l-2-2a.5.5 0 0 0-.708 0l-2 2a.5.5 0 0 0 .708.708L8 10.707l1.646 1.647a.5.5 0 0 0 .708 0z"/>
+                        </svg>
+                      </span>
+                      <b-collapse id='fliter-labels' class="py-1" v-model="labelFilterFlag">
+                        <b-badge 
+                          class='ml-1 py-1'
+                          pill variant='light'
+                          v-for="value in siteLabels"
+                          :key="value.word" size='lg'
+                          href="#"
+                          :active="searchKey.selectedLabel==value.word"
+                          @click="labelClick(value.word)"
+                          >
+                          {{value.word}}
+                        </b-badge>
+                      </b-collapse>
+                    </b-col>
+                  </b-row>
+                </b-form>
+              </b-card-body>
+            </b-card>
+          </b-col>
+          <b-col cols="2" class="px-0">
+            <b-button :class="`button-${showSearch?'show':'hide'} search-panel-collapse-button-lg`" squared variant="outline-secondary" @click="collapsePanel">
+              <p class="h6 my-0" v-show="!showSearch">&gt;</p>
+              <p class="h6 my-0" v-show="showSearch">&lt;</p>       
+            </b-button>
+          </b-col>
+        </b-row>      
       </div>
     </div>
   </div>
@@ -215,6 +211,9 @@ export default {
       }
       this.jumpToProb(this.searchKey)
     },
+    collapsePanel () {
+      return this.showSearch = !this.showSearch
+    },
     rowSelected (item) {
       this.jumpToProb({ 'pid': item[0].pid })
     },
@@ -248,40 +247,70 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+@import "@/sass/bootstrap.scss";
 $right-start: -(100vw * 0.01);
 $top-pos: 10px;
-
 $right-end: -(100vw * 0.14);
 
-@keyframes search-panel {
-  from {
+$top-start: -(100vh * 0.01);
+$right-pos: 10px;
+$top-end: -(100vh * 0.14);
+
+@each $gKey, $gVal in $grid-breakpoints {
+  @media (max-width: $gVal) {
+    // 插值语法
+    //小于一定范围 small than
+    .d-pos-abs-st-#{$gKey} {
+      position: absolute !important;
+    }
+    .prob-lib-position-#{$gKey}{
+      display: flex;
+      flex-direction: column-reverse;
+    }
+    .search-panel-collapse-button-#{$gKey}{
+      transform: rotate(-90deg)
+    }
+    .d-show-st-#{$gKey} {
+      display: none;
+    }
+  }
+  @media (min-width: $gVal) {
+    //大于一定范围 large than
+    .d-pos-abs-lt-#{$gKey} {
+      position: absolute !important;
+    }
+    .prob-lib-position-#{$gKey}{
+      position: relative;
+    }
+  }
+}
+
+@media (min-width: map-get($grid-breakpoints,lg)) {
+  .panel-hide {
+    top: $top-pos;
     right: $right-start;
   }
-  to {
+  .panel-show {
+    top: $top-pos;
     right: $right-end;
   }
+  .button-show {
+    height: 25%;
+  }
+  .button-hide {
+    height: 100%;
+  }
+  .panel-hide,
+  .panel-show,
+  .button-show,
+  .button-hide {
+    transition-property: right, height;
+    transition-duration: 0.5s;
+  }  
 }
 
-.search-panel-s {
-  top: $top-pos;
-  right: $right-end;
-}
-
-.search-panel-h {
-  top: $top-pos;
-  right: $right-start;
-}
-
-.search-panel-show,
-.search-panel-hide {
-  top: $top-pos;
-  animation-name: search-panel;
-  animation-duration: 0.5s;
-  animation-fill-mode: forwards;
-}
-
-.search-panel-hide {
-  animation-direction: reverse;
+// TODO 完成此模式下的搜索面板
+@media (max-width: map-get($grid-breakpoints,lg)) {
 }
 
 .z-t {
@@ -291,31 +320,7 @@ $right-end: -(100vw * 0.14);
   z-index: 1000 !important;
 }
 
-.panel-hide {
-  top: $top-pos;
-  right: $right-start;
-}
 
-.panel-show {
-  top: $top-pos;
-  right: $right-end;
-}
-
-.button-show {
-  height: 25%;
-}
-
-.button-hide {
-  height: 100%;
-}
-
-.panel-hide,
-.panel-show,
-.button-show,
-.button-hide {
-  transition-property: right, height;
-  transition-duration: 0.5s;
-}
 
 button {
   background-color: white;
