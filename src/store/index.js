@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-01-24 19:31:21
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-27 19:00:17
+ * @LastEditTime: 2023-03-01 14:11:54
  * @Description: 请填写简介
  */
 import Vue from "vue"
@@ -14,8 +14,6 @@ Vue.use(Vuex)
 //这是全局变量所用
 //创建VueX对象
 let root = "http://127.0.0.1:8000"
-let test_root = "http://192.168.241.100:8008"
-root = test_root
 const store = new Vuex.Store({
   strict: true,
   state: {
