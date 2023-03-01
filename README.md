@@ -2,13 +2,13 @@
  * @Author: 
  * @Date: 2022-01-24 19:22:40
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2023-02-28 09:23:15
+ * @LastEditTime: 2023-03-01 14:15:53
  * @Description: 请填写简介
 -->
 # MyOJ_web
 项目的前端，基于 `vue` 开发，实现了一些基本功能
-[后端]()
-[评测机]()
+[后端](https://github.com/404notfoundl/MyOJ_server)
+[评测机](https://github.com/404notfoundl/MyOJ_judger)
 ## 版本
 ```
 node -v
